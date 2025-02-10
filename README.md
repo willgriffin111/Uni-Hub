@@ -70,14 +70,3 @@ The other levels are:
 4. Custom - idk ngl (ask gpt)
 
 Then `exit` to return 
-
-## Database
-
-Connect to the databse on MYSQL Workbench with:
-
-```bash
-Hostname: 127.0.0.1
-Port: 3306
-Username: user
-Password: password
-```
