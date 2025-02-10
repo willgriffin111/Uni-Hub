@@ -28,7 +28,7 @@ docker-compose up -d --build
 
 To stop container:
 ```bash
-docker-compose down 
+docker-compose stop 
 ```
 
 ---
