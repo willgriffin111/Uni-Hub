@@ -29,6 +29,10 @@ To start in background (detached):
 ```bash
 docker-compose up -d 
 ```
+To start in terminal:
+```bash
+docker-compose up
+```
 If you changed the Dockerfile, add `--build` to rebuild the containers:
 ```bash
 docker-compose up -d --build
@@ -52,6 +56,21 @@ http://localhost:8000/admin
 ```
 
 ---
+
+## Run commands on containers
+To access sql container:
+```bash
+docker exec -it mysql-db bash
+```
+To access sql server running on sql container (password: rootPassword) 
+```bash
+docker exec -it mysql-db mysql -u root -p
+```
+To access Django container:
+```bash
+docker exec -it django_app bash
+```
+---
 ## Django Usertypes
 
 Django has different types of users, each with differnt levels of access:
@@ -59,7 +78,7 @@ Django has different types of users, each with differnt levels of access:
 Created using:
 
 ```bash
-docker exec -it django_app bash
+docker exec -it django-app bash
 ```
 This allows you to run commands inside the container^^
 ```bash

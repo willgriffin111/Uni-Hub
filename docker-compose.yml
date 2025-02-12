@@ -6,7 +6,7 @@ services:
     container_name: mysql-db
     restart: always
     environment:
-      MYSQL_DATABASE: thedb
+      MYSQL_DATABASE: uniHub
       MYSQL_USER: rootUser
       MYSQL_PASSWORD: password
       MYSQL_ROOT_PASSWORD: rootPassword
@@ -14,19 +14,26 @@ services:
       - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   web:
     build: .
     container_name: django-app
     restart: always
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     ports:
       - "8000:8000"
     environment:
-      - DB_NAME=mydatabase
-      - DB_USER=user
+      - DB_NAME=uniHub  
+      - DB_USER=rootUser
       - DB_PASSWORD=password
+      - DB_ROOT_PASSWORD=rootPassword
       - DB_HOST=db
     volumes:
       - .:/app

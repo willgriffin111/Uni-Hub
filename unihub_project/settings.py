@@ -73,16 +73,19 @@ WSGI_APPLICATION = 'unihub_project.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+import os
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'thedb',
-        'USER': 'rootUser',
-        'PASSWORD': 'password',
-        'HOST': 'db',
+        'NAME': os.getenv('DB_NAME', 'uniHub'),  # Match the MYSQL_DATABASE from docker-compose
+        'USER': os.getenv('DB_USER', 'rootUser'),  # Match MYSQL_USER
+        'PASSWORD': os.getenv('DB_PASSWORD', 'password'),  # Match MYSQL_PASSWORD
+        'HOST': os.getenv('DB_HOST', 'db'),  # Use 'db' since it's the MySQL service name in docker-compose
         'PORT': '3306',
     }
 }
+
 
 
 # Password validation
