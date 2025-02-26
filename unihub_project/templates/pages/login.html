@@ -1,6 +1,6 @@
+{%load static%}
 <!DOCTYPE html>
 <html lang="en">
-<!-- Head section remains the same -->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,21 +9,20 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Fontawesome CSS -->
+    <!-- FontAwesome -->
     <script src="https://kit.fontawesome.com/c43d240003.js" crossorigin="anonymous"></script>
 
-    <!-- style sheets CSS -->
-    <link rel="stylesheet" href="/unihub_project/static/login.css">
-    <link rel="stylesheet" href="/unihub_project/static/nav_footer.css">
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="{% static 'login.css' %}">
+    <link rel="stylesheet" href="{% static 'nav_footer.css' %}">
 </head>
 <body>
-    <!-- Your navbar remains the same -->
 
-
-    <!-- header -->
+    <!-- Navbar -->
     <nav class="navbar navbar-expand-lg">
         <div class="container-fluid">
-            <a class="navbar-brand" href="{{ url_for('home') }}">UNI-HUB</a>
+            {% comment %} <a class="navbar-brand" href="{% url 'home' %}">UNI-HUB</a> {% endcomment %}
+            <a class="navbar-brand" href="">UNI-HUB</a>
             
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
                     data-bs-target="#navbarNav" aria-controls="navbarNav" 
@@ -34,72 +33,78 @@
             <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('home') }}">Home</a>
+                        {% comment %} <a class="nav-link" href="{% url 'home' %}">Home</a> {% endcomment %}
+                        <a class="nav-link" href="">Home</a> 
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('profile') }}">Profile</a>
+                        {% comment %} <a class="nav-link" href="{% url 'profile' %}">Profile</a> {% endcomment %}
+                        <a class="nav-link" href="">Profile</a> 
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('activities') }}">Activities</a>
+                        {% comment %} <a class="nav-link" href="{% url 'activities' %}">Activities</a> {% endcomment %}
+                        <a class="nav-link" href="">Activities</a> 
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('communities') }}">Communities</a>
+                        {% comment %} <a class="nav-link" href="{% url 'communities' %}">Communities</a> {% endcomment %}
+                        <a class="nav-link" href="">Communities</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('accessibility') }}">Accessibility</a>
+                        {% comment %} <a class="nav-link" href="{% url 'accessibility' %}">Accessibility</a> {% endcomment %}
+                        <a class="nav-link" href="">Accessibility</a>
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
 
-
-
-       <!-------------------------------------------------------------------------------------- Login Form -------------------------------------------------------------------------------------->
-
-       <div class="container register-container">
-    <div class="log-card">
-        <div class="card-header">
-            Login
-        </div>
-        <div class="card-body">
-            <form>
-                <!-- Email field -->
-                <input type="email" class="form-control" placeholder="Email" required>
-                
-                <!-- Password field -->
-                <input type="password" class="form-control" placeholder="Password" required>
-
-                <button type="submit" class="btn btn-register">Sign in</button>
-            </form>
-
-            <div class="text-center mt-4">
-                <a href="#" class="login-link">Forgot your password?</a>
+    <!-- Login Form -->
+    <div class="container register-container">
+        <div class="log-card">
+            <div class="card-header">
+                Login
             </div>
+            <div class="card-body">
+                {% if error %}
+                    <p class="text-danger">{{ error }}</p>
+                {% endif %}
 
-            <hr>
+                <form method="POST">
+                    {% csrf_token %}
+                    <!-- Username Field -->
+                    <input type="text" name="username" class="form-control" placeholder="Username" required>
+                    
+                    <!-- Password Field -->
+                    <input type="password" name="password" class="form-control" placeholder="Password" required>
 
-            <div class="text-center mt-4">
-                <p class="mb-0">Don't have an account? <a href="#" class="login-link">Register here</a></p>
+                    <button type="submit" class="btn btn-register">Sign in</button>
+                </form>
+
+                <div class="text-center mt-4">
+                    {% comment %} <a href="{% url 'password_reset' %}" class="login-link">Forgot your password?</a> {% endcomment %}
+                    <a href="" class="login-link">Forgot your password?</a>
+                </div>
+
+                <hr>
+
+                <div class="text-center mt-4">
+                    <p class="mb-0">Don't have an account? <a href="{% url 'register' %}" class="login-link">Register here</a></p>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-
-
-       <!-------------------------------------------------------------------------------------- Footer -------------------------------------------------------------------------------------->
-       <footer class="footer mt-auto">
+    <!-- Footer -->
+    <footer class="footer mt-auto">
         <div class="container-fluid">
             <div class="row">
-                <!-- About Column -->
+                <!-- About UNI-HUB -->
                 <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
                     <h5>About UNI-HUB</h5>
                     <ul class="list-unstyled">
-                        <li><a href="{{ url_for('about') }}">About Us</a></li>
-                        <li><a href="{{ url_for('terms') }}">Terms of Service</a></li>
-                        <li><a href="{{ url_for('privacy') }}">Privacy Policy</a></li>
-                        <li><a href="{{ url_for('contact') }}">Contact Us</a></li>
+                        {% comment %} <li><a href="{% url 'about' %}">About Us</a></li>
+                        <li><a href="{% url 'terms' %}">Terms of Service</a></li>
+                        <li><a href="{% url 'privacy' %}">Privacy Policy</a></li>
+                        <li><a href="{% url 'contact' %}">Contact Us</a></li> {% endcomment %}
                     </ul>
                 </div>
 
@@ -107,10 +112,10 @@
                 <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
                     <h5>Student Resources</h5>
                     <ul class="list-unstyled">
-                        <li><a href="{{ url_for('calendar') }}">Academic Calendar</a></li>
-                        <li><a href="{{ url_for('library') }}">Library Services</a></li>
-                        <li><a href="{{ url_for('study') }}">Study Resources</a></li>
-                        <li><a href="{{ url_for('career') }}">Career Services</a></li>
+                        {% comment %} <li><a href="{% url 'calendar' %}">Academic Calendar</a></li>
+                        <li><a href="{% url 'library' %}">Library Services</a></li>
+                        <li><a href="{% url 'study' %}">Study Resources</a></li>
+                        <li><a href="{% url 'career' %}">Career Services</a></li> {% endcomment %}
                     </ul>
                 </div>
 
@@ -118,10 +123,10 @@
                 <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
                     <h5>Campus Life</h5>
                     <ul class="list-unstyled">
-                        <li><a href="{{ url_for('events') }}">Events Calendar</a></li>
-                        <li><a href="{{ url_for('clubs') }}">Clubs & Societies</a></li>
-                        <li><a href="{{ url_for('support') }}">Student Support</a></li>
-                        <li><a href="{{ url_for('housing') }}">Housing</a></li>
+                        {% comment %} <li><a href="{% url 'events' %}">Events Calendar</a></li>
+                        <li><a href="{% url 'clubs' %}">Clubs & Societies</a></li>
+                        <li><a href="{% url 'support' %}">Student Support</a></li>
+                        <li><a href="{% url 'housing' %}">Housing</a></li> {% endcomment %}
                     </ul>
                 </div>
 
@@ -129,10 +134,10 @@
                 <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
                     <h5>Connect With Us</h5>
                     <ul class="list-unstyled">
-                        <li><a href="{{ url_for('social') }}">Social Media</a></li>
-                        <li><a href="{{ url_for('news') }}">News & Updates</a></li>
-                        <li><a href="{{ url_for('alumni') }}">Alumni Network</a></li>
-                        <li><a href="{{ url_for('help') }}">Help Center</a></li>
+                        {% comment %} <li><a href="{% url 'social' %}">Social Media</a></li>
+                        <li><a href="{% url 'news' %}">News & Updates</a></li>
+                        <li><a href="{% url 'alumni' %}">Alumni Network</a></li>
+                        <li><a href="{% url 'help' %}">Help Center</a></li> {% endcomment %}
                     </ul>
                 </div>
             </div>
@@ -146,7 +151,7 @@
         </div>
     </footer>
 
-    <!-- Bootstrap JS and Popper -->
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
