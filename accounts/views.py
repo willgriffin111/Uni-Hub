@@ -27,6 +27,12 @@ class RegisterAPI(APIView):
         last_name = request.POST.get("surname") or request.data.get("surname")
         email = request.POST.get("email") or request.data.get("email")
         password = request.POST.get("password") or request.data.get("password")
+        
+        # This requires custom django user model
+        dob = request.POST.get("dob") or request.data
+        uni = request.POST.get("university") or request.data
+        student_id = request.POST.get("student_id") or request.data
+        
         if User.objects.filter(username=email).exists():
             return JsonResponse({"error": "Email already registered"}, status=400)
         user = User.objects.create_user(

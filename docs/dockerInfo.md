@@ -2,12 +2,12 @@
 
 This project consists of two containers:
 
+* Python (for running Django)
+* MySQL (for the database)
+
 These vids pretty good for explaining docker stuff: 
 * Mysql container - https://www.youtube.com/watch?v=igc2zsOKPJs&ab_channel=ProgrammingKnowledge
 * Docker explained - https://www.youtube.com/watch?v=b0HMimUb4f0&ab_channel=mCoding
-
-* Python (for running Django)
-* MySQL (for the database)
 
 The `Dockerfile` sets up the Django container, and `docker-compose.yml` runs both together.
 
