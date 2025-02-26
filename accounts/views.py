@@ -1,49 +1,46 @@
-from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from rest_framework import generics, permissions
-from .serializers import RegisterSerializer, UserSerializer
+from django.http import JsonResponse
+from rest_framework.views import APIView
+from rest_framework import permissions
+from .permissions import IsEditor
 
-def login_view(request):
-    """Handles user login."""
-    if request.method == "POST":
-        username = request.POST["username"]
-        password = request.POST["password"]
+class LoginAPI(APIView):
+    permission_classes = (permissions.AllowAny,) 
+    
+    def post(self, request):
+        # Get credentials from POST or JSON payload
+        username = request.POST.get("username") or request.data.get("username")
+        password = request.POST.get("password") or request.data.get("password")
         user = authenticate(request, username=username, password=password)
-        
         if user is not None:
             login(request, user)
-            return redirect("dashboard")  # Redirect to dashboard after login
+            return JsonResponse({"redirect": "/dashboard/"}, status=200)
         else:
-            return render(request, "pages/login.html", {"error": "Invalid username or password."})
+            return JsonResponse({"error": "Invalid credentials"}, status=401)
 
-    return render(request, "pages/login.html")
+class RegisterAPI(APIView):
+    permission_classes = (permissions.AllowAny,) 
 
+    def post(self, request):
+        first_name = request.POST.get("first_name") or request.data.get("first_name")
+        last_name = request.POST.get("surname") or request.data.get("surname")
+        email = request.POST.get("email") or request.data.get("email")
+        password = request.POST.get("password") or request.data.get("password")
+        if User.objects.filter(username=email).exists():
+            return JsonResponse({"error": "Email already registered"}, status=400)
+        user = User.objects.create_user(
+            username=email,
+            email=email,
+            password=password,
+            first_name=first_name,
+            last_name=last_name,
+        )
+        return JsonResponse({"message": "Registration successful"}, status=201)
 
-@login_required
-def dashboard_view(request):
-    """Displays user dashboard (requires login)."""
-    return render(request, "pages/dashboard.html", {"user": request.user})
-
-
-def logout_view(request):
-    """Handles user logout."""
-    logout(request)
-    return redirect("login")  # Redirect to login page after logout
-
-
-class RegisterView(generics.CreateAPIView):
-    """API endpoint for user registration."""
-    queryset = User.objects.all()
+class LogoutAPI(APIView):
     permission_classes = (permissions.AllowAny,)
-    serializer_class = RegisterSerializer
 
-
-class UserDetailView(generics.RetrieveAPIView):
-    """API endpoint to retrieve details of the logged-in user."""
-    serializer_class = UserSerializer
-    permission_classes = (permissions.IsAuthenticated,)
-
-    def get_object(self):
-        return self.request.user
+    def post(self, request):
+        logout(request)
+        return JsonResponse({"redirect": "/login/"}, status=200)

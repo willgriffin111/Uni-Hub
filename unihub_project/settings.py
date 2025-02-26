@@ -139,7 +139,8 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "unihub_project/static"),
 ]
-LOGIN_URL = "/accounts/login/"
+LOGIN_URL = '/login/'
+
 
 
 # Default primary key field type
