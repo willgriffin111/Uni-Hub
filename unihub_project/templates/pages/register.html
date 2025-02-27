@@ -113,9 +113,10 @@
                             <input type="text" id="first_name" class="form-control" placeholder="First name" required>
                         </div>
                         <div class="col-md-6">
-                            <input type="text" id="surname" class="form-control" placeholder="Surname" required>
+                            <input type="text" id="last_name" class="form-control" placeholder="Last name" required>
                         </div>
                     </div>
+                    <input type="text" id="username" class="form-control" placeholder="Username" required>
                     <input type="email" id="email" class="form-control" placeholder="Email" required>
                     <input type="text" name="university" id="university" class="form-control" placeholder="University" required>
                     <input type="password" id="password" class="form-control" placeholder="Password" required>
@@ -200,38 +201,36 @@
     <script>
         document.getElementById("register-form").addEventListener("submit", async function(event) {
             event.preventDefault();
-            
-            const first_name = document.getElementById("first_name").value;
-            const surname = document.getElementById("surname").value;
-            const email = document.getElementById("email").value;
-            const password = document.getElementById("password").value;
-            const dob = document.getElementById("dob").value;
-            const student_id = document.getElementById("student_id").value;
-            const university = document.getElementById("university").value;
-    
-            const response = await fetch("{% url 'api-register' %}", {
+        
+            const formData = {
+                first_name: document.getElementById("first_name").value,
+                last_name: document.getElementById("last_name").value,
+                username: document.getElementById("username").value, 
+                email: document.getElementById("email").value,
+                university: document.getElementById("university").value,
+                password: document.getElementById("password").value,
+                dob: document.getElementById("dob").value,
+                student_id: document.getElementById("student_id").value
+            };
+        
+            const response = await fetch("/accounts/api/register/", {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/x-www-form-urlencoded",
-                    "X-Requested-With": "XMLHttpRequest"
+                    "Content-Type": "application/json",
+                    "X-Requested-With": "XMLHttpRequest",
                 },
-                body: new URLSearchParams({
-                    "first_name": first_name,
-                    "surname": surname,
-                    "email": email,
-                    "password": password,
-                    "dob": dob,
-                    "student_id": student_id,
-                    "university": university
-                })
+                body: JSON.stringify(formData),
             });
+        
             const result = await response.json();
+        
             if (response.ok) {
                 window.location.href = "/login/";
             } else {
-                document.getElementById("error-message").textContent = result.error;
+                document.getElementById("error-message").textContent = result.error || "Registration failed. Please check your input.";
             }
         });
+        
         </script>
 
     <!-- Bootstrap JS and Popper -->

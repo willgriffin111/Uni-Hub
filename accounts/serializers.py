@@ -1,27 +1,39 @@
-from django.contrib.auth.models import User
 from rest_framework import serializers
+from django.contrib.auth import get_user_model
 
-class UserSerializer(serializers.ModelSerializer):
-    """Serializer for returning user details."""
+User = get_user_model()
+
+class CustomUserSerializer(serializers.ModelSerializer):
+    """Serializer for returning user data."""
     class Meta:
         model = User
-        fields = ['id', 'username', 'email']
+        fields = [
+            'id', 'username', 'email', 'first_name',
+            'last_name', 'dob', 'university', 'student_id'
+        ]
+
 
 class RegisterSerializer(serializers.ModelSerializer):
-    """Serializer for user registration."""
-    password = serializers.CharField(write_only=True)
-    password2 = serializers.CharField(write_only=True)
+    """Serializer for registering a new user."""
+
+    password = serializers.CharField(write_only=True, required=True)  # This is so the password isn't returned in the response.
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password', 'password2']
-
-    def validate(self, data):
-        if data['password'] != data['password2']:
-            raise serializers.ValidationError("Passwords do not match.")
-        return data
+        fields = [
+            'username', 'email', 'password', 'first_name',
+            'last_name', 'dob', 'university', 'student_id'
+        ]
 
     def create(self, validated_data):
-        validated_data.pop('password2')
-        user = User.objects.create_user(**validated_data)
-        return user
+        """Creates a new user with a properly hashed password."""
+        return User.objects.create_user(
+            username=validated_data['username'],
+            email=validated_data['email'],
+            password=validated_data['password'],
+            first_name=validated_data.get('first_name', ''),
+            last_name=validated_data.get('last_name', ''),  
+            dob=validated_data.get('dob'),
+            university=validated_data.get('university', ''),
+            student_id=validated_data.get('student_id', '')
+        )
