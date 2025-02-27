@@ -1,8 +1,8 @@
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import User
 from django.http import JsonResponse
 from rest_framework.views import APIView
 from rest_framework import permissions
+from .models import CustomUser
 from .permissions import IsEditor
 
 class LoginAPI(APIView):
@@ -28,19 +28,23 @@ class RegisterAPI(APIView):
         email = request.POST.get("email") or request.data.get("email")
         password = request.POST.get("password") or request.data.get("password")
         
-        # This requires custom django user model
-        dob = request.POST.get("dob") or request.data
-        uni = request.POST.get("university") or request.data
-        student_id = request.POST.get("student_id") or request.data
+        # Extract additional fields correctly
+        dob = request.POST.get("dob") or request.data.get("dob")
+        university = request.POST.get("university") or request.data.get("university")
+        student_id = request.POST.get("student_id") or request.data.get("student_id")
         
-        if User.objects.filter(username=email).exists():
+        if CustomUser.objects.filter(username=email).exists():
             return JsonResponse({"error": "Email already registered"}, status=400)
-        user = User.objects.create_user(
+        
+        user = CustomUser.objects.create_user(
             username=email,
             email=email,
             password=password,
             first_name=first_name,
             last_name=last_name,
+            dob=dob,
+            university=university,
+            student_id=student_id
         )
         return JsonResponse({"message": "Registration successful"}, status=201)
 

@@ -32,6 +32,13 @@
     <div class="container">
         <h1>Welcome to your Dashboard</h1>
         <p>Hello, {{ user.first_name }} {{ user.last_name }}!</p>
+        <p> email: {{ user.email }}</p>
+        <p> username: {{ user.username }}</p>
+        <p> dob: {{ user.dob }}</p> 
+        <p> university: {{ user.university }}</p>
+        <p> student id: {{ user.student_id }}</p>
+        <p> date joined: {{ user.date_joined }}</p>
+        <p> last login: {{ user.last_login }}</p>
         <button id="logout-button" class="btn btn-danger">Logout</button>
     </div>
 

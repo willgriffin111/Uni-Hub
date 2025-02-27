@@ -117,15 +117,15 @@
                         </div>
                     </div>
                     <input type="email" id="email" class="form-control" placeholder="Email" required>
-                    <input type="text" name="university" class="form-control" placeholder="University" required>
+                    <input type="text" name="university" id="university" class="form-control" placeholder="University" required>
                     <input type="password" id="password" class="form-control" placeholder="Password" required>
                  <!-- DOB and Student ID in one row -->
                  <div class="row">
                     <div class="col-md-6">
-                        <input type="date" name="dob" class="form-control" required>
+                        <input type="date" name="dob" id="dob"class="form-control" required>
                     </div>
                     <div class="col-md-6">
-                        <input type="text" name="student_id" class="form-control" placeholder="Student ID" required>
+                        <input type="text" name="student_id" id= "student_id" class="form-control" placeholder="Student ID" required>
                     </div>
                 </div>
                     <button type="submit" class="btn btn-primary btn-register">Register</button>
@@ -205,6 +205,9 @@
             const surname = document.getElementById("surname").value;
             const email = document.getElementById("email").value;
             const password = document.getElementById("password").value;
+            const dob = document.getElementById("dob").value;
+            const student_id = document.getElementById("student_id").value;
+            const university = document.getElementById("university").value;
     
             const response = await fetch("{% url 'api-register' %}", {
                 method: "POST",
@@ -216,7 +219,10 @@
                     "first_name": first_name,
                     "surname": surname,
                     "email": email,
-                    "password": password
+                    "password": password,
+                    "dob": dob,
+                    "student_id": student_id,
+                    "university": university
                 })
             });
             const result = await response.json();

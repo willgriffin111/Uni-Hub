@@ -98,6 +98,8 @@ DATABASES = {
     }
 }
 
+# IVE ADDED THIS TO USE THE CUSTOM USER MODEL - WILL
+AUTH_USER_MODEL = 'accounts.CustomUser'
 
 
 # Password validation
