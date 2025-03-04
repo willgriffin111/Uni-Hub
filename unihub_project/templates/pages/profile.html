@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UNI-HUB</title>
+    <!-- Bootstrap CSS -->
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Fontawesome CSS -->
+    <script src="https://kit.fontawesome.com/c43d240003.js" crossorigin="anonymous"></script>
+
+    <!-- style sheets CSS -->
+    <link rel="stylesheet" href="/unihub_project/static/profile.css">
+    <link rel="stylesheet" href="/unihub_project/static/nav_footer.css">
+</head>
+<body>
+    <!-- header -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">UNI-HUB</a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#navbarNav" aria-controls="navbarNav" 
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Activities</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Communities</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Accessibility</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Student Profile Page -->
+    <div class="container profile-container">
+        <!-- Profile Header -->
+        <div class="profile-header-simple">
+            <div class="profile-photo-container">
+                <img src="/images/bingus.jpg" alt="Profile Photo" class="profile-photo">
+            </div>
+            <h1 class="profile-name">Alex Rogers</h1>
+            <p class="university-name">University of the West of England</p>
+            <p class="degree-info">BSc, Computer Science</p>
+        </div>
+
+        <!-- Main Content -->
+        <div class="profile-content">
+            <div class="row">
+                <!-- Left Column -->
+                <div class="col-md-4">
+                    <!-- Personal Information Card -->
+                    <div class="profile-card">
+                        <div class="card-header">
+                            <h3>About me</h3>
+                            <button class="edit-btn">Edit</button>
+                        </div>
+                        <div class="card-body">
+                            <div class="info-item">
+                                <span class="label">Gender:</span>
+                                <span class="value">Male</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="label">Email:</span>
+                                <span class="value">john.smith@university.edu</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="label">Date of Birth:</span>
+                                <span class="value">15 March 2000</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="label">Bio:</span>
+                                <span class="value">Hey! I'm Alex, a Computer Science student who loves motorcycles and coding. Looking to connect with fellow riders and tech enthusiasts on campus.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Links Card -->
+                    <div class="profile-card">
+                        <div class="card-header">
+                            <h3>My Activities</h3>
+                        </div>
+                        <div class="card-body">
+                            <ul class="quick-links">
+                                <li><a href="#"><i class="fa-solid fa-user"></i> Friends</a></li>
+                                <li><a href="#"><i class="fa-solid fa-user-group"></i> Communities</a></li>
+                                <li><a href="#"><i class="fa-solid fa-calendar-days"></i> Events</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column -->
+                <div class="col-md-8">
+                    <!-- Academic Progress Card -->
+                    <div class="profile-card">
+                        <div class="card-header">
+                            <h3>Social Records</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="progress-stats">
+                                <div class="stat-item">
+                                    <h4>Posts created</h4>
+                                    <span class="stat-value">3</span>
+                                </div>
+                                <div class="stat-item">
+                                    <h4>Events Attended</h4>
+                                    <span class="stat-value">12</span>
+                                </div>
+                                <div class="stat-item">
+                                    <h4>Friends</h4>
+                                    <span class="stat-value">0</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Posts Card -->
+                    <div class="profile-card">
+                        <div class="card-header">
+                            <h3>Recent Posts</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="posts-list">
+                                <!-- Post Item -->
+                                <div class="post-item">
+                                    <div class="post-content">
+                                        <h4>New Pc set up</h4>
+                                        <p class="post-text">Yo what does everyone think of my new set up?</p>
+                                        <div class="post-image-container">
+                                            <img src="/images/pcSetup.jpg" alt="Web Development" class="post-image">
+                                        </div>
+                                        <div class="post-meta">
+                                            <span class="post-date">Posted 2 days ago</span>
+                                            <span class="post-interactions">
+                                                <button class="like-button"><i class="fa-solid fa-heart"></i></button>
+                                                <span class="likes-counter">12</span>
+                                                <span class="likes-text">likes</span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="post-item">
+                                    <div class="post-content">
+                                        <h4>Motorcycle Meetup This Weekend?</h4>
+                                        <p class="post-text">Weather's looking good for Saturday. Any riders want to meet up for a group ride?</p>
+                                        <div class="post-meta">
+                                            <span class="post-date">Posted 5 days ago</span>
+                                            <span class="post-interactions">
+                                                <button class="like-button"><i class="fa-solid fa-heart"></i></button>
+                                                <span class="likes-counter">8</span>
+                                                <span class="likes-text">likes</span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="post-item">
+                                    <div class="post-content">
+                                        <h4>Database Project Partner Needed</h4>
+                                        <p class="post-text">Looking for a partner for the upcoming DB systems project. DM if interested!</p>
+                                        <div class="post-meta">
+                                            <span class="post-date">Posted 1 week ago</span>
+                                            <span class="post-interactions">
+                                                <button class="like-button"><i class="fa-solid fa-heart"></i></button>
+                                                <span class="likes-counter">15</span>
+                                                <span class="likes-text">likes</span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- footer -->
+    <footer class="footer mt-auto">
+        <div class="container-fluid">
+            <div class="row">
+                <!-- About Column -->
+                <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
+                    <h5>About UNI-HUB</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                    </ul>
+                </div>
+
+                <!-- Student Resources -->
+                <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
+                    <h5>Student Resources</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#">Academic Calendar</a></li>
+                        <li><a href="#">Library Services</a></li>
+                        <li><a href="#">Study Resources</a></li>
+                        <li><a href="#">Career Services</a></li>
+                    </ul>
+                </div>
+
+                <!-- Campus Life -->
+                <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
+                    <h5>Campus Life</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#">Events Calendar</a></li>
+                        <li><a href="#">Clubs & Societies</a></li>
+                        <li><a href="#">Student Support</a></li>
+                        <li><a href="#">Housing</a></li>
+                    </ul>
+                </div>
+
+                <!-- Connect -->
+                <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
+                    <h5>Connect With Us</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#">Social Media</a></li>
+                        <li><a href="#">News & Updates</a></li>
+                        <li><a href="#">Alumni Network</a></li>
+                        <li><a href="#">Help Center</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Copyright -->
+            <div class="row mt-4">
+                <div class="col-12 text-center">
+                    <p class="copyright">© 2025 UNI-HUB. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
