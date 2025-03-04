@@ -4,14 +4,23 @@ from .models import CustomUser
 
 class CustomUserAdmin(UserAdmin):
     model = CustomUser
-    list_display = ['id', 'username', 'email', 'first_name', 'last_name', 'dob', 'university', 'student_id']
-    # Add custom fields to the fieldsets so they're editable in the admin.
+
+    # Display user details including user_type
+    list_display = ['id', 'username', 'email', 'first_name', 'last_name', 'dob', 'university', 'student_id', 'user_type']
+    list_filter = ['user_type', 'university', 'dob']
+
+    # Allow editing `user_type` in the user detail view
     fieldsets = UserAdmin.fieldsets + (
-        (None, {'fields': ('dob', 'university', 'student_id')}),
+        (None, {'fields': ('dob', 'university', 'student_id', 'user_type')}),
     )
-    # Add custom fields when creating a new user via the admin.
+
+    # Allow selecting `user_type` when creating a new user
     add_fieldsets = UserAdmin.add_fieldsets + (
-        (None, {'fields': ('dob', 'university', 'student_id')}),
+        (None, {'fields': ('dob', 'university', 'student_id', 'user_type')}),
     )
+
+    # Enable searching users by username, email, or university
+    search_fields = ['username', 'email', 'university']
+    ordering = ['id']
 
 admin.site.register(CustomUser, CustomUserAdmin)
