@@ -10,6 +10,11 @@ def register_view(request):
     return render(request, "pages/register.html")
 
 @login_required
+def Verify_view(request):
+    """Render the one time password page."""
+    return render(request, "pages/OTP.html")
+
+@login_required
 def dashboard_view(request):
     """Render the dashboard page (requires login)."""
     return render(request, "pages/dashboard.html", {"user": request.user})

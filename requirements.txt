@@ -3,3 +3,5 @@ mysqlclient
 mysql-connector-python
 djangorestframework
 djangorestframework-simplejwt
+sendgrid
+pyotp

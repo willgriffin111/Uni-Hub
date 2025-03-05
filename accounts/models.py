@@ -7,7 +7,7 @@ class CustomUser(AbstractUser):
     dob = models.DateField(null=True, blank=True)
     university = models.CharField(max_length=255, null=True, blank=True)
     student_id = models.CharField(max_length=50, null=True, blank=True)
-    
+    email_verified = models.BooleanField(default=False)
     #all possible user types accepted
     USER_TYPES = [
         ('student', 'Student'),
