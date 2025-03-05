@@ -150,7 +150,7 @@
             const result = await response.json();
         
             if (response.ok) {
-                window.location.href = "/dashboard/";
+                window.location.href = "/profile/";
             } else {
                 document.getElementById("error-message").textContent = result.error || "OTP submission failed. Please try again.";
             }
@@ -159,7 +159,7 @@
         document.querySelector(".resend-link").addEventListener("click", async function(event) {
             event.preventDefault();
 
-            const response = await fetch("/accounts/api/resend-otp/", {
+            const response = await fetch("/accounts/api/verify/", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

@@ -32,7 +32,7 @@ class LoginAPI(APIView):
             login(request, user)
             request.session['username'] = user.username
             if user.email_verified == True:
-                return JsonResponse({"redirect": "/dashboard/"}, status=200)
+                return JsonResponse({"redirect": "/profile/"}, status=200)
             else:
                 return JsonResponse({"redirect": "/accounts/api/verify/"}, status=200)
         else:

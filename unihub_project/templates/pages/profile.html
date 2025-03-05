@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,8 +13,9 @@
     <script src="https://kit.fontawesome.com/c43d240003.js" crossorigin="anonymous"></script>
 
     <!-- style sheets CSS -->
-    <link rel="stylesheet" href="/unihub_project/static/profile.css">
-    <link rel="stylesheet" href="/unihub_project/static/nav_footer.css">
+    <link rel="stylesheet" href="{% static 'profile.css' %}">
+    <link rel="stylesheet" href="{% static 'nav_footer.css' %}">
+
 </head>
 <body>
     <!-- header -->
@@ -56,8 +58,8 @@
             <div class="profile-photo-container">
                 <img src="/images/bingus.jpg" alt="Profile Photo" class="profile-photo">
             </div>
-            <h1 class="profile-name">Alex Rogers</h1>
-            <p class="university-name">University of the West of England</p>
+            <h1 class="profile-name">{{ user.first_name }} {{ user.last_name }}</h1>
+            <p class="university-name">{{ user.university }}</p>
             <p class="degree-info">BSc, Computer Science</p>
         </div>
 
@@ -79,11 +81,11 @@
                             </div>
                             <div class="info-item">
                                 <span class="label">Email:</span>
-                                <span class="value">john.smith@university.edu</span>
+                                <span class="value">{{ user.email }}</span>
                             </div>
                             <div class="info-item">
                                 <span class="label">Date of Birth:</span>
-                                <span class="value">15 March 2000</span>
+                                <span class="value">{{ user.dob }}</span>
                             </div>
                             <div class="info-item">
                                 <span class="label">Bio:</span>

@@ -18,3 +18,8 @@ def Verify_view(request):
 def dashboard_view(request):
     """Render the dashboard page (requires login)."""
     return render(request, "pages/dashboard.html", {"user": request.user})
+
+@login_required
+def profile_view(request):
+    """Render the profile page (requires login)."""
+    return render(request, "pages/profile.html", {"user": request.user})
