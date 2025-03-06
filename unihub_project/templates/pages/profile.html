@@ -56,11 +56,12 @@
         <!-- Profile Header -->
         <div class="profile-header-simple">
             <div class="profile-photo-container">
-                <img src="/images/bingus.jpg" alt="Profile Photo" class="profile-photo">
+                <img src="{% static 'bingus.jpg' %}" alt="Profile Photo" class="profile-photo">
             </div>
             <h1 class="profile-name">{{ user.first_name }} {{ user.last_name }}</h1>
             <p class="university-name">{{ user.university }}</p>
             <p class="degree-info">BSc, Computer Science</p>
+            <button id="logout-button" class="btn btn-danger">Logout</button>
         </div>
 
         <!-- Main Content -->
@@ -254,5 +255,19 @@
             </div>
         </div>
     </footer>
+    <script>
+        document.getElementById("logout-button").addEventListener("click", async function() {
+            const response = await fetch("{% url 'api-logout' %}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "X-Requested-With": "XMLHttpRequest"
+                }
+            });
+            if (response.ok) {
+                window.location.href = "/login/";
+            }
+        });
+    </script>
 </body>
 </html>
