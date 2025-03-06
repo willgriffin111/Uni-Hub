@@ -23,18 +23,25 @@ services:
   web:
     build: .
     container_name: django-app
+    env_file:
+      - .env
     restart: always
     depends_on:
       db:
         condition: service_healthy
     ports:
       - "8000:8000"
+    # environment:
+    #   - DB_NAME=uniHub  
+    #   - DB_USER=rootUser
+    #   - DB_PASSWORD=password
+    #   - DB_ROOT_PASSWORD=rootPassword
+    #   - DB_HOST=db
     environment:
-      - DB_NAME=uniHub  
-      - DB_USER=rootUser
-      - DB_PASSWORD=password
-      - DB_ROOT_PASSWORD=rootPassword
-      - DB_HOST=db
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
     volumes:
       - .:/app
     command: >

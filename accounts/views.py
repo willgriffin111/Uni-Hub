@@ -13,7 +13,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.contrib.auth import get_user_model
 from rest_framework import status
-from .emailopt import send_otp_email_password_reset 
+from .emailopt import send_email_password_reset 
 from django.utils.encoding import force_bytes
 from django.conf import settings
 
@@ -160,7 +160,7 @@ class PasswordResetAPI(APIView):
         reset_link = f"http://localhost:8000/password-reset-confirm/?uid={uid}&token={token}"
         
         try:
-            send_otp_email_password_reset(email, reset_link)
+            send_email_password_reset(email, reset_link)
         except Exception as e:
             return Response({"error": f"Error sending email: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         print(reset_link)

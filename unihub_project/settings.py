@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,7 +21,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-!)mr^rm4cx=dwj1$jpylbm2o(#5f_rsa^!(=@(f_5p+9gih1d$'
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
+# SECRET_KEY = 'django-insecure-!)mr^rm4cx=dwj1$jpylbm2o(#5f_rsa^!(=@(f_5p+9gih1d$'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -29,8 +31,22 @@ ALLOWED_HOSTS = []
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'  # or file or cached
 
+# ---------- env ----------
 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': os.getenv('DB_PORT', '3306'),
+    }
+}
 
+SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
+
+# -----------------------------
 # Application definition
 
 INSTALLED_APPS = [
@@ -99,18 +115,18 @@ WSGI_APPLICATION = 'unihub_project.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-import os
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.getenv('DB_NAME', 'uniHub'),  # Match the MYSQL_DATABASE from docker-compose
-        'USER': os.getenv('DB_USER', 'rootUser'),  # Match MYSQL_USER
-        'PASSWORD': os.getenv('DB_PASSWORD', 'password'),  # Match MYSQL_PASSWORD
-        'HOST': os.getenv('DB_HOST', 'db'),  # Use 'db' since it's the MySQL service name in docker-compose
-        'PORT': '3306',
-    }
-}
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': os.getenv('DB_NAME', 'uniHub'),  # Match the MYSQL_DATABASE from docker-compose
+#         'USER': os.getenv('DB_USER', 'rootUser'),  # Match MYSQL_USER
+#         'PASSWORD': os.getenv('DB_PASSWORD', 'password'),  # Match MYSQL_PASSWORD
+#         'HOST': os.getenv('DB_HOST', 'db'),  # Use 'db' since it's the MySQL service name in docker-compose
+#         'PORT': '3306',
+#     }
+# }
 
 # IVE ADDED THIS TO USE THE CUSTOM USER MODEL - WILL
 AUTH_USER_MODEL = 'accounts.CustomUser'

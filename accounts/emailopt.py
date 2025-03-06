@@ -47,7 +47,8 @@ def send_otp_email(email,otp_code):
     )
 
     try: #please for the love of god remember to put this in a env file i beg
-        sg = SendGridAPIClient('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')
+        # sg = SendGridAPIClient('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')
+        sg = SendGridAPIClient(settings.SENDGRID_API_KEY)
         response = sg.send(message)
         print(f"OTP Email Sent! Status: {response.status_code}")
     except Exception as e:
@@ -64,7 +65,7 @@ def load_email_template_password_reset(filename, reset_link):
         print(f"Error: Template file not found at {template_path}")
         return None
 
-def send_otp_email_password_reset(email, reset_link):
+def send_email_password_reset(email, reset_link):
     email_body = load_email_template_password_reset("password_reset_template.html", reset_link)
     message = Mail(
         from_email='donotreply@unihub.help',
@@ -73,7 +74,8 @@ def send_otp_email_password_reset(email, reset_link):
         html_content=email_body
     )
     try:
-        sg = SendGridAPIClient('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')
+        # sg = SendGridAPIClient('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')
+        sg = SendGridAPIClient(settings.SENDGRID_API_KEY)
         response = sg.send(message)
         print(f"Password Reset Email Sent! Status: {response.status_code}")
     except Exception as e:
