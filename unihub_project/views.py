@@ -23,3 +23,15 @@ def dashboard_view(request):
 def profile_view(request):
     """Render the profile page (requires login)."""
     return render(request, "pages/profile.html", {"user": request.user})
+
+
+
+from django.shortcuts import render
+
+def password_reset_view(request):
+    return render(request, "pages/password_reset.html")
+
+def password_reset_confirm_view(request):
+    return render(request, "pages/password_reset_confirm.html")
+
+

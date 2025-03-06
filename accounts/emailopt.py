@@ -52,3 +52,29 @@ def send_otp_email(email,otp_code):
         print(f"OTP Email Sent! Status: {response.status_code}")
     except Exception as e:
         print(f"Error sending email: {e}")
+
+
+def load_email_template_password_reset(filename, reset_link):
+    template_path = os.path.join(settings.BASE_DIR, "accounts", filename)  
+    try:
+        with open(template_path, "r", encoding="utf-8") as file:
+            html_content = file.read()
+        return html_content.replace("{{RESET_LINK}}", reset_link)
+    except FileNotFoundError:
+        print(f"Error: Template file not found at {template_path}")
+        return None
+
+def send_otp_email_password_reset(email, reset_link):
+    email_body = load_email_template_password_reset("password_reset_template.html", reset_link)
+    message = Mail(
+        from_email='donotreply@unihub.help',
+        to_emails=email,
+        subject='Reset Your Password',
+        html_content=email_body
+    )
+    try:
+        sg = SendGridAPIClient('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')
+        response = sg.send(message)
+        print(f"Password Reset Email Sent! Status: {response.status_code}")
+    except Exception as e:
+        print(f"Error sending email: {e}")
