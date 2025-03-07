@@ -46,8 +46,7 @@ def send_otp_email(email,otp_code):
         html_content=email_body
     )
 
-    try: #please for the love of god remember to put this in a env file i beg
-        # sg = SendGridAPIClient('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')
+    try: #please for the love of god remember to put this in a env file i beg - DONE
         sg = SendGridAPIClient(settings.SENDGRID_API_KEY)
         response = sg.send(message)
         print(f"OTP Email Sent! Status: {response.status_code}")
@@ -74,7 +73,6 @@ def send_email_password_reset(email, reset_link):
         html_content=email_body
     )
     try:
-        # sg = SendGridAPIClient('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')
         sg = SendGridAPIClient(settings.SENDGRID_API_KEY)
         response = sg.send(message)
         print(f"Password Reset Email Sent! Status: {response.status_code}")

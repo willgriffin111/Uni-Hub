@@ -6,10 +6,10 @@ services:
     container_name: mysql-db
     restart: always
     environment:
-      MYSQL_DATABASE: uniHub
-      MYSQL_USER: rootUser
-      MYSQL_PASSWORD: password
-      MYSQL_ROOT_PASSWORD: rootPassword
+      MYSQL_DATABASE:  ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
     ports:
       - "3306:3306"
     volumes:
@@ -35,7 +35,7 @@ services:
       MYSQL_DATABASE: ${DB_NAME}
       MYSQL_USER: ${DB_USER}
       MYSQL_PASSWORD: ${DB_PASSWORD}
-      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
     volumes:
       - .:/app
     command: >
