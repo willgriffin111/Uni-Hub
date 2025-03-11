@@ -124,14 +124,9 @@ class LogoutAPI(APIView):
     """
     API to handle user logout. Only accessible to authenticated users.
     """
-    # THIS ISNT WORKING. ONLY LOGGED IN USERS CAN LOG OUT. I THINK IT JWT RELATED BUT IM NOT SURE. 
-    # JWT SETTING IN SETTINGS.PY FILE. 
-    # mayb we dont use jwt idk?
-    # permission_classes = [IsAuthenticated]   
+    #Now works for only authenticated users -Alex
     
-    # THIS WORKS but its not correct.
-    permission_classes = [AllowAny]
-
+    permission_classes = [IsAuthenticated]
     def post(self, request):
         logout(request)
         return JsonResponse({"redirect": "/login/"}, status=200)

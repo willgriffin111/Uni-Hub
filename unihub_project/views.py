@@ -24,6 +24,11 @@ def profile_view(request):
     """Render the profile page (requires login)."""
     return render(request, "pages/profile.html", {"user": request.user})
 
+@login_required
+def post_view(request):
+    """Render the profile page (requires login)."""
+    return render(request, "pages/posts.html", {"user": request.user})
+
 
 
 from django.shortcuts import render

@@ -256,16 +256,37 @@
         </div>
     </footer>
     <script>
+        // Extract CSRF token from the cookie
+        function getCSRFToken() {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== "") {
+                const cookies = document.cookie.split(";");
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.startsWith("csrftoken=")) {
+                        cookieValue = cookie.substring("csrftoken=".length, cookie.length);
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    
         document.getElementById("logout-button").addEventListener("click", async function() {
+            const csrfToken = getCSRFToken();
             const response = await fetch("{% url 'api-logout' %}", {
                 method: "POST",
+                credentials: "include",  // Ensure session cookie is included
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded",
-                    "X-Requested-With": "XMLHttpRequest"
+                    "X-Requested-With": "XMLHttpRequest",
+                    "X-CSRFToken": csrfToken  // Include CSRF token
                 }
             });
             if (response.ok) {
-                window.location.href = "/login/";
+                window.location.href = "/login/";  // Redirect to login page after logout
+            } else {
+                console.log("Logout failed:", response.statusText);
             }
         });
     </script>
