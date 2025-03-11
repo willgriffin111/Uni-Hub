@@ -1,4 +1,6 @@
 from django.contrib import admin
+from django.conf import settings
+from django.conf.urls.static import static
 from django.urls import path, include
 from . import views
 from . import views
@@ -16,6 +18,7 @@ urlpatterns = [
     path('dashboard/', views.dashboard_view, name="dashboard_page"),
     path('profile/', views.profile_view, name="profile_page"),
     path('post/', views.post_view, name="post_page"),
+    path('posts/', views.post_list, name="post_list"),
     # Include API endpoints from the accounts app
     path('accounts/', include('accounts.urls')),  # Mount the accounts API
     path('api/post/', include('api.posts.urls')),  # Mount the posts API
@@ -23,5 +26,5 @@ urlpatterns = [
     
     
 
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

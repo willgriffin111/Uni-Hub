@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
+from api.posts.models import Post
 
 def login_view(request):
     """Render the login page."""
@@ -29,9 +30,14 @@ def post_view(request):
     """Render the profile page (requires login)."""
     return render(request, "pages/posts.html", {"user": request.user})
 
+@login_required
 
+def post_list(request):
+    # Order the posts by creation time (newest first)
+    posts = Post.objects.all().order_by('-created_at')  # '-' makes it descending (newest first)
 
-from django.shortcuts import render
+    return render(request, 'pages/post_display.html', {'posts': posts})
+
 
 def password_reset_view(request):
     return render(request, "pages/password_reset.html")

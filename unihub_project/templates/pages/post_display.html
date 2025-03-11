@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Media Posts</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .post {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+        .post img {
+            max-width: 100%;     /* Ensures the image will scale to fit the container's width */
+            max-height: 500px;   /* Limits the maximum height to 500px (you can adjust this as needed) */
+            height: auto;        /* Keeps the aspect ratio intact */
+            width: auto;         /* Keeps the aspect ratio intact */
+            display: block;      /* Removes any unwanted spacing below the image */
+            margin: 0 auto;      /* Centers the image horizontally */
+        }
+        .post h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #4CAF50;
+        }
+        .post p {
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+        .tags {
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 10px;
+        }
+        .post-footer {
+            font-size: 14px;
+            color: #888;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .post-footer .author {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>All Posts</h1>
+
+        {% for post in posts %}
+        <div class="post">
+            {% if post.image %}
+            <img src="{{ post.image.url }}" alt="Post Image">
+            {% endif %}
+            <h2>{{ post.title }}</h2>
+            <p>{{ post.content }}</p>
+            <div class="tags">
+                Tags: {{ post.tags }}
+            </div>
+            <div class="post-footer">
+                <span class="author">{{ post.user.username }}</span> |
+                <span>{{ post.created_at }}</span>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+</body>
+</html>
