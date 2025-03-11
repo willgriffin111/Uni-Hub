@@ -133,16 +133,35 @@
 
     <!-- OTP Form Script -->
     <script>
+        // Extract CSRF token from the cookie
+        function getCSRFToken() {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== "") {
+                const cookies = document.cookie.split(";");
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.startsWith("csrftoken=")) {
+                        cookieValue = cookie.substring("csrftoken=".length, cookie.length);
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
         document.getElementById("otp-form").addEventListener("submit", async function(event) {
             event.preventDefault();
         
             const otp = document.getElementById("otp").value;
-        
+            const csrfToken = getCSRFToken();
+
             const response = await fetch("/accounts/api/verify/", {
                 method: "POST",
+                credentials: "include",
                 headers: {
                     "Content-Type": "application/json",
                     "X-Requested-With": "XMLHttpRequest",
+                    "X-CSRFToken": csrfToken,  // Include CSRF token
                 },
                 body: JSON.stringify({ otp: otp }),
             });
@@ -159,11 +178,14 @@
         document.querySelector(".resend-link").addEventListener("click", async function(event) {
             event.preventDefault();
 
+            const csrfToken = getCSRFToken();
             const response = await fetch("/accounts/api/verify/", {
                 method: "POST",
+                credentials: "include",
                 headers: {
                     "Content-Type": "application/json",
                     "X-Requested-With": "XMLHttpRequest",
+                    "X-CSRFToken": csrfToken,  // Include CSRF token
                 },
             });
 

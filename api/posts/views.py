@@ -8,5 +8,6 @@ class PostListCreateViewAPI(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def perform_create(self, serializer):
-        print(self.request.user)
-        serializer.save(user=self.request.user)
+        image = self.request.FILES.get("image")  # Get uploaded image file
+        # Save the post with the image and the authenticated user
+        serializer.save(user=self.request.user, image=image)

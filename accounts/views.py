@@ -108,7 +108,7 @@ class VerifyAPI(APIView):
             return JsonResponse({"message": "OTP has expired"}, status=400)
 
         # Get user and verify OTP
-        user = get_user_by_username(request, request.session['username'])
+        user = request.user
         
         if otp_code == otp_code_from_session:
             # Set the email_verified field to True
@@ -131,7 +131,7 @@ class LogoutAPI(APIView):
         logout(request)
         return JsonResponse({"redirect": "/login/"}, status=200)
 
-User = get_user_model()
+
 
 class PasswordResetAPI(APIView):
     """

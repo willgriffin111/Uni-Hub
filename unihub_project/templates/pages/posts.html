@@ -1,110 +1,216 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test Post API</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            text-align: center;
-        }
-        form {
-            max-width: 400px;
-            margin: auto;
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 10px;
-            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-        }
-        input, textarea {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        button {
-            background-color: #007bff;
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-    </style>
+    <title>UNI-HUB</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Fontawesome -->
+    <script src="https://kit.fontawesome.com/c43d240003.js" crossorigin="anonymous"></script>
+
+    <!-- style sheets CSS -->
+    <link rel="stylesheet" href="{% static 'nav_footer.css' %}">
+    <link rel="stylesheet" href="{% static 'create_post.css' %}">
 </head>
 <body>
 
-    <h2>Post to Social Media API</h2>
+    <!-- header -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">UNI-HUB</a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#navbarNav" aria-controls="navbarNav" 
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Activities</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Communities</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Accessibility</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
-    <form id="postForm">
-        <label for="content">Post Content:</label>
-        <textarea id="content" placeholder="What's on your mind?" required></textarea>
+<!-- Create Post Page -->
+<div class="container post-container">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1>Create Post</h1>
+        <p>Share updates, questions, or announcements with your university community</p>
+    </div>
 
-        <label for="image">Upload an Image (optional):</label>
-        <input type="file" id="image" accept="image/*">
+    <!-- Main Content - Centered Form -->
+    <div class="centered-form-container">
+        <!-- Post Creation Card -->
+        <div class="profile-card">
+            <div class="card-header">
+                <h3>Post Details</h3>
+            </div>
+            <div class="card-body">
+                <form id="post-form" class="post-form" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="post-title">Title</label>
+                        <input type="text" id="post-title" name="title" class="form-input" placeholder="Give your post a clear title">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="post-content">Content</label>
+                        <textarea id="post-content" name="content" class="form-textarea" rows="10" placeholder="Write your post content here..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="post-tags">Tags</label>
+                        <input type="text" id="post-tags" name="tags" class="form-input" placeholder="Add tags separated by commas (e.g., homework, programming, career)">
+                    </div>
+                    
+                    <div class="form-group attachment-group">
+                        <label>Attachment</label>
+                        <div class="attachment-area">
+                            <div class="attachment-placeholder">
+                                <i class="fas fa-paperclip"></i>
+                                <p>Click to attach a file</p>
+                                <span>Max file size: 10MB</span>
+                            </div>
+                            <input type="file" id="image" accept="image/*" name="image" class="file-input">
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="cancel-btn">Cancel</button>
+                        <button type="submit" class="submit-btn">Post</button>
+                    </div>
+                </form>
+                
+                <p id="responseMessage"></p> <!-- Element to show response message -->
+            </div>
+        </div>
+    </div>
+</div>
 
-        <button type="submit">Submit Post</button>
-    </form>
+<footer class="footer mt-auto">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
+                <h5>About UNI-HUB</h5>
+                <ul class="list-unstyled">
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
+                <h5>Student Resources</h5>
+                <ul class="list-unstyled">
+                    <li><a href="#">Academic Calendar</a></li>
+                    <li><a href="#">Library Services</a></li>
+                    <li><a href="#">Study Resources</a></li>
+                    <li><a href="#">Career Services</a></li>
+                </ul>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
+                <h5>Campus Life</h5>
+                <ul class="list-unstyled">
+                    <li><a href="#">Events Calendar</a></li>
+                    <li><a href="#">Clubs & Societies</a></li>
+                    <li><a href="#">Student Support</a></li>
+                    <li><a href="#">Housing</a></li>
+               </ul>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
+                <h5>Connect With Us</h5>
+                <ul class="list-unstyled">
+                    <li><a href="#">Social Media</a></li>
+                    <li><a href="#">News & Updates</a></li>
+                    <li><a href="#">Alumni Network</a></li>
+                    <li><a href="#">Help Center</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-12 text-center">
+                <p class="copyright">© 2025 UNI-HUB. All rights reserved.</p>
+            </div>
+        </div>
+    </div>
+</footer>
 
-    <p id="responseMessage"></p>
-
-    <script>
-        // Extract CSRF token from the cookie
-        function getCSRFToken() {
-            let cookieValue = null;
-            if (document.cookie && document.cookie !== "") {
-                const cookies = document.cookie.split(";");
-                for (let i = 0; i < cookies.length; i++) {
-                    const cookie = cookies[i].trim();
-                    if (cookie.startsWith("csrftoken=")) {
-                        cookieValue = cookie.substring("csrftoken=".length, cookie.length);
-                        break;
-                    }
+<script>
+    // Extract CSRF token from the cookie
+    function getCSRFToken() {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== "") {
+            const cookies = document.cookie.split(";");
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.startsWith("csrftoken=")) {
+                    cookieValue = cookie.substring("csrftoken=".length, cookie.length);
+                    break;
                 }
             }
-            return cookieValue;
         }
+        return cookieValue;
+    }
 
-        document.getElementById("postForm").addEventListener("submit", async function(event) {
-            event.preventDefault();
+    document.getElementById("post-form").addEventListener("submit", async function(event) {
+        event.preventDefault();
 
-            const content = document.getElementById("content").value;
-            const imageInput = document.getElementById("image").files[0];
-            const csrfToken = getCSRFToken();
+        const title = document.getElementById("post-title").value;
+        const content = document.getElementById("post-content").value;
+        const tags = document.getElementById("post-tags").value;
+        const imageInput = document.getElementById("image").files[0];
+        const csrfToken = getCSRFToken();
 
-            let formData = new FormData();
-            formData.append("content", content);
-            if (imageInput) {
-                formData.append("image", imageInput);
+        let formData = new FormData();
+        formData.append("title", title);
+        formData.append("content", content);
+        if (imageInput) {
+            formData.append("image", imageInput);
+        }
+        formData.append("tags", tags);
+
+        try {
+            let response = await fetch("/api/post/post/", {
+                method: "POST",
+                credentials: "include",  // Ensure cookies (session) are sent
+                headers: {
+                    "X-CSRFToken": csrfToken  // Include CSRF token
+                },
+                body: formData
+            });
+
+            let result = await response.json();
+            if (response.ok) {
+                document.getElementById("responseMessage").innerText = "Post created successfully!";
+            } else {
+                document.getElementById("responseMessage").innerText = "Error: " + JSON.stringify(result);
             }
-
-            try {
-                let response = await fetch("/api/post/test/", {
-                    method: "POST",
-                    credentials: "include",  // Ensure cookies (session) are sent
-                    headers: {
-                        "X-CSRFToken": csrfToken  // Include CSRF token
-                    },
-                    body: formData
-                });
-
-                let result = await response.json();
-                if (response.ok) {
-                    document.getElementById("responseMessage").innerText = "Post created successfully!";
-                } else {
-                    document.getElementById("responseMessage").innerText = "Error: " + JSON.stringify(result);
-                }
-            } catch (error) {
-                document.getElementById("responseMessage").innerText = "Network error!";
-            }
-        });
-    </script>
+        } catch (error) {
+            document.getElementById("responseMessage").innerText = "Network error!";
+        }
+    });
+</script>
 
 </body>
 </html>
+
