@@ -143,51 +143,33 @@
                         <div class="card-body">
                             <div class="posts-list">
                                 <!-- Post Item -->
-                                <div class="post-item">
-                                    <div class="post-content">
-                                        <h4>New Pc set up</h4>
-                                        <p class="post-text">Yo what does everyone think of my new set up?</p>
-                                        <div class="post-image-container">
-                                            <img src="/images/pcSetup.jpg" alt="Web Development" class="post-image">
-                                        </div>
-                                        <div class="post-meta">
-                                            <span class="post-date">Posted 2 days ago</span>
-                                            <span class="post-interactions">
-                                                <button class="like-button"><i class="fa-solid fa-heart"></i></button>
-                                                <span class="likes-counter">12</span>
-                                                <span class="likes-text">likes</span>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="post-item">
-                                    <div class="post-content">
-                                        <h4>Motorcycle Meetup This Weekend?</h4>
-                                        <p class="post-text">Weather's looking good for Saturday. Any riders want to meet up for a group ride?</p>
-                                        <div class="post-meta">
-                                            <span class="post-date">Posted 5 days ago</span>
-                                            <span class="post-interactions">
-                                                <button class="like-button"><i class="fa-solid fa-heart"></i></button>
-                                                <span class="likes-counter">8</span>
-                                                <span class="likes-text">likes</span>
-                                            </span>
+                                {% for post in posts %}
+                                    <div class="post-item">
+                                        <div class="post-content">
+                                            <h4>{{ post.title }}</h4>
+                                            <p class="post-text">{{ post.content }}</p>
+                                            {% if post.image %}
+                                                <div class="post-image-container">
+                                                    <img src="{{ post.image.url }}" alt="Post Image" class="post-image" onclick="openModal('{{ post.image.url }}')">
+                                                </div>
+                                            {% endif %}
+                                            <div class="post-meta">
+                                                <span class="post-date">Posted on {{ post.created_at|date:"F j, Y" }}</span>
+                                                <span class="post-interactions">
+                                                    <button class="like-button"><i class="fa-solid fa-heart"></i></button>
+                                                    <span class="likes-counter">0</span>
+                                                    <span class="likes-text">likes</span>
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                {% endfor %}
 
-                                <div class="post-item">
-                                    <div class="post-content">
-                                        <h4>Database Project Partner Needed</h4>
-                                        <p class="post-text">Looking for a partner for the upcoming DB systems project. DM if interested!</p>
-                                        <div class="post-meta">
-                                            <span class="post-date">Posted 1 week ago</span>
-                                            <span class="post-interactions">
-                                                <button class="like-button"><i class="fa-solid fa-heart"></i></button>
-                                                <span class="likes-counter">15</span>
-                                                <span class="likes-text">likes</span>
-                                            </span>
-                                        </div>
+                                <!-- Modal for Image Popup -->
+                                <div id="imageModal" class="modal">
+                                    <div class="modal-content-wrapper">
+                                        <span class="close" onclick="closeModal()">&times;</span>
+                                        <img class="modal-content" id="fullImage">
                                     </div>
                                 </div>
                             </div>
@@ -255,7 +237,19 @@
             </div>
         </div>
     </footer>
+
     <script>
+        function openModal(imageSrc) {
+            var modal = document.getElementById("imageModal");
+            var modalImg = document.getElementById("fullImage");
+            modal.style.display = "flex";  // Show modal
+            modalImg.src = imageSrc;
+        }
+        
+        function closeModal() {
+            document.getElementById("imageModal").style.display = "none";
+        }
+
         // Extract CSRF token from the cookie
         function getCSRFToken() {
             let cookieValue = null;

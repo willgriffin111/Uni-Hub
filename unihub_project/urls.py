@@ -3,7 +3,6 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path, include
 from . import views
-from . import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -19,6 +18,7 @@ urlpatterns = [
     path('profile/', views.profile_view, name="profile_page"),
     path('post/', views.post_view, name="post_page"),
     path('posts/', views.post_list, name="post_list"),
+    path('edit_post/<int:post_id>/', views.edit_post, name="edit_post"),
     # Include API endpoints from the accounts app
     path('accounts/', include('accounts.urls')),  # Mount the accounts API
     path('api/post/', include('api.posts.urls')),  # Mount the posts API
