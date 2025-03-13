@@ -80,13 +80,47 @@
         .delete-button:hover {
             background-color: #e53935;
         }
+        .like-button {
+            background-color: #008CBA;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .like-button:hover {
+            background-color: #007bb5;
+        }
+        .comments {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #ddd;
+        }
+        .comments textarea {
+            width: 100%;
+            height: 50px;
+            margin-top: 5px;
+            padding: 5px;
+        }
+        .comment-button {
+            margin-top: 5px;
+            padding: 5px 10px;
+            border: none;
+            background-color: #ff9800;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .comment-button:hover {
+            background-color: #e68a00;
+        }
     </style>
 </head>
 <body>
 
     <div class="container">
         <h1>All Posts</h1>
-
+    
         {% for post in posts %}
         <div class="post">
             {% if post.image %}
@@ -94,12 +128,29 @@
             {% endif %}
             <h2>{{ post.title }}</h2>
             <p>{{ post.content }}</p>
-            <div class="tags">
-                Tags: {{ post.tags }}
-            </div>
+            <div class="tags">Tags: {{ post.tags }}</div>
+    
+            <!-- Post Footer with Like & Edit/Delete -->
             <div class="post-footer">
                 <span class="author">{{ post.user.username }}</span> |
                 <span>{{ post.created_at }}</span>
+    
+                <!-- Like Button -->
+            {% if post.liked %}
+            <button onclick="toggleLike({{ post.id }})" id="like-button-{{ post.id }}" class="like-button" data-liked="true">
+                <i class="fas fa-thumbs-up"></i>
+                <span id="like-text-{{ post.id }}">Unlike</span>
+                (<span id="like-count-{{ post.id }}">{{ post.likes_count }}</span>)
+            </button>
+            {% else %}
+            <button onclick="toggleLike({{ post.id }})" id="like-button-{{ post.id }}" class="like-button" data-liked="false">
+                <i class="fas fa-thumbs-up"></i>
+                <span id="like-text-{{ post.id }}">Like</span>
+                (<span id="like-count-{{ post.id }}">{{ post.likes_count }}</span>)
+            </button>
+            {% endif %}
+
+    
                 {% if post.can_edit %}
                     <form action="{% url 'edit_post' post.id %}" method="get" style="display:inline;">
                         <button type="submit" class="edit-button">Edit Post</button>
@@ -110,15 +161,164 @@
                     <button type="submit" class="delete-button">Delete Post</button>
                 </form>
             </div>
+    
+            <!-- Comments Section -->
+            <div class="comments">
+                <h3>Comments ({{ post.comments_count }})</h3>
+                <ul id="comments-list-{{ post.id }}">
+                    {% for comment in post.comments.all %}
+                    <li id="comment-{{ comment.id }}">
+                        <b>{{ comment.user.username }}:</b> {{ comment.content }}&nbsp;&nbsp;&nbsp;&nbsp;
+                        
+                        {% if comment.user == request.user %}
+                        <!-- Edit Button -->
+                        <a href="{% url 'edit_comment_page' comment.id %}" style="text-decoration:none;" ><button class="edit-comment-button">
+                            ✏️
+                        </a></button>
+                        
+                       <!-- Delete Button -->
+                        <button class="delete-comment-button" onclick="deleteComment({{ comment.id }}, {{ post.id }})">
+                            ❌
+                        </button>
+                        {% endif %}
+                    </li>
+                    {% endfor %}
+                </ul>
+            
+                <textarea id="comment-input-{{ post.id }}" placeholder="Write a comment..."></textarea>
+                <button onclick="addComment({{ post.id }})" class="comment-button">Comment</button>
+            </div>
         </div>
         {% endfor %}
     </div>
-
+    
     <script>
         function confirmDelete() {
             return confirm("Are you sure you want to delete this post?");
         }
+    
+        async function toggleLike(postId) {
+            const likeButton = document.getElementById(`like-button-${postId}`);
+            const likeText = document.getElementById(`like-text-${postId}`);
+            const likeCount = document.getElementById(`like-count-${postId}`);
+    
+            const response = await fetch(`/api/post/like-post/${postId}/`, {
+                method: "POST",
+                credentials: "include",
+                headers: { "X-CSRFToken": getCSRFToken() }
+            });
+    
+            if (response.ok) {
+                let data = await response.json();
+                if (data.liked) {
+                    likeText.innerText = "Unlike";  
+                } else {
+                    likeText.innerText = "Like";  
+                }
+                likeCount.innerText = data.like_count;  // Update like count
+                likeButton.setAttribute("data-liked", data.liked);  // Set button state 
+            }
+        }
+    
+        async function addComment(postId) {
+            const commentInput = document.getElementById(`comment-input-${postId}`);
+            const content = commentInput.value.trim();
+            if (!content) return;
+    
+            const response = await fetch(`/api/post/comment-post/${postId}/`, {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                    "X-CSRFToken": getCSRFToken(),
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ content: content })
+            });
+    
+            if (response.ok) {
+                let comment = await response.json();
+                let commentList = document.getElementById(`comments-list-${postId}`);
+                commentList.innerHTML += `<li><b>${comment.user.username}:</b> ${comment.content}</li>`;
+                commentInput.value = "";
+            }
+        }
+        async function deleteComment(commentId, postId) {
+            const response = await fetch(`/api/post/delete-comment/${commentId}/`, {
+                method: "DELETE",
+                credentials: "include",
+                headers: { "X-CSRFToken": getCSRFToken() }
+            });
+    
+            if (response.ok) {
+                document.getElementById(`comment-${commentId}`).remove();  // Remove comment from UI
+            } else {
+                alert("Failed to delete comment. Please try again.");
+            }
+        }
+    
+        async function saveEditComment(commentId) {
+            const editInput = document.getElementById(`edit-input-${commentId}`);
+            const newContent = editInput.value.trim();
+    
+            if (!newContent) {
+                alert("Content cannot be empty!");
+                return;
+            }
+    
+            const response = await fetch(`/api/post/edit-comment/${commentId}/`, {
+                method: "PUT",
+                credentials: "include",
+                headers: {
+                    "X-CSRFToken": getCSRFToken(),
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ content: newContent })
+            });
+    
+            if (response.ok) {
+                let data = await response.json();
+                const commentContent = document.getElementById(`comment-content-${commentId}`);
+                const saveButton = document.getElementById(`save-edit-${commentId}`);
+    
+                // Update comment text
+                //commentContent.innerText = data.content;
+                //commentContent.style.display = "inline";
+                //editInput.style.display = "none";
+                //saveButton.style.display = "none";
+            } else {
+                alert("Failed to edit comment. Please try again.");
+            }
+        }
+    
+        
+        // This funtion has fixed everything 
+                //         _.-/`)
+                //         // / / )
+                //      .=// / / / )
+                //     //`/ / / / /
+                //    // /     ` /
+                //   ||         /
+                //    \\       /
+                //     ))    .'
+                //    //    /
+
+        function getCSRFToken() {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== "") {
+                const cookies = document.cookie.split(";");
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.startsWith("csrftoken=")) {
+                        cookieValue = cookie.substring("csrftoken=".length, cookie.length);
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
     </script>
     
+    
+
 </body>
 </html>

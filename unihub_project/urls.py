@@ -19,6 +19,8 @@ urlpatterns = [
     path('post/', views.post_view, name="post_page"),
     path('posts/', views.post_list, name="post_list"),
     path('edit_post/<int:post_id>/', views.edit_post, name="edit_post"),
+    
+    path('edit_comment/<int:comment_id>/', views.edit_comment_view, name="edit_comment_page"),
     # Include API endpoints from the accounts app
     path('accounts/', include('accounts.urls')),  # Mount the accounts API
     path('api/post/', include('api.posts.urls')),  # Mount the posts API
