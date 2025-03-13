@@ -88,11 +88,9 @@
             <input type="text" class="compose-tags-input form-control mb-2" placeholder="Hashtags (e.g., #study, #events)" style="border:none; margin-top: 10px;">
             <div class="compose-actions d-flex justify-content-between align-items-center mt-2">
               <div class="compose-tools">
-                <button class="compose-tool btn btn-light">
-                  <div class="form-group mt-2">
-                    <input type="file" class="file-input" accept="image/*">
-                  </div>
-                </button>
+                <div class="form-group mt-2">
+                  <input type="file" class="" accept="image/*" >
+                </div>
               </div>
               <button class="compose-submit btn btn-success">Post</button>
             </div>
@@ -530,8 +528,7 @@
           <input type="text" class="compose-tags-input form-control mb-2" placeholder="Hashtags (e.g., #study, #events)" style="border:none; margin-top: 10px;">
           <!-- Optional file input for attachments -->
 
-          <div class="compose-actions d-flex justify-content-between align-items-center mt-2">
-            <div class="compose-tools">
+          {% comment %} <div class="compose-actions d-flex justify-content-between align-items-center mt-2"> {% endcomment %}
               {% comment %} <button class="compose-tool btn btn-light">
                 <i class="fa-solid fa-image"></i>
               </button>
@@ -539,11 +536,10 @@
                 <i class="fa-solid fa-calendar-day"></i>
               </button> {% endcomment %}
               <div class="form-group mt-2">
-                <input type="file" class="file-input" accept="image/*">
+                <input type="file" class="" accept="image/*" >
               </div>
-            </div>
             <button class="compose-submit btn btn-success">Post</button>
-          </div>
+          {% comment %} </div> {% endcomment %}
         </div>
       </div>
     </div>
