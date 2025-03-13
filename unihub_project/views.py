@@ -3,6 +3,24 @@ from django.contrib.auth.decorators import login_required
 from api.posts.models import Post, Comment
 from django.utils import timezone
 
+
+@login_required
+def home_page(request):
+    """Render the post display page with correct like count and user like status."""
+    
+    posts = Post.objects.all().order_by('-created_at')  # Order by newest first
+    current_time = timezone.now()
+    for post in posts:
+        post.likes_count = post.likes.count()  # Get total like count
+        post.liked = post.likes.filter(user=request.user).exists()  # Check if the user has liked this post
+        post.comments_count = post.comments.count()
+        
+        
+        # Check if the post was created within 30 minutes (for edit permission)
+        post.can_edit = (current_time - post.created_at).total_seconds() <= 30 * 60
+
+    return render(request, 'pages/home_page.html', {'posts': posts, 'current_time': current_time})
+
 def login_view(request):
     """Render the login page."""
     return render(request, "pages/login.html")
@@ -16,10 +34,6 @@ def Verify_view(request):
     """Render the one time password page."""
     return render(request, "pages/OTP.html")
 
-@login_required
-def dashboard_view(request):
-    """Render the dashboard page (requires login)."""
-    return render(request, "pages/dashboard.html", {"user": request.user})
 
 @login_required
 def profile_view(request):
@@ -27,28 +41,6 @@ def profile_view(request):
     posts = Post.objects.filter(user_id=request.user).order_by('-created_at')  # '-' makes it descending (newest first)
     return render(request, "pages/profile.html", {"user": request.user, "posts": posts})
 
-@login_required
-def post_view(request):
-    """Render the profile page (requires login)."""
-    return render(request, "pages/posts.html", {"user": request.user})
-
-@login_required
-def post_list(request):
-    """Render the post display page with correct like count and user like status."""
-    
-    posts = Post.objects.all().order_by('-created_at')  # Order by newest first
-    current_time = timezone.now()
-
-    for post in posts:
-        post.likes_count = post.likes.count()  # Get total like count
-        post.liked = post.likes.filter(user=request.user).exists()  # Check if the user has liked this post
-        post.comments_count = post.comments.count()
-        
-        
-        # Check if the post was created within 30 minutes (for edit permission)
-        post.can_edit = (current_time - post.created_at).total_seconds() <= 30 * 60
-
-    return render(request, 'pages/post_display.html', {'posts': posts, 'current_time': current_time})
 
 def edit_post(request, post_id):
     # Get the post ID from the URL
@@ -67,3 +59,35 @@ def edit_comment_view(request, comment_id):
     comment = get_object_or_404(Comment, id=comment_id, user=request.user)  # Ensure only the owner can edit
     return render(request, 'pages/edit_comment.html', {'comment': comment})
 
+
+
+
+
+# THESE ARE OLD VIEWS:
+
+@login_required
+def post_view(request):
+    """Render the profile page (requires login)."""
+    return render(request, "pages/posts.html", {"user": request.user})
+
+@login_required
+def post_list(request):
+    """Render the post display page with correct like count and user like status."""
+    
+    posts = Post.objects.all().order_by('-created_at')  # Order by newest first
+    current_time = timezone.now()
+    for post in posts:
+        post.likes_count = post.likes.count()  # Get total like count
+        post.liked = post.likes.filter(user=request.user).exists()  # Check if the user has liked this post
+        post.comments_count = post.comments.count()
+        
+        
+        # Check if the post was created within 30 minutes (for edit permission)
+        post.can_edit = (current_time - post.created_at).total_seconds() <= 30 * 60
+
+    return render(request, 'pages/post_display.html', {'posts': posts, 'current_time': current_time})
+
+@login_required
+def dashboard_view(request):
+    """Render the dashboard page (requires login)."""
+    return render(request, "pages/dashboard.html", {"user": request.user})

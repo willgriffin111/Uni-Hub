@@ -5,6 +5,10 @@ from django.urls import path, include
 from . import views
 
 urlpatterns = [
+    
+    path('', views.home_page, name="index_page"),
+    
+    
     path('admin/', admin.site.urls),
     
     path('login/', views.login_view, name="login_page"),
@@ -18,6 +22,7 @@ urlpatterns = [
     path('profile/', views.profile_view, name="profile_page"),
     path('post/', views.post_view, name="post_page"),
     path('posts/', views.post_list, name="post_list"),
+
     path('edit_post/<int:post_id>/', views.edit_post, name="edit_post"),
     
     path('edit_comment/<int:comment_id>/', views.edit_comment_view, name="edit_comment_page"),

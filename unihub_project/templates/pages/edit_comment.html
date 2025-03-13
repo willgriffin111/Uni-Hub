@@ -18,28 +18,7 @@
 </head>
 <body>
 
-    <nav class="navbar navbar-expand-lg">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">UNI-HUB</a>
-            
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#navbarNav" aria-controls="navbarNav" 
-                    aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            
-            <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
-                <ul class="navbar-nav">
-                    <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Profile</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Activities</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Communities</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Accessibility</a></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-
+    {% include '../includes/header.html' %}
     <div class="container post-container">
         <div class="page-header">
             <h1>Edit Comment</h1>
@@ -84,6 +63,7 @@
     
             try {
                 let response = await fetch(`/api/post/edit-comment/${commentId}/`, {  
+                    method: "PUT",
                     credentials: "include",
                     headers: {
                         "X-CSRFToken": csrfToken,
@@ -94,7 +74,7 @@
     
                 if (response.ok) {
                     document.getElementById("responseMessage").innerText = "Comment updated successfully!";
-                    window.location.href = "{% url 'post_list' %}";  // Redirect to post list after successful edit
+                    window.location.href = "{% url 'index_page' %}";  // Redirect to post list after successful edit
                 } else {
                     let result = await response.json();
                     document.getElementById("responseMessage").innerText = "Error: " + JSON.stringify(result);

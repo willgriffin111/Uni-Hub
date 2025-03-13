@@ -21,6 +21,8 @@ from django.conf import settings
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 
+User = get_user_model()
+
 def get_user_by_username(request, username):
     try:
         user = CustomUser.objects.get(username=username)  # Get user by username

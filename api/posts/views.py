@@ -48,7 +48,9 @@ class PostDeleteAPI(APIView):
         post = get_object_or_404(Post, id=post_id, user=request.user)
         post.image.delete(save=False) 
         post.delete()
-        return redirect('post_list')
+        # return redirect('post_list')
+        return redirect('index_page')
+
 
 class LikePostAPI(APIView):
     permission_classes = [permissions.IsAuthenticated]
