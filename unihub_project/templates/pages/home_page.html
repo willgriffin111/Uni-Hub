@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UNI-HUB</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Fontawesome CSS -->
+    <script src="https://kit.fontawesome.com/c43d240003.js" crossorigin="anonymous"></script>
+    <!-- style sheets CSS -->
+    <link rel="stylesheet" href="/unihub_project/static/nav_footer.css">
+    <link rel="stylesheet" href="/unihub_project/static/home_page.css">
+</head>
+<body>
+
+    <!-- header -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">UNI-HUB</a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#navbarNav" aria-controls="navbarNav" 
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Activities</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Communities</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Accessibility</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="content-wrapper">
+        <div class="main-layout">
+        <!-- Left Sidebar -->
+        <div class="sidebar left-sidebar">
+            <div class="sidebar-card">
+                <div class="profile-preview">
+                    <div class="profile-preview-img">
+                        <img src="/unihub_project/static/bingus.jpg" alt="Profile Photo">
+                    </div>
+                    <div class="profile-preview-info">
+                        <h3>Alex Rogers</h3>
+                        <p>Computer Science</p>
+                    </div>
+                </div>
+                
+                <div class="sidebar-menu">
+                    <a href="#" class="menu-item active">
+                        <i class="fa-solid fa-house"></i>
+                        <span>Home</span>
+                    </a>
+                    <a href="#" class="menu-item">
+                        <i class="fa-solid fa-bell"></i>
+                        <span>Notifications</span>
+                        <span class="notification-badge">3</span>
+                    </a>
+                    <a href="#" class="menu-item">
+                        <i class="fa-solid fa-envelope"></i>
+                        <span>Messages</span>
+                    </a>
+                    <a href="#" class="menu-item">
+                        <i class="fa-solid fa-user"></i>
+                        <span>Profile</span>
+                    </a>
+                    <a href="#" class="menu-item">
+                        <i class="fa-solid fa-user-group"></i>
+                        <span>Communities</span>
+                    </a>
+                    <a href="#" class="menu-item">
+                        <i class="fa-solid fa-calendar-days"></i>
+                        <span>Events</span>
+                    </a>
+                </div>
+                
+                <button class="post-btn">Post</button>
+            </div>
+        </div>
+
+        <!-- Main Feed -->
+        <div class="main-feed">
+            <div class="feed-header">
+                <div class="feed-tabs">
+                    <button class="tab-btn active">For You</button>
+                    <button class="tab-btn">Following</button>
+                    <button class="tab-btn">University</button>
+                </div>
+            </div>
+            
+            <div class="compose-post">
+                <div class="compose-profile-img">
+                    <img src="/unihub_project/static/bingus.jpg" alt="Profile Photo">
+                </div>
+                <div class="compose-input-container">
+                    <input type="text" class="compose-title-input" placeholder="Title...">
+                    <textarea class="compose-input" placeholder="What's happening?"></textarea>
+                    <div class="compose-actions">
+                        <div class="compose-tools">
+                            <button class="compose-tool">
+                                <i class="fa-solid fa-image"></i>
+                            </button>
+                            <button class="compose-tool">
+                                <i class="fa-solid fa-calendar-day"></i>
+                            </button>
+                        </div>
+                        <button class="compose-submit">Post</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Recent Posts section -->
+            <div class="post-divider">
+                <span>Recent Posts</span>
+            </div>
+            
+            <!-- Post 1 -->
+            <div class="post">
+                <div class="post-avatar">
+                    <img src="/unihub_project/static/bingus.jpg" alt="Emma">
+                </div>
+                <div class="post-content">
+                    <div class="post-header">
+                        <div class="post-user-info">
+                            <h4 class="post-author">Alex Rogers</h4>
+                            <span class="post-time">· 2 days ago</span>
+                        </div>
+                        <div class="post-options">
+                            <button class="options-btn">
+                                <i class="fa-solid fa-ellipsis"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="post-text">
+                        <h4>New Pc set up</h4>
+                        <p>Yo what does everyone think of my new set up?</p>
+                    </div>
+                    <div class="post-media">
+                        <img src="/unihub_project/images/pcSetup.jpg" alt="PC Setup">
+                    </div>
+                    <div class="post-actions">
+                        <button class="post-action-btn like-btn">
+                            <i class="fa-solid fa-heart"></i>
+                            <span>12</span>
+                            <span class="likes-text">likes</span>
+                        </button>
+                        <button class="post-action-btn comment-btn">
+                            <i class="fa-solid fa-comment"></i>
+                            <span>5</span>
+                            <span class="comments-text">comments</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Post 2 -->
+            <div class="post">
+                <div class="post-avatar">
+                    <img src="/unihub_project/static/bingus.jpg" alt="pic">
+                </div>
+                <div class="post-content">
+                    <div class="post-header">
+                        <div class="post-user-info">
+                            <h4 class="post-author">Alex Rogers</h4>
+                            <span class="post-time">· 5 days ago</span>
+                        </div>
+                        <div class="post-options">
+                            <button class="options-btn">
+                                <i class="fa-solid fa-ellipsis"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="post-text">
+                        <h4>Motorcycle Meetup This Weekend?</h4>
+                        <p>Weather's looking good for Saturday. Any riders want to meet up for a group ride?</p>
+                    </div>
+                    <div class="post-actions">
+                        <button class="post-action-btn like-btn">
+                            <i class="fa-solid fa-heart"></i>
+                            <span>8</span>
+                            <span class="likes-text">likes</span>
+                        </button>
+                        <button class="post-action-btn comment-btn">
+                            <i class="fa-solid fa-comment"></i>
+                            <span>3</span>
+                            <span class="comments-text">comments</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Post 3 -->
+            <div class="post">
+                <div class="post-avatar">
+                    <img src="/unihub_project/static/bingus.jpg" alt="Alex">
+                </div>
+                <div class="post-content">
+                    <div class="post-header">
+                        <div class="post-user-info">
+                            <h4 class="post-author">Alex Rogers</h4>
+                            <span class="post-time">· 1 week ago</span>
+                        </div>
+                        <div class="post-options">
+                            <button class="options-btn">
+                                <i class="fa-solid fa-ellipsis"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="post-text">
+                        <h4>Database Project Partner Needed</h4>
+                        <p>Looking for a partner for the upcoming DB systems project. DM if interested!</p>
+                    </div>
+                    <div class="post-actions">
+                        <button class="post-action-btn like-btn">
+                            <i class="fa-solid fa-heart"></i>
+                            <span>15</span>
+                            <span class="likes-text">likes</span>
+                        </button>
+                        <button class="post-action-btn comment-btn">
+                            <i class="fa-solid fa-comment"></i>
+                            <span>7</span>
+                            <span class="comments-text">comments</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Load More Feature -->
+            <div class="load-more">
+                <button class="load-more-btn">Load more</button>
+            </div>
+        </div>
+
+        <div class="sidebar right-sidebar">
+            
+            <div class="sidebar-card">
+                <h3 class="sidebar-title">Active Communities</h3>
+                
+                <div class="community-item">
+                    <div class="community-info">
+                        <span class="community-category">Study Group</span>
+                        <h4 class="community-title">Web Development Group</h4>
+                        <span class="community-stats">45 members</span>
+                    </div>
+                    <div class="community-image">
+                        <img src="/unihub_project/images/webdev.webp" alt="Web Development">
+                    </div>
+                </div>
+                
+                <div class="community-item">
+                    <div class="community-info">
+                        <span class="community-category">Cultural</span>
+                        <h4 class="community-title">International Students Network</h4>
+                        <span class="community-stats">128 members</span>
+                    </div>
+                    <div class="community-image">
+                        <img src="/unihub_project/images/international.png" alt="International Students">
+                    </div>
+                </div>
+                
+                <div class="community-item">
+                    <div class="community-info">
+                        <span class="community-category">Sports</span>
+                        <h4 class="community-title">Motorcycle Club</h4>
+                        <span class="community-stats">78 members</span>
+                    </div>
+                    <div class="community-image">
+                        <img src="/unihub_project/images/motor.webp" alt="Motorcycle Club">
+                    </div>
+                </div>
+                
+                <a href="#" class="see-more">Show more</a>
+            </div>
+            
+            <!-- Upcoming Events -->
+            <div class="sidebar-card">
+                <h3 class="sidebar-title">Upcoming Events</h3>
+                
+                <div class="event-item">
+                    <div class="event-date">
+                        <span class="day">15</span>
+                        <span class="month">MAR</span>
+                    </div>
+                    <div class="event-info">
+                        <h4 class="event-title">Spring Festival</h4>
+                        <p class="event-location"><i class="fa-solid fa-location-dot"></i> Main Campus Quad</p>
+                        <p class="event-time"><i class="fa-solid fa-clock"></i> 12:00 PM</p>
+                    </div>
+                </div>
+                
+                <div class="event-item">
+                    <div class="event-date">
+                        <span class="day">18</span>
+                        <span class="month">MAR</span>
+                    </div>
+                    <div class="event-info">
+                        <h4 class="event-title">Tech Careers Fair</h4>
+                        <p class="event-location"><i class="fa-solid fa-location-dot"></i> Engineering Building</p>
+                        <p class="event-time"><i class="fa-solid fa-clock"></i> 10:00 AM</p>
+                    </div>
+                </div>
+                
+                <a href="#" class="see-more">View all events</a>
+            </div>
+            
+            <!-- Friend Suggestions section -->
+            <div class="sidebar-card">
+                <h3 class="sidebar-title">Friend Suggestions</h3>
+                
+                <div class="add-person-item">
+                    <div class="add-person-avatar">
+                        <img src="/unihub_project/images/kawaii-bingus.webp" alt="person">
+                    </div>
+                    <div class="add-person-info">
+                        <div class="add-person-user">
+                            <a href="#" class="add-person-name">Sarah Johnson</a>
+                        </div>
+                        <p class="add-person-bio">Computer Science</p>
+                    </div>
+                    <button class="add-person-btn">Add</button>
+                </div>
+                
+                <div class="add-person-item">
+                    <div class="add-person-avatar">
+                        <img src="/unihub_project/images/asian-bingus.webp" alt="person">
+                    </div>
+                    <div class="add-person-info">
+                        <div class="add-person-user">
+                            <a href="#" class="add-person-name">Michael Chen</a>
+                        </div>
+                        <p class="add-person-bio">Electrical Engineering</p>
+                    </div>
+                    <button class="add-person-btn">Add</button>
+                </div>
+                
+                <a href="#" class="see-more">Show more</a>
+            </div>
+        </div>
+        </div>
+    </div>
+
+    <!-- footer -->
+    <footer class="footer mt-auto">
+        <div class="container-fluid">
+            <div class="row">
+                <!-- About Column -->
+                <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
+                    <h5>About UNI-HUB</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                    </ul>
+                </div>
+
+                <!-- Student Resources -->
+                <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
+                    <h5>Student Resources</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#">Academic Calendar</a></li>
+                        <li><a href="#">Library Services</a></li>
+                        <li><a href="#">Study Resources</a></li>
+                        <li><a href="#">Career Services</a></li>
+                    </ul>
+                </div>
+
+                <!-- Campus Life -->
+                <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
+                    <h5>Campus Life</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#">Events Calendar</a></li>
+                        <li><a href="#">Clubs & Societies</a></li>
+                        <li><a href="#">Student Support</a></li>
+                        <li><a href="#">Housing</a></li>
+                    </ul>
+                </div>
+
+                <!-- Connect -->
+                <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
+                    <h5>Connect With Us</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#">Social Media</a></li>
+                        <li><a href="#">News & Updates</a></li>
+                        <li><a href="#">Alumni Network</a></li>
+                        <li><a href="#">Help Center</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Copyright -->
+            <div class="row mt-4">
+                <div class="col-12 text-center">
+                    <p class="copyright">© 2025 UNI-HUB. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+<!-- Your custom JavaScript -->
+<script>
+  // Wait for document to be ready
+  document.addEventListener('DOMContentLoaded', function() {
+    // Get the modal
+    var modal = document.getElementById("postModal");
+    
+    // Get the button that opens the modal
+    var btn = document.querySelector(".post-btn");
+    
+    // Get the <span> element that closes the modal
+    var span = document.getElementsByClassName("close-modal")[0];
+    
+    // When the user clicks the button, open the modal 
+    btn.onclick = function() {
+      modal.style.display = "block";
+      // Focus on the textarea
+      document.querySelector(".modal-post-compose .compose-input").focus();
+    }
+    
+    // When the user clicks on <span> (x), close the modal
+    span.onclick = function() {
+      modal.style.display = "none";
+    }
+    
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function(event) {
+      if (event.target == modal) {
+        modal.style.display = "none";
+      }
+    }
+  });
+</script>
+    <!-- Post Modal -->
+    <div id="postModal" class="modal">
+        <div class="modal-content">
+          <span class="close-modal">&times;</span>
+          <div class="modal-post-compose">
+            <div class="compose-profile-img">
+              <img src="/unihub_project/static/create_post.css" alt="Profile Photo">
+            </div>
+            <div class="compose-input-container">
+              <!-- Add title field -->
+              <input type="text" class="compose-title-input" placeholder="Title...">
+              <!-- Content field -->
+              <textarea class="compose-input" placeholder="What's happening?"></textarea>
+              <div class="compose-actions">
+                <div class="compose-tools">
+                  <button class="compose-tool">
+                    <i class="fa-solid fa-image"></i>
+                  </button>
+                  <button class="compose-tool">
+                    <i class="fa-solid fa-calendar-day"></i>
+                  </button>
+                </div>
+                <button class="compose-submit">Post</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+</body>
+</html>
