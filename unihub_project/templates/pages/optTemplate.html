@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UNI-HUB Verification Code</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f9fa;
+            padding: 20px;
+            margin: 0;
+            color: #333;
+        }
+        .header {
+            background-color: #dd4b39;
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px 8px 0 0;
+        }
+        .header h1 {
+            color: white;
+            font-size: 28px;
+            margin: 0;
+            font-weight: 200;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .content {
+            padding: 30px;
+            text-align: center;
+        }
+        .otp {
+            font-size: 32px;
+            font-weight: bold;
+            color: #dd4b39;
+            background: #ffece9;
+            padding: 15px 30px;
+            border-radius: 8px;
+            display: inline-block;
+            margin: 25px 0;
+            letter-spacing: 5px;
+            box-shadow: 0 2px 5px rgba(221, 75, 57, 0.2);
+        }
+        .message {
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        .note {
+            font-size: 14px;
+            color: #666;
+            background-color: #f5f5f5;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 25px;
+        }
+        .footer {
+            background-color: #f5f5f5;
+            padding: 20px;
+            text-align: center;
+            font-size: 14px;
+            color: #666;
+            border-top: 1px solid #eee;
+        }
+        .social-links {
+            margin-top: 15px;
+        }
+        .social-links a {
+            color: #dd4b39;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+        .expire-info {
+            font-weight: bold;
+            color: #dd4b39;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>UNI-HUB</h1>
+        </div>
+        <div class="content">
+            <h2>Verify Your Account</h2>
+            <p class="message">Hi there! Please use the following verification code to complete your UNI-HUB account setup:</p>
+            <div class="otp">{{OTP_CODE}}</div>
+            <p class="message">This code will expire in <span class="expire-info">10 minutes</span>.</p>
+            <p class="message">If you didn't request this code, please ignore this email or contact support if you have concerns.</p>
+            <div class="note">
+                <strong>Note:</strong> For your security, never share this code with anyone, including UNI-HUB staff.
+            </div>
+        </div>
+        <div class="footer">
+            <p>© 2025 UNI-HUB. All rights reserved.</p>
+            <p>Connect with your university community like never before.</p>
+        </div>
+    </div>
+</body>
+</html>
