@@ -76,12 +76,17 @@ class CommentPostAPI(APIView):
 
     def post(self, request, post_id):
         post = get_object_or_404(Post, id=post_id)
+        parent_id = request.data.get("parent_id")  # Get parent comment ID if it's a reply
+
         serializer = CommentSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save(user=request.user, post=post)
+            parent_comment = None
+            if parent_id:
+                parent_comment = get_object_or_404(Comment, id=parent_id)  # Get parent comment if replying
+
+            serializer.save(user=request.user, post=post, parent=parent_comment)  # Save as reply if parent exists
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 class CommentDeleteAPI(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
