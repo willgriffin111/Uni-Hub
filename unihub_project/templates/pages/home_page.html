@@ -155,15 +155,17 @@
                 </button>
                 {% endif %}
                 <div class="post-footer">
-                  {% if post.can_edit %}
+                  {% if post.can_edit and post.user == user %}
                   <form action="{% url 'edit_post' post.id %}" method="get" style="display:inline;">
                     <button type="submit" class="edit-button btn btn-warning">Edit Post</button>
                   </form>
                   {% endif %}
+                  {% if post.user == user %}
                   <form action="{% url 'delete_post' post.id %}" method="post" style="display:inline;" onsubmit="return confirmDelete()">
                     {% csrf_token %}
                     <button type="submit" class="delete-button btn btn-danger">Delete Post</button>
                   </form>
+                  {% endif %}
                 </div>
 
                 <button class="post-action-btn comment-btn" onclick="toggleComments({{ post.id }})">

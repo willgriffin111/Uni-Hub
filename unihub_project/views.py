@@ -19,7 +19,7 @@ def home_page(request):
         # Check if the post was created within 30 minutes (for edit permission)
         post.can_edit = (current_time - post.created_at).total_seconds() <= 30 * 60
 
-    return render(request, 'pages/home_page.html', {'posts': posts, 'current_time': current_time})
+    return render(request, 'pages/home_page.html', {'posts': posts, "user": request.user})
 
 def login_view(request):
     """Render the login page."""
