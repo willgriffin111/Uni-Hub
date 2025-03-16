@@ -26,9 +26,12 @@ urlpatterns = [
     path('edit_post/<int:post_id>/', views.edit_post, name="edit_post"),
     
     path('edit_comment/<int:comment_id>/', views.edit_comment_view, name="edit_comment_page"),
+
+    path('search/', views.search_view, name='search_page'),
     # Include API endpoints from the accounts app
     path('accounts/', include('accounts.urls')),  # Mount the accounts API
     path('api/post/', include('api.posts.urls')),  # Mount the posts API
+    path('api/', include('api.posts.urls')),    # this is needed for search functions
 
     
     

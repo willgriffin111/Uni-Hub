@@ -59,6 +59,9 @@ def edit_comment_view(request, comment_id):
     comment = get_object_or_404(Comment, id=comment_id, user=request.user)  # Ensure only the owner can edit
     return render(request, 'pages/edit_comment.html', {'comment': comment})
 
+def search_view(request):
+    return render(request, 'pages/search_page.html')
+
 
 
 

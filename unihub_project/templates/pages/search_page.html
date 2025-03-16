@@ -1,0 +1,132 @@
+<!-- Author: Shahabz, Date: 16/3/25 -->
+{% load static %}
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UNI-HUB</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Fontawesome -->
+  <script src="https://kit.fontawesome.com/c43d240003.js" crossorigin="anonymous"></script>
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="{% static 'home_page.css' %}">
+  <link rel="stylesheet" href="{% static 'nav_footer.css' %}">
+  <style>
+    /* Your additional custom styles (if any) */
+  </style>
+</head>
+
+<body>
+
+    {% include '../includes/header.html' %}
+
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <h3>Search</h3>
+        </div>
+        
+        <div class="card-body">
+            <div class="search-container">
+                <form id="searchForm" class="mb-4">
+                    <div class="input-group">
+                        <input type="text" id="searchQuery" class="form-control" placeholder="Search for users, communities, or hashtags...">
+                        <div class="input-group-append">
+                            <select id="searchType" class="form-control">
+                                <option value="users">Users</option>
+                                <option value="communities">Communities</option>
+                                <option value="tags">Hashtags</option>
+                            </select>
+                        </div>
+                        <div class="input-group-append">
+                            <button type="submit" class="btn btn-primary">Search</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div id="searchResults">
+                <!-- Search results come here brodie -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// This function runs when you click submit
+document.getElementById('searchForm').addEventListener('submit', function(e) {
+    e.preventDefault();     // Very important, this prevents the page from refreshing when you click submit, search results are loaded in dynamially so we dont want a refresh
+    
+    // get inputs
+    const query = document.getElementById('searchQuery').value;
+    const searchType = document.getElementById('searchType').value;
+    
+    // error handling for empty input
+    if (!query) {
+        document.getElementById('searchResults').innerHTML = '<div>Please enter a search term</div>'; // Jev you can add bootstrap classes inside the div here
+        return;
+    }
+    
+    // Determining API endpoint based on what user wants to search
+    let apiUrl = '';
+    if (searchType === 'users') {
+        apiUrl = `/api/search/users/?query=${query}`;
+    } else if (searchType === 'communities') {
+        apiUrl = `/api/search/communities/?query=${query}`;
+    } else if (searchType === 'tags') {
+        apiUrl = `/api/search/tags/?query=${query}`;
+    }
+    
+    // Sending HTTP request and processing responses. this is better version of XMLHttpRequest, found that out today and now you know too
+    fetch(apiUrl)
+        .then(response => response.json())  // response to json
+        .then(data => {
+            const resultsDiv = document.getElementById('searchResults');
+            resultsDiv.innerHTML = '';  // getting rid of the previous search results
+            
+            if (data.length === 0) {
+                resultsDiv.innerHTML = '<div class="alert alert-info">No results found</div>';
+                return;
+            }
+            
+            // Displaying search results for the different search types
+            // Only done users for now, ill do communities and tags later
+            if (searchType === 'users') {
+                resultsDiv.innerHTML = '<h4>Users</h4>';
+                const userList = document.createElement('div');
+                userList.className = 'list-group';
+                
+                // loop through users from the response
+                data.forEach(user => {
+                    const userItem = document.createElement('a');
+                    userItem.className = 'list-group-item list-group-item-action';
+                    userItem.innerHTML = `
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">${user.username}</h5>
+                            <small>${user.user_type}</small>
+                        </div>
+                        <p class="mb-1">${user.university || 'University not specified'}</p>
+                    `;
+                    userList.appendChild(userItem);
+                });
+                
+                resultsDiv.appendChild(userList);
+            } else if (searchType === 'communities') {
+                resultsDiv.innerHTML = '<h4>Communities not done yet buddy pal</h4>';
+                // I'll do this when we implement communities
+            } else if (searchType === 'tags') {
+                resultsDiv.innerHTML = '<h4>Posts with tag not done yet mate</h4>';
+                // I can do this now, but im kinda tired, Give it a go if you guys want, just follow what i did above for users
+            }
+        })
+        .catch(error => {   // logs all the errors during the API request and then it'll be displayed 
+            console.error('Error:', error);
+            document.getElementById('searchResults').innerHTML = '<div class="alert alert-danger">An error occurred while searching</div>';
+        });
+});
+</script>
+
+</body>
+</html>

@@ -5,6 +5,10 @@ from .serializers import PostSerializer, LikeSerializer, CommentSerializer
 from django.shortcuts import render, get_object_or_404, redirect
 from rest_framework.response import Response
 from .models import Like, Post, Comment
+from django.contrib.auth import get_user_model
+from django.db.models import Q
+
+User = get_user_model()
 
 class PostListCreateViewAPI(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
@@ -110,3 +114,29 @@ class CommentEditAPI(APIView):
         comment.content = new_content
         comment.save()
         return Response({"message": "Comment updated successfully", "content": new_content}, status=status.HTTP_200_OK)
+
+
+"""
+This API view allows authenticated users to search for other users by username
+"""
+class UserSearchAPI(APIView):
+    permission_classes = [permissions.IsAuthenticated]  
+
+    def get(self, request):
+        query = request.GET.get('query', None)
+        if query:
+            user_profile_list = User.objects.filter(    # filters based on username, provided from search query
+                Q(username__icontains=query)
+            ).exclude(id=request.user.id) # dont't include the current user
+
+            users_data = [
+                {
+                    "username": user.username, 
+                    "user_type": user.user_type,
+                    "university": user.university
+                } 
+                for user in user_profile_list
+            ]
+            return Response(users_data, status=status.HTTP_200_OK)
+        else:
+            return Response({"message": "No search query provided."}, status=status.HTTP_400_BAD_REQUEST)
