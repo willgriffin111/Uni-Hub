@@ -4,3 +4,4 @@ Ive tried to document everything ive done in these
 - [Docker info](docs/dockerInfo.md)
 - [RestAPI info](docs/restapiInfo.md)
 - [Database info](docs/databaseInfo.md) <- sprint 1 database design here 
+- [Search Feature info](docs/searchFeatureInfo.md) <- sprint 1 database design here 
