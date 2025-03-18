@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from api.community.models import Community
 
 User = get_user_model()
 
@@ -9,6 +10,7 @@ class Post(models.Model):
     content = models.TextField()
     image = models.ImageField(upload_to='posts/images/', null=True, blank=True)
     tags = models.TextField(null=True, blank=True)
+    community = models.ForeignKey(Community, on_delete=models.SET_NULL, null=True, blank=True, related_name="posts")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

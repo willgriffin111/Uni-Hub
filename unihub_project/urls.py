@@ -29,7 +29,7 @@ urlpatterns = [
     path('edit_comment/<int:comment_id>/', views.edit_comment_view, name="edit_comment_page"),
     
     #comunities
-    path('communities/', views.community_view, name="community_page"),
+    path('communities/<str:community_name>/', views.community_view, name="community_page"),
 
     path('search/', views.search_view, name='search_page'),
     # Include API endpoints from the accounts app

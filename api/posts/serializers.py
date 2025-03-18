@@ -34,7 +34,7 @@ class PostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        fields = ['id', 'user', 'title', 'content', 'image', 'tags', 'created_at', 'likes_count', 'liked']
+        fields = ['id', 'user', 'title', 'content', 'image', 'tags', 'community', 'created_at', 'likes_count', 'liked']
 
     def get_liked(self, obj):
         """Returns True if the current user has liked this post."""

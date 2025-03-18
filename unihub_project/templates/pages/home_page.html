@@ -59,7 +59,7 @@
               <i class="fa-solid fa-user"></i>
               <span>Profile</span>
             </a>
-            <a href="{% url 'community_page' %}" class="menu-item">
+            <a href="" class="menu-item">
               <i class="fa-solid fa-user-group"></i>
               <span>Communities</span>
             </a>
@@ -125,6 +125,11 @@
                 <div class="post-user-info">
                   <h4 class="post-author">{{ post.user.username }}</h4>
                   <span class="post-time">· {{ post.created_at|timesince }} ago</span>
+                  {% if post.community.name %}
+                    <h4 class="post-author">
+                      <a href="{% url 'community_page' community_name=post.community.name %}">{{ post.community.name }}</a>
+                    </h4>
+                  {% endif %}
                 </div>
                 <div class="post-options">
                   <button class="options-btn">

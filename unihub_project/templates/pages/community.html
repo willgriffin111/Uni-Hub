@@ -56,6 +56,883 @@
             border-bottom: 1px solid #ddd;
             margin-top: 10px;
         }
+
+        
+body {
+  background-color: #f7f9fa;
+}
+
+
+.main-layout {
+  display: grid;
+  grid-template-columns: 1fr 600px 1fr;
+  max-width: 1280px;
+  margin: 0 auto;
+  gap: 0;
+  padding-top: 30px;
+  padding-bottom: 50px;
+  min-height: calc(100vh - 350px); 
+}
+
+
+.sidebar {
+  padding: 0 16px;
+}
+
+.left-sidebar {
+  position: sticky;
+  top: 80px; 
+  height: calc(100vh - 160px); 
+  padding-top: 20px;
+  padding-bottom: 20px;
+  overflow-y: auto;
+}
+
+.right-sidebar {
+  position: sticky;
+  top: 80px; 
+  height: calc(100vh - 160px); 
+  padding-top: 20px;
+  padding-bottom: 20px;
+  overflow-y: auto; 
+}
+
+.sidebar-card {
+  background-color: white;
+  border-radius: 16px;
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+
+.profile-preview {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid #eee;
+}
+
+.profile-preview-img img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.profile-preview-info {
+  margin-left: 12px;
+}
+
+.profile-preview-info h3 {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.profile-preview-info p {
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+}
+
+.sidebar-menu {
+  display: flex;
+  flex-direction: column;
+  padding: 8px 0;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  color: #333;
+  text-decoration: none;
+  border-radius: 30px;
+  margin: 4px 0;
+  transition: background-color 0.2s;
+}
+
+.menu-item:hover {
+  background-color: rgba(221, 75, 57, 0.1);
+  color: #dd4b39;
+}
+
+.menu-item.active {
+  font-weight: 700;
+}
+
+.menu-item i {
+  font-size: 20px;
+  margin-right: 20px;
+  width: 24px;
+  text-align: center;
+}
+
+.notification-badge {
+  background-color: #dd4b39;
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 10px;
+  margin-left: auto;
+}
+
+.post-btn {
+  background-color: #dd4b39;
+  color: white;
+  border: none;
+  border-radius: 30px;
+  font-size: 16px;
+  font-weight: 700;
+  padding: 12px 0;
+  width: 90%;
+  margin: 16px auto;
+  display: block;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.post-btn:hover {
+  background-color: #c23321;
+}
+
+
+/* Sidebar Cards */
+.sidebar-title {
+  font-size: 20px;
+  font-weight: 700;
+  padding: 12px 16px;
+  margin: 0;
+  border-bottom: 1px solid #eee;
+}
+
+.community-item {
+  display: flex;
+  padding: 12px 16px;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.community-item:hover {
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+.community-info {
+  flex: 1;
+}
+
+.community-category {
+  font-size: 13px;
+  color: #666;
+  background-color: #ffece9;
+  color: #dd4b39;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.2rem 0.7rem;
+  border-radius: 30px;
+  display: inline-block;
+}
+
+.community-title {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 4px 0;
+}
+
+.community-stats {
+  font-size: 13px;
+  color: #666;
+}
+
+.community-image {
+  width: 68px;
+  height: 68px;
+  border-radius: 16px;
+  overflow: hidden;
+  margin-left: 12px;
+  background-color: #f0f0f0; 
+}
+
+.community-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.see-more {
+  display: block;
+  color: #dd4b39;
+  text-decoration: none;
+  padding: 16px;
+  font-size: 15px;
+  transition: background-color 0.2s;
+}
+
+.see-more:hover {
+  background-color: rgba(0, 0, 0, 0.03);
+  text-decoration: none;
+  color: #dd4b39;
+}
+
+/* Event Items */
+.event-item {
+  display: flex;
+  padding: 16px;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.event-item:hover {
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+.event-date {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 50px;
+  height: 50px;
+  background-color: #f8f8f8;
+  border-radius: 10px;
+  padding: 8px;
+  margin-right: 12px;
+}
+
+.event-date .day {
+  font-size: 18px;
+  font-weight: 700;
+  color: #dd4b39;
+  line-height: 1;
+}
+
+.event-date .month {
+  font-size: 12px;
+  font-weight: 600;
+  color: #666;
+}
+
+.event-info {
+  flex: 1;
+}
+
+.event-title {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 0 0 8px;
+}
+
+.event-location, .event-time {
+  font-size: 13px;
+  color: #666;
+  margin: 0 0 4px;
+  display: flex;
+  align-items: center;
+}
+
+.event-location i, .event-time i {
+  margin-right: 6px;
+  width: 14px;
+}
+
+
+.add-person-item {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  border-bottom: 1px solid #eee;
+  transition: background-color 0.2s;
+}
+
+.add-person-item:hover {
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+.add-person-avatar img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 12px;
+}
+
+.add-person-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.add-person-user {
+  margin-bottom: 4px;
+}
+
+.add-person-name {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 0;
+  display: inline;
+  color: black;
+  text-decoration: none;
+}
+
+.add-person-username {
+  font-size: 14px;
+  color: #666;
+  margin-left: 4px;
+}
+
+.add-person-bio {
+  font-size: 13px;
+  color: #666;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.add-person-btn {
+  background-color: #333;
+  color: white;
+  font-size: 14px;
+  font-weight: 700;
+  border: none;
+  border-radius: 30px;
+  padding: 6px 16px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-left: 12px;
+}
+
+.add-person-btn:hover {
+  background-color: #000;
+}
+
+/* Content Wrapper */
+.content-wrapper {
+  padding: 20px 0 80px 0; 
+  margin-bottom: 30px; 
+}
+
+/* Main Feed */
+.main-feed {
+  border-left: 1px solid #eee;
+  border-right: 1px solid #eee;
+  background-color: white;
+  min-height: 100%;
+  max-height: calc(100vh - 160px); 
+  overflow-y: auto; 
+  border-radius: 10px;
+}
+
+.feed-header {
+  display: none;
+}
+
+.feed-tabs {
+  display: flex;
+  border-bottom: 1px solid #eee;
+}
+
+.tab-btn {
+  flex: 1;
+  background: none;
+  border: none;
+  padding: 16px 0;
+  font-size: 15px;
+  font-weight: 500;
+  color: #666;
+  position: relative;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.tab-btn:hover {
+  background-color: rgba(0, 0, 0, 0.03);
+  color: #dd4b39;
+}
+
+.tab-btn.active {
+  font-weight: 700;
+  color: #333;
+}
+
+.tab-btn.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 56px;
+  height: 4px;
+  background-color: #dd4b39;
+  border-radius: 4px 4px 0 0;
+}
+
+.compose-post {
+  display: flex;
+  padding: 16px;
+  border-bottom: 1px solid #eee;
+}
+
+.compose-profile-img img {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 12px;
+}
+
+.compose-input-container {
+  flex: 1;
+}
+
+.compose-input {
+  width: 100%;
+  min-height: 80px;
+  border: none;
+  outline: none;
+  resize: none;
+  font-size: 18px;
+  padding: 12px 0;
+}
+
+.compose-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+  border-top: 1px solid #eee;
+  padding-top: 12px;
+}
+
+.compose-tools {
+  display: flex;
+}
+
+.compose-tool {
+  background: none;
+  border: none;
+  color: #dd4b39;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  margin-right: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.compose-tool:hover {
+  background-color: rgba(221, 75, 57, 0.1);
+}
+
+.compose-submit {
+  background-color: #dd4b39;
+  color: white;
+  border: none;
+  border-radius: 30px;
+  padding: 10px 20px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.compose-submit:hover {
+  background-color: #c23321;
+}
+
+.post-divider {
+  padding: 12px 16px;
+  border-bottom: 1px solid #eee;
+  color: #666;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+/* Posts */
+.post {
+  display: flex;
+  padding: 16px;
+  border-bottom: 1px solid #eee;
+  transition: background-color 0.2s;
+}
+
+.post:hover {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+.post-avatar img {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 12px;
+}
+
+.post-content {
+  flex: 1;
+}
+
+.post-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.post-user-info {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.post-author {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 0;
+  cursor: pointer;
+}
+
+.post-author:hover {
+  text-decoration: underline;
+}
+
+.post-username {
+  font-size: 14px;
+  color: #666;
+  margin-left: 4px;
+}
+
+.post-text h4 {
+  color: #333;
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.post-action-btn.like-btn {
+  color: #c23321;
+}
+
+.likes-text {
+  margin-left: 3px;
+  font-size: 14px;
+  color: #666;
+}
+
+.post-time {
+  font-size: 14px;
+  color: #666;
+  margin-left: 4px;
+}
+
+.post-verified {
+  color: #dd4b39;
+  font-size: 14px;
+  margin: 0 4px;
+}
+
+.options-btn {
+  background: none;
+  border: none;
+  color: #666;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.options-btn:hover {
+  background-color: rgba(221, 75, 57, 0.1);
+  color: #dd4b39;
+}
+
+.post-text {
+  margin-bottom: 12px;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.post-text p {
+  margin: 0;
+}
+
+.post-media {
+  margin: 12px 0;
+  border-radius: 16px;
+  overflow: hidden;
+  width: 100%;
+}
+
+.post-media img {
+  width: 100%;
+  max-height: 400px;
+  object-fit: cover;
+  border-radius: 16px;
+  display: block;
+}
+
+.post-actions {
+  display: flex;
+  justify-content: space-between;
+  max-width: 425px;
+}
+
+.post-action-btn {
+  display: flex;
+  align-items: center;
+  color: #666;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 8px;
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+
+.post-action-btn i {
+  font-size: 18px;
+  margin-right: 6px;
+}
+
+.post-action-btn:hover {
+  color: #dd4b39;
+  background-color: rgba(221, 75, 57, 0.1);
+}
+
+.like-btn:hover {
+  color: #dd4b39;
+}
+
+.like-btn.active {
+  color: #dd4b39;
+}
+
+.repost-btn:hover {
+  color: #17bf63;
+}
+
+.repost-btn.active {
+  color: #17bf63;
+}
+
+.load-more {
+  padding: 16px;
+  text-align: center;
+}
+
+.load-more-btn {
+  background-color: transparent;
+  color: #dd4b39;
+  border: 1px solid #dd4b39;
+  border-radius: 30px;
+  padding: 10px 20px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.load-more-btn:hover {
+  background-color: rgba(221, 75, 57, 0.1);
+}
+
+/* Responsive Layout */
+@media (max-width: 1280px) {
+  .twitter-layout {
+      grid-template-columns: 88px 600px 1fr;
+  }
+  
+  .menu-item span {
+      display: none;
+  }
+  
+  .menu-item i {
+      margin-right: 0;
+  }
+  
+  .profile-preview-info {
+      display: none;
+  }
+  
+  .profile-preview {
+      justify-content: center;
+  }
+  
+  .post-btn {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+  }
+  
+  .post-btn::before {
+      content: '\f067';
+      font-family: 'Font Awesome 6 Free';
+      font-weight: 900;
+  }
+}
+
+@media (max-width: 1020px) {
+  .twitter-layout {
+      grid-template-columns: 88px 1fr;
+  }
+  
+  .right-sidebar {
+      display: none;
+  }
+}
+
+@media (max-width: 688px) {
+  .twitter-layout {
+      grid-template-columns: 1fr;
+  }
+  
+  .left-sidebar {
+      display: none;
+  }
+  
+  .main-feed {
+      border-left: none;
+      border-right: none;
+  }
+}
+
+/* Modal post box */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+}
+
+.modal-content {
+  background-color: white;
+  margin: 10% auto;
+  padding: 20px;
+  border-radius: 15px;
+  width: 800px;
+  max-width: 95%;
+  position: relative;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.close-modal {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+  position: absolute;
+  right: 20px;
+  top: 10px;
+}
+
+.close-modal:hover,
+.close-modal:focus {
+  color: #dd4b39;
+  text-decoration: none;
+}
+
+.modal-post-compose {
+  display: flex;
+  padding: 16px 0;
+}
+
+.compose-title-input {
+  width: 100%;
+  padding: 10px 0;
+  border: none;
+  border-bottom: 1px solid #eee;
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  outline: none;
+}
+
+.compose-title-input:focus {
+  border-bottom: 1px solid #dd4b39;
+}
+
+.modal-content {
+  width: 550px;
+}
+
+
+  .comments {
+  margin-top: 15px;
+  padding-top: 10px;
+  border-top: 1px solid #ddd;
+  }
+  .comments h3 {
+  font-size: 18px;
+  margin-bottom: 10px;
+  }
+  .comments-list {
+  list-style: none;
+  padding: 0;
+  }
+  .comment-item {
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+  }
+  .comment-item:last-child {
+  border-bottom: none;
+  }
+  .comment-item b {
+  font-weight: bold;
+  }
+  .reply-button,
+  .edit-comment-button,
+  .delete-comment-button {
+  margin-left: 10px;
+  font-size: 12px;
+  cursor: pointer;
+  text-decoration: none;
+  }
+  /* Styling for nested replies */
+  .reply-item {
+  margin-left: 30px;
+  border-left: 2px solid #ddd;
+  padding-left: 10px;
+  margin-top: 5px;
+  }
+  /* Replying target message */
+  .replying-to {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 5px;
+  }
+  /* Comment input area */
+  .comment-input-area textarea {
+  width: 100%;
+  margin-top: 5px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  }
+  .comment-input-area button {
+  margin-top: 5px;
+  }
+
     </style>
 </head>
 <body>
@@ -89,12 +966,130 @@
                 <textarea placeholder="Write a post..."></textarea>
                 <button class="btn btn-post">Post</button>
             </form>
-            <div class="post">
-                <p><strong>User1:</strong> This is a sample post in the community.</p>
-            </div>
-            <div class="post">
-                <p><strong>User2:</strong> Another example post here.</p>
-            </div>
+            <div class="container">
+                {% comment %} <h1>All Posts</h1> {% endcomment %}
+                {% for post in posts %}
+                <div class="post">
+                  <!-- Post Avatar -->
+                  <div class="post-avatar">
+                    <img src="{{ post.user.profile.image.url|default:'/static/bingus.jpg' }}" alt="{{ post.user.username }}">
+                  </div>
+                  
+                  <!-- Post Content -->
+                  <div class="post-content">
+                    <!-- Header -->
+                    <div class="post-header">
+                      <div class="post-user-info">
+                        <h4 class="post-author">{{ post.user.username }}</h4>
+                        <span class="post-time">· {{ post.created_at|timesince }} ago</span>
+                      </div>
+                      <div class="post-options">
+                        <button class="options-btn">
+                          <i class="fa-solid fa-ellipsis"></i>
+                        </button>
+                      </div>
+                    </div>
+                    <!-- Text -->
+                    <div class="post-text">
+                      <h4>{{ post.title }}</h4>
+                      <p>{{ post.content }}</p>
+                    </div>
+                    <!-- Tags -->
+                    <div class="tags">Tags: {{ post.tags }}</div>
+                    <!-- Media (if available) -->
+                    {% if post.image %}
+                    <div class="post-media">
+                      <img src="{{ post.image.url }}" alt="Post Image">
+                    </div>
+                    {% endif %}
+                    
+                    <div class="post-actions">
+                      {% if post.liked %}
+                      <button onclick="toggleLike({{ post.id }})" id="like-button-{{ post.id }}" class="post-action-btn like-btn" data-liked="true">
+                        <i class="fas fa-thumbs-up"></i>
+                        <span id="like-text-{{ post.id }}">Unlike</span>
+                        (<span id="like-count-{{ post.id }}">{{ post.likes_count }}</span>)
+                      </button>
+                      {% else %}
+                      <button onclick="toggleLike({{ post.id }})" id="like-button-{{ post.id }}" class="post-action-btn like-btn" data-liked="false">
+                        <i class="fas fa-thumbs-up"></i>
+                        <span id="like-text-{{ post.id }}">Like</span>
+                        (<span id="like-count-{{ post.id }}">{{ post.likes_count }}</span>)
+                      </button>
+                      {% endif %}
+                      <div class="post-footer">
+                        {% if post.can_edit and post.user == user %}
+                        <form action="{% url 'edit_post' post.id %}" method="get" style="display:inline;">
+                          <button type="submit" class="edit-button btn btn-warning">Edit Post</button>
+                        </form>
+                        {% endif %}
+                        {% if post.user == user %}
+                        <form action="{% url 'delete_post' post.id %}" method="post" style="display:inline;" onsubmit="return confirmDelete()">
+                          {% csrf_token %}
+                          <button type="submit" class="delete-button btn btn-danger">Delete Post</button>
+                        </form>
+                        {% endif %}
+                      </div>
+      
+                      <button class="post-action-btn comment-btn" onclick="toggleComments({{ post.id }})">
+                        <i class="fas fa-comment"></i>
+                        <span>{{ post.comments_count }}</span>
+                        <span class="comments-text">comments</span>
+                      </button>
+                    </div>
+                    
+                    <div class="comments" id="comments-section-{{ post.id }}" style="display:none;">
+                      <h5>Comments ({{ post.comments_count }})</h5>
+                      <!-- Hidden input to store parent comment ID when replying -->
+                      <input type="hidden" id="reply-parent-{{ post.id }}" value="">
+                      <!-- Div to display current reply target -->
+                      <div id="replying-to-{{ post.id }}" class="replying-to" style="display:none;"></div>
+                      
+                      <!-- Main Comments List: Only top-level comments -->
+                      <ul class="comments-list" id="comments-list-{{ post.id }}">
+                        {% for comment in post.comments.all %}
+                          {% if not comment.parent %}
+                          <li class="comment-item" id="comment-{{ comment.id }}">
+                            <b>{{ comment.user.username }}:</b>
+                            <span id="comment-content-{{ comment.id }}">{{ comment.content }}</span>
+                            {% if comment.user == request.user %}
+                              <a href="{% url 'edit_comment_page' comment.id %}" style="text-decoration:none;">
+                                <button class="edit-comment-button btn btn-link">✏️</button>
+                              </a>
+                              <button class="delete-comment-button btn btn-link" onclick="deleteComment({{ comment.id }}, {{ post.id }})">❌</button>
+                            {% endif %}
+                            <button class="reply-button btn btn-link" onclick="replyToComment({{ post.id }}, '{{ comment.id }}', '{{ comment.user.username }}')">Reply</button>
+                            <!-- Nested Replies -->
+                            <ul class="comments-list">
+                              {% for reply in comment.replies.all %}
+                              <li class="reply-item" id="comment-{{ reply.id }}">
+                                <b>{{ reply.user.username }}:</b>
+                                <span id="comment-content-{{ reply.id }}">{{ reply.content }}</span>
+                                {% if reply.user == request.user %}
+                                  <a href="{% url 'edit_comment_page' reply.id %}" style="text-decoration:none;">
+                                    <button class="edit-comment-button btn btn-link">✏️</button>
+                                  </a>
+                                  <button class="delete-comment-button btn btn-link" onclick="deleteComment({{ reply.id }}, {{ post.id }})">❌</button>
+                                {% endif %}
+                              </li>
+                              {% endfor %}
+                            </ul>
+                          </li>
+                          {% endif %}
+                        {% endfor %}
+                      </ul>
+                      <!-- Comment Input & Reply Controls -->
+                      <div class="comment-input-area">
+                        <textarea id="comment-input-{{ post.id }}" placeholder="Write a comment..." style="width:100%;"></textarea>
+                        <button onclick="addComment({{ post.id }})" class="comment-button btn btn-primary">Comment</button>
+                        <button class="cancel-reply btn btn-link" id="cancel-reply-{{ post.id }}" style="display:none;" onclick="cancelReply({{ post.id }})">Cancel Reply</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {% endfor %}
+                </div>
+              </div>
         </div>
     </div>
 </body>

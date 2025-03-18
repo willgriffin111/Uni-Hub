@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from api.posts.models import Post, Comment
+from api.community.models import Community
 from django.utils import timezone
 
 
@@ -65,8 +66,20 @@ def search_view(request):
 
 #community views
 @login_required
-def community_view(request):
-    return render(request, "pages/community.html")
+def community_view(request, community_name):
+    community = get_object_or_404(Community, name=community_name)
+    posts = Post.objects.filter(community=community.id).order_by('-created_at')  # Order by newest first
+    current_time = timezone.now()
+    for post in posts:
+        post.likes_count = post.likes.count()  # Get total like count
+        post.liked = post.likes.filter(user=request.user).exists()  # Check if the user has liked this post
+        post.comments_count = post.comments.count()
+        
+        
+        # Check if the post was created within 30 minutes (for edit permission)
+        post.can_edit = (current_time - post.created_at).total_seconds() <= 30 * 60
+
+    return render(request, "pages/community.html", {'posts': posts, "user": request.user})
 
 
 # THESE ARE OLD VIEWS:

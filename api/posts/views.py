@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from .models import Like, Post, Comment
 from django.contrib.auth import get_user_model
 from django.db.models import Q
+from api.community.models import Community
 
 User = get_user_model()
 
@@ -17,7 +18,14 @@ class PostListCreateViewAPI(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         image = self.request.FILES.get("image")  # Get uploaded image file
-        serializer.save(user=self.request.user, image=image)
+        community_name = self.request.data.get("community_name")
+        community = None
+        if community_name:
+            try:
+                community = Community.objects.get(name=community_name)
+            except Community.DoesNotExist:
+                pass  # Keep community as None if not found
+        serializer.save(user=self.request.user, image=image, community=community)
 
     def get_serializer_context(self):
         """Ensures that the serializer gets the request context."""
