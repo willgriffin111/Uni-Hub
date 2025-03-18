@@ -27,7 +27,7 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*", "10.241.185.129"]
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'  # or file or cached
 
@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'accounts',
     'api.posts',
+    'api.community',
 ]
 
 REST_FRAMEWORK = {
