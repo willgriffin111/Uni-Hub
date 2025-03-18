@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Community Page</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .community-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .community-header h2 {
+            margin: 0;
+        }
+        .btn {
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            margin: 5px;
+        }
+        .btn-join { background: green; color: white; }
+        .btn-leave { background: red; color: white; }
+        .btn-manage { background: blue; color: white; }
+        .section {
+            margin-top: 20px;
+            padding: 10px;
+            border-top: 1px solid #ddd;
+        }
+        .post-form textarea {
+            width: 100%;
+            height: 100px;
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        .btn-post { background: purple; color: white; }
+        .post {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="community-header">
+            <h2>Community Name</h2>
+            <p>About: A detailed description of the community.</p>
+            <button class="btn btn-join">Join</button>
+            <button class="btn btn-leave">Leave</button>
+            <button class="btn btn-manage">Manage</button>
+        </div>
+        
+        <div class="section">
+            <h3>Upcoming Events</h3>
+            <p>No events scheduled.</p>
+        </div>
+        
+        <div class="section">
+            <h3>Virtual Sessions</h3>
+            <p>No sessions scheduled.</p>
+        </div>
+        
+        <div class="section">
+            <h3>Members</h3>
+            <p>List of community members.</p>
+        </div>
+        
+        <div class="section">
+            <h3>Community Posts</h3>
+            <form class="post-form">
+                <textarea placeholder="Write a post..."></textarea>
+                <button class="btn btn-post">Post</button>
+            </form>
+            <div class="post">
+                <p><strong>User1:</strong> This is a sample post in the community.</p>
+            </div>
+            <div class="post">
+                <p><strong>User2:</strong> Another example post here.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

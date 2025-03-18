@@ -13,9 +13,6 @@
   <!-- Custom CSS -->
   <link rel="stylesheet" href="{% static 'home_page.css' %}">
   <link rel="stylesheet" href="{% static 'nav_footer.css' %}">
-  <style>
-    /* Your additional custom styles (if any) */
-  </style>
 </head>
 
 <body>
@@ -40,36 +37,28 @@
                                 <option value="tags">Hashtags</option>
                             </select>
                         </div>
-                        <div class="input-group-append">
-                            <button type="submit" class="btn btn-primary">Search</button>
-                        </div>
                     </div>
                 </form>
             </div>
 
             <div id="searchResults">
-                <!-- Search results come here brodie -->
+                <!-- Search results come here -->
             </div>
         </div>
     </div>
 </div>
 
 <script>
-// This function runs when you click submit
-document.getElementById('searchForm').addEventListener('submit', function(e) {
-    e.preventDefault();     // Very important, this prevents the page from refreshing when you click submit, search results are loaded in dynamially so we dont want a refresh
-    
-    // get inputs
+// Function to handle real-time search
+function performSearch() {
     const query = document.getElementById('searchQuery').value;
     const searchType = document.getElementById('searchType').value;
     
-    // error handling for empty input
     if (!query) {
-        document.getElementById('searchResults').innerHTML = '<div>Please enter a search term</div>'; // Jev you can add bootstrap classes inside the div here
+        document.getElementById('searchResults').innerHTML = '<div class="alert alert-info">Please enter a search term</div>';
         return;
     }
     
-    // Determining API endpoint based on what user wants to search
     let apiUrl = '';
     if (searchType === 'users') {
         apiUrl = `/api/search/users/?query=${query}`;
@@ -79,26 +68,22 @@ document.getElementById('searchForm').addEventListener('submit', function(e) {
         apiUrl = `/api/search/tags/?query=${query}`;
     }
     
-    // Sending HTTP request and processing responses. this is better version of XMLHttpRequest, found that out today and now you know too
     fetch(apiUrl)
-        .then(response => response.json())  // response to json
+        .then(response => response.json())
         .then(data => {
             const resultsDiv = document.getElementById('searchResults');
-            resultsDiv.innerHTML = '';  // getting rid of the previous search results
+            resultsDiv.innerHTML = '';
             
             if (data.length === 0) {
                 resultsDiv.innerHTML = '<div class="alert alert-info">No results found</div>';
                 return;
             }
             
-            // Displaying search results for the different search types
-            // Only done users for now, ill do communities and tags later
             if (searchType === 'users') {
                 resultsDiv.innerHTML = '<h4>Users</h4>';
                 const userList = document.createElement('div');
                 userList.className = 'list-group';
                 
-                // loop through users from the response
                 data.forEach(user => {
                     const userItem = document.createElement('a');
                     userItem.className = 'list-group-item list-group-item-action';
@@ -114,17 +99,27 @@ document.getElementById('searchForm').addEventListener('submit', function(e) {
                 
                 resultsDiv.appendChild(userList);
             } else if (searchType === 'communities') {
-                resultsDiv.innerHTML = '<h4>Communities not done yet buddy pal</h4>';
-                // I'll do this when we implement communities
+                resultsDiv.innerHTML = '<h4>Communities not done yet</h4>';
             } else if (searchType === 'tags') {
-                resultsDiv.innerHTML = '<h4>Posts with tag not done yet mate</h4>';
-                // I can do this now, but im kinda tired, Give it a go if you guys want, just follow what i did above for users
+                resultsDiv.innerHTML = '<h4>Posts with tag not done yet</h4>';
             }
         })
-        .catch(error => {   // logs all the errors during the API request and then it'll be displayed 
+        .catch(error => {
             console.error('Error:', error);
             document.getElementById('searchResults').innerHTML = '<div class="alert alert-danger">An error occurred while searching</div>';
         });
+}
+
+// Add event listener for real-time search
+const searchQueryInput = document.getElementById('searchQuery');
+searchQueryInput.addEventListener('input', function() {
+    performSearch();
+});
+
+// Add event listener to update results if search type is changed
+const searchTypeSelect = document.getElementById('searchType');
+searchTypeSelect.addEventListener('change', function() {
+    performSearch();
 });
 </script>
 

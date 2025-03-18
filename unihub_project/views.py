@@ -63,7 +63,10 @@ def search_view(request):
     return render(request, 'pages/search_page.html')
 
 
-
+#community views
+@login_required
+def community_view(request):
+    return render(request, "pages/community.html")
 
 
 # THESE ARE OLD VIEWS:
