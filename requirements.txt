@@ -6,3 +6,4 @@ djangorestframework-simplejwt
 sendgrid
 pyotp
 Pillow
+python-dotenv

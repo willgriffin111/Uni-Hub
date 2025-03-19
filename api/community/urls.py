@@ -1,7 +1,7 @@
 from django.urls import path
-from . import views 
+from .views import CreateCommunityView
 
 urlpatterns = [
-    path('communitypost/', views.CommunityViewAPI.as_view(), name='communitypost'),
-
+    # POST /api/community/community/ to create a new community.
+    path('community/', CreateCommunityView.as_view(), name="community-create"),
 ]

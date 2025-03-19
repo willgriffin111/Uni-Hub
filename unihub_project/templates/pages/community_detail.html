@@ -1,0 +1,349 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>{{ community.name }} - UNI-HUB</title>
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script
+    src="https://kit.fontawesome.com/c43d240003.js"
+    crossorigin="anonymous"
+  ></script>
+  <link rel="stylesheet" href="{% static 'home_page.css' %}" />
+  <link rel="stylesheet" href="{% static 'nav_footer.css' %}" />
+</head>
+<body>
+  {% include '../includes/header.html' %}
+
+  <div class="content-wrapper">
+    <div class="main-layout">
+      <!-- Left Sidebar -->
+      <div class="sidebar left-sidebar">
+        <div class="sidebar-card">
+          <div class="profile-preview">
+            <div class="profile-preview-img">
+              <img src="{% static 'bingus.jpg' %}" alt="Profile Photo" />
+            </div>
+            <div class="profile-preview-info">
+              <h3>{{ user.first_name }} {{ user.last_name }}</h3>
+              <p>{{ user.university }}</p>
+            </div>
+          </div>
+          <div class="sidebar-menu">
+            <a href="#" class="menu-item active">
+              <i class="fa-solid fa-house"></i>
+              <span>Home</span>
+            </a>
+            <a href="#" class="menu-item">
+              <i class="fa-solid fa-bell"></i>
+              <span>Notifications</span>
+              <span class="notification-badge">3</span>
+            </a>
+            <a href="#" class="menu-item">
+              <i class="fa-solid fa-envelope"></i>
+              <span>Messages</span>
+            </a>
+            <a href="{% url 'profile_page' %}" class="menu-item">
+              <i class="fa-solid fa-user"></i>
+              <span>Profile</span>
+            </a>
+            <a href="#" class="menu-item">
+              <i class="fa-solid fa-user-group"></i>
+              <span>Communities</span>
+            </a>
+            <a href="#" class="menu-item">
+              <i class="fa-solid fa-calendar-days"></i>
+              <span>Events</span>
+            </a>
+          </div>
+          <!-- Example "Join" or "Leave" button if you want to handle membership -->
+          <button class="post-btn btn btn-primary mt-3">Join</button>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="main-feed">
+        <!-- Community Header Info -->
+        <div class="p-3" style="border-bottom: 1px solid #eee;">
+          <h2>{{ community.name }}</h2>
+          <p>{{ community.description }}</p>
+          <p><strong>Contact:</strong> {{ community.contact_email }}</p>
+        </div>
+
+        <!-- Now we show the community posts (similar to home_page) -->
+        <div class="compose-post d-flex align-items-start mb-4">
+          <div class="compose-profile-img me-2">
+            <img src="{% static 'bingus.jpg' %}" alt="Profile Photo" width="50" height="50" />
+          </div>
+          <div class="compose-input-container flex-grow-1">
+            <input
+              type="text"
+              class="compose-title-input form-control mb-2"
+              placeholder="Title..."
+            />
+            <textarea
+              class="compose-input form-control"
+              placeholder="What's happening?"
+            ></textarea>
+            <input
+              type="text"
+              class="compose-tags-input form-control mb-2"
+              placeholder="Hashtags (e.g., #study, #events)"
+              style="border: none; margin-top: 10px;"
+            />
+            <div
+              class="compose-actions d-flex justify-content-between align-items-center mt-2"
+            >
+              <div class="compose-tools">
+                <div class="form-group mt-2">
+                  <input type="file" class="" accept="image/*" />
+                </div>
+              </div>
+              <button class="compose-submit btn btn-success">
+                Post
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Show existing posts in this community -->
+        <div class="post-divider mb-3">
+          <span>{{ posts|length }} Posts in {{ community.name }}</span>
+        </div>
+
+        {% for post in posts %}
+        <div class="post">
+          <div class="post-avatar">
+            <img
+              src="{{ post.user.profile.image.url|default:'/static/bingus.jpg' }}"
+              alt="{{ post.user.username }}"
+            />
+          </div>
+          <div class="post-content">
+            <div class="post-header">
+              <div class="post-user-info">
+                <h4 class="post-author">{{ post.user.username }}</h4>
+                <span class="post-time"
+                  >· {{ post.created_at|timesince }} ago</span
+                >
+              </div>
+              <div class="post-options">
+                <button class="options-btn">
+                  <i class="fa-solid fa-ellipsis"></i>
+                </button>
+              </div>
+            </div>
+            <div class="post-text">
+              <h4>{{ post.title }}</h4>
+              <p>{{ post.content }}</p>
+            </div>
+            <div class="tags">Tags: {{ post.tags }}</div>
+            {% if post.image %}
+            <div class="post-media">
+              <img src="{{ post.image.url }}" alt="Post Image" />
+            </div>
+            {% endif %}
+            <div class="post-actions">
+              {% if post.liked %}
+              <button
+                onclick="toggleLike({{ post.id }})"
+                id="like-button-{{ post.id }}"
+                class="post-action-btn like-btn"
+                data-liked="true"
+              >
+                <i class="fas fa-thumbs-up"></i>
+                <span id="like-text-{{ post.id }}">Unlike</span>
+                (<span id="like-count-{{ post.id }}">{{ post.likes_count }}</span>)
+              </button>
+              {% else %}
+              <button
+                onclick="toggleLike({{ post.id }})"
+                id="like-button-{{ post.id }}"
+                class="post-action-btn like-btn"
+                data-liked="false"
+              >
+                <i class="fas fa-thumbs-up"></i>
+                <span id="like-text-{{ post.id }}">Like</span>
+                (<span id="like-count-{{ post.id }}">{{ post.likes_count }}</span>)
+              </button>
+              {% endif %}
+              <div class="post-footer">
+                {% if post.can_edit and post.user == user %}
+                <form
+                  action="{% url 'edit_post' post.id %}"
+                  method="get"
+                  style="display: inline"
+                >
+                  <button
+                    type="submit"
+                    class="edit-button btn btn-warning"
+                  >
+                    Edit Post
+                  </button>
+                </form>
+                {% endif %}
+                {% if post.user == user %}
+                <form
+                  action="{% url 'delete_post' post.id %}"
+                  method="post"
+                  style="display: inline"
+                  onsubmit="return confirmDelete()"
+                >
+                  {% csrf_token %}
+                  <button
+                    type="submit"
+                    class="delete-button btn btn-danger"
+                  >
+                    Delete Post
+                  </button>
+                </form>
+                {% endif %}
+              </div>
+              <button
+                class="post-action-btn comment-btn"
+                onclick="toggleComments({{ post.id }})"
+              >
+                <i class="fas fa-comment"></i>
+                <span>{{ post.comments_count }}</span>
+                <span class="comments-text">comments</span>
+              </button>
+            </div>
+
+            <!-- Comments section -->
+            <div
+              class="comments"
+              id="comments-section-{{ post.id }}"
+              style="display: none"
+            >
+              <h5>Comments ({{ post.comments_count }})</h5>
+              <input
+                type="hidden"
+                id="reply-parent-{{ post.id }}"
+                value=""
+              />
+              <div
+                id="replying-to-{{ post.id }}"
+                class="replying-to"
+                style="display: none"
+              ></div>
+              <ul
+                class="comments-list"
+                id="comments-list-{{ post.id }}"
+              >
+                {% for comment in post.comments.all %}
+                {% if not comment.parent %}
+                <li class="comment-item" id="comment-{{ comment.id }}">
+                  <b>{{ comment.user.username }}:</b>
+                  <span id="comment-content-{{ comment.id }}"
+                    >{{ comment.content }}</span
+                  >
+                  {% if comment.user == request.user %}
+                  <a
+                    href="{% url 'edit_comment_page' comment.id %}"
+                    style="text-decoration: none"
+                  >
+                    <button
+                      class="edit-comment-button btn btn-link"
+                    >
+                      ✏️
+                    </button>
+                  </a>
+                  <button
+                    class="delete-comment-button btn btn-link"
+                    onclick="deleteComment({{ comment.id }}, {{ post.id }})"
+                  >
+                    ❌
+                  </button>
+                  {% endif %}
+                  <button
+                    class="reply-button btn btn-link"
+                    onclick="replyToComment({{ post.id }}, '{{ comment.id }}', '{{ comment.user.username }}')"
+                  >
+                    Reply
+                  </button>
+                  <ul class="comments-list">
+                    {% for reply in comment.replies.all %}
+                    <li
+                      class="reply-item"
+                      id="comment-{{ reply.id }}"
+                    >
+                      <b>{{ reply.user.username }}:</b>
+                      <span
+                        id="comment-content-{{ reply.id }}"
+                        >{{ reply.content }}</span
+                      >
+                      {% if reply.user == request.user %}
+                      <a
+                        href="{% url 'edit_comment_page' reply.id %}"
+                        style="text-decoration: none"
+                      >
+                        <button
+                          class="edit-comment-button btn btn-link"
+                        >
+                          ✏️
+                        </button>
+                      </a>
+                      <button
+                        class="delete-comment-button btn btn-link"
+                        onclick="deleteComment({{ reply.id }}, {{ post.id }})"
+                      >
+                        ❌
+                      </button>
+                      {% endif %}
+                    </li>
+                    {% endfor %}
+                  </ul>
+                </li>
+                {% endif %}
+                {% endfor %}
+              </ul>
+              <div class="comment-input-area">
+                <textarea
+                  id="comment-input-{{ post.id }}"
+                  placeholder="Write a comment..."
+                  style="width: 100%"
+                ></textarea>
+                <button
+                  onclick="addComment({{ post.id }})"
+                  class="comment-button btn btn-primary"
+                >
+                  Comment
+                </button>
+                <button
+                  class="cancel-reply btn btn-link"
+                  id="cancel-reply-{{ post.id }}"
+                  style="display: none"
+                  onclick="cancelReply({{ post.id }})"
+                >
+                  Cancel Reply
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
+      <!-- Right Sidebar -->
+      <div class="sidebar right-sidebar">
+        <div class="sidebar-card mb-4">
+          <h3 class="sidebar-title">Active Communities</h3>
+          <p>(This area can show other communities or random info...)</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% include '../includes/footer.html' %}
+
+  <script>
+    // Reuse your existing JS for toggling likes, adding comments, etc.
+    // Make sure your code is included or imported here.
+    // e.g. the same code from home_page.html
+  </script>
+</body>
+</html>

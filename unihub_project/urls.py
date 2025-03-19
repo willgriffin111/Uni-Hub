@@ -3,6 +3,9 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path, include
 from . import views
+from unihub_project.views import community_list_view
+from unihub_project.views import community_view
+from unihub_project.views import community_create_page
 
 urlpatterns = [
     
@@ -29,7 +32,7 @@ urlpatterns = [
     path('edit_comment/<int:comment_id>/', views.edit_comment_view, name="edit_comment_page"),
     
     #comunities
-    path('communities/<str:community_name>/', views.community_view, name="community_page"),
+    path('community/', community_list_view, name='community_list'),
 
     path('search/', views.search_view, name='search_page'),
     # Include API endpoints from the accounts app
@@ -39,6 +42,13 @@ urlpatterns = [
     path('api/community/', include('api.community.urls')),  # Mount the community API
 
     
+    
+    # Our new community detail route:
+    path('community/<str:community_name>/', views.community_view, name='community_page'),
+    path('community/<str:community_name>/', community_view, name='community_page'),
+    path('community/create/', community_create_page, name='community_create_page'),
+
+
     
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
