@@ -15,6 +15,12 @@ class Community(models.Model):
     """
     name = models.CharField(max_length=255, unique=True)
     description = models.TextField(blank=True)
+    community_image = models.ImageField(
+        upload_to='community/images/', 
+        null=False, 
+        blank=False,
+        default='community/images/default.png'
+    )
     created_by = models.ForeignKey(
         settings.AUTH_USER_MODEL, 
         on_delete=models.CASCADE, 
