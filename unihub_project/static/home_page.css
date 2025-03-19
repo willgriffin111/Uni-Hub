@@ -1,9 +1,11 @@
-
 body {
     background-color: #f7f9fa;
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
-
+/* Main Layout */
 .main-layout {
     display: grid;
     grid-template-columns: 1fr 600px 1fr;
@@ -15,10 +17,27 @@ body {
     min-height: calc(100vh - 350px); 
 }
 
-
+/* Sidebar Styles */
 .sidebar {
     padding: 0 16px;
 }
+
+.img-upload{
+     padding: 10px 15px;
+     background-color: #dd4b39;
+     border-radius: 15px;
+     color: white;
+     font-weight: 600;
+}
+
+.img-fluid{
+    border: #000;
+}
+
+.img-upload:hover{
+    background-color: #c23321;
+}
+
 
 .left-sidebar {
     position: sticky;
@@ -43,8 +62,10 @@ body {
     border-radius: 16px;
     margin-bottom: 16px;
     overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
+/* Profile Preview */
 .profile-preview {
     display: flex;
     align-items: center;
@@ -75,6 +96,7 @@ body {
     margin: 0;
 }
 
+/* Sidebar Menu */
 .sidebar-menu {
     display: flex;
     flex-direction: column;
@@ -108,6 +130,10 @@ body {
     text-align: center;
 }
 
+.menu-item span {
+    white-space: nowrap;
+}
+
 .notification-badge {
     background-color: #dd4b39;
     color: white;
@@ -136,7 +162,6 @@ body {
 .post-btn:hover {
     background-color: #c23321;
 }
-
 
 /* Sidebar Cards */
 .sidebar-title {
@@ -278,7 +303,7 @@ body {
     width: 14px;
 }
 
-
+/* Friend Suggestions */
 .add-person-item {
     display: flex;
     align-items: center;
@@ -517,6 +542,7 @@ body {
 
 .post-content {
     flex: 1;
+    overflow-wrap: break-word;
 }
 
 .post-header {
@@ -687,10 +713,181 @@ body {
     background-color: rgba(221, 75, 57, 0.1);
 }
 
-/* Responsive Layout */
+/* Modal post box */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
+}
+  
+.modal-content {
+    background-color: white;
+    margin: 10% auto;
+    padding: 20px;
+    border-radius: 15px;
+    width: 550px;
+    max-width: 95%;
+    position: relative;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+  
+.close-modal {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    position: absolute;
+    right: 20px;
+    top: 10px;
+}
+  
+.close-modal:hover,
+.close-modal:focus {
+    color: #dd4b39;
+    text-decoration: none;
+}
+  
+.modal-post-compose {
+    display: flex;
+    padding: 16px 0;
+}
+
+.compose-title-input {
+    width: 100%;
+    padding: 10px 0;
+    border: none;
+    border-bottom: 1px solid #eee;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    outline: none;
+}
+  
+.compose-title-input:focus {
+    border-bottom: 1px solid #dd4b39;
+}
+
+/* Comments */
+.comments {
+    margin-top: 15px;
+    padding-top: 10px;
+    border-top: 1px solid #ddd;
+}
+
+.comments h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.comments-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.comment-item {
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.comment-item:last-child {
+    border-bottom: none;
+}
+
+.comment-item b {
+    font-weight: bold;
+}
+
+.reply-button,
+.edit-comment-button,
+.delete-comment-button {
+    margin-left: 10px;
+    font-size: 12px;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+/* Styling for nested replies */
+.reply-item {
+    margin-left: 30px;
+    border-left: 2px solid #ddd;
+    padding-left: 10px;
+    margin-top: 5px;
+}
+
+/* Replying target message */
+.replying-to {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 5px;
+}
+
+/* Comment input area */
+.comment-input-area textarea {
+    width: 100%;
+    margin-top: 5px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.comment-input-area button {
+    margin-top: 5px;
+}
+
+/* Mobile Navigation */
+.mobile-nav {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: white;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+}
+
+.mobile-nav-menu {
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+}
+
+.mobile-menu-item {
+    color: #666;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px 0;
+    font-size: 12px;
+}
+
+.mobile-menu-item i {
+    font-size: 20px;
+    margin-bottom: 4px;
+}
+
+.mobile-menu-item.active {
+    color: #dd4b39;
+}
+
+/* Revised Media Queries for Better Mobile Formatting */
+
+/* Large desktops and laptops */
 @media (max-width: 1280px) {
-    .twitter-layout {
-        grid-template-columns: 88px 600px 1fr;
+    .main-layout {
+        grid-template-columns: 88px minmax(auto, 600px) 300px;
+        max-width: 100%;
+        padding: 30px 10px;
     }
     
     .menu-item span {
@@ -726,19 +923,30 @@ body {
     }
 }
 
-@media (max-width: 1020px) {
-    .twitter-layout {
-        grid-template-columns: 88px 1fr;
+/* Tablets and small desktops */
+@media (max-width: 1024px) {
+    .main-layout {
+        grid-template-columns: 70px minmax(auto, 680px);
+        padding: 20px 10px;
+        gap: 5px;
     }
     
     .right-sidebar {
         display: none;
     }
+    
+    .main-feed {
+        border-radius: 8px;
+        width: 100%;
+    }
 }
 
-@media (max-width: 688px) {
-    .twitter-layout {
+/* Tablets and large phones */
+@media (max-width: 768px) {
+    .main-layout {
         grid-template-columns: 1fr;
+        padding: 0;
+        min-height: auto;
     }
     
     .left-sidebar {
@@ -748,128 +956,313 @@ body {
     .main-feed {
         border-left: none;
         border-right: none;
+        border-radius: 0;
+        max-height: none;
+        overflow-x: hidden;
+    }
+    
+    .feed-header {
+        display: block;
+        position: sticky;
+        top: 0;
+        background: white;
+        z-index: 10;
+        border-bottom: 1px solid #eee;
+    }
+    
+    .content-wrapper {
+        padding: 0 0 70px 0; /* Space for mobile nav */
+        margin-bottom: 0;
+    }
+    
+    .mobile-nav {
+        display: block;
+    }
+    
+    /* Adjust post layout for better mobile view */
+    .post {
+        padding: 12px;
+    }
+    
+    .post-avatar img {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .post-actions {
+        flex-wrap: wrap;
+        max-width: 100%;
+    }
+    
+    /* Improve modal for mobile */
+    .modal-content {
+        margin: 10% auto;
+        width: 92%;
+        padding: 16px;
+        max-height: 80vh;
+        overflow-y: auto;
+    }
+    
+    /* Show floating post button on mobile */
+    .mobile-post-btn {
+        display: flex;
+        position: fixed;
+        bottom: 70px;
+        right: 20px;
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        background-color: #dd4b39;
+        color: white;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        z-index: 99;
+    }
+    
+    /* Ensure compose post area fits on mobile */
+    .compose-post {
+        padding: 10px;
+    }
+    
+    .compose-input {
+        min-height: 60px;
+        font-size: 16px;
+    }
+    
+    .compose-title-input {
+        font-size: 16px;
     }
 }
 
-/* Modal post box */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(4px);
-  }
-  
-  .modal-content {
-    background-color: white;
-    margin: 10% auto;
-    padding: 20px;
-    border-radius: 15px;
-    width: 800px;
-    max-width: 95%;
-    position: relative;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-  }
-  
-  .close-modal {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-    cursor: pointer;
-    position: absolute;
-    right: 20px;
-    top: 10px;
-  }
-  
-  .close-modal:hover,
-  .close-modal:focus {
-    color: #dd4b39;
-    text-decoration: none;
-  }
-  
-  .modal-post-compose {
-    display: flex;
-    padding: 16px 0;
-  }
-
-  .compose-title-input {
-    width: 100%;
-    padding: 10px 0;
-    border: none;
-    border-bottom: 1px solid #eee;
-    font-size: 18px;
-    font-weight: 600;
-    margin-bottom: 10px;
-    outline: none;
-  }
-  
-  .compose-title-input:focus {
-    border-bottom: 1px solid #dd4b39;
-  }
-  
-  .modal-content {
-    width: 550px;
-  }
-
-
-    .comments {
-    margin-top: 15px;
-    padding-top: 10px;
-    border-top: 1px solid #ddd;
+/* Small phones */
+@media (max-width: 480px) {
+    .post {
+        padding: 10px;
     }
-    .comments h3 {
-    font-size: 18px;
-    margin-bottom: 10px;
+    
+    .post-content {
+        font-size: 14px;
     }
-    .comments-list {
-    list-style: none;
-    padding: 0;
+    
+    .compose-post {
+        padding: 10px;
     }
+    
+    .compose-profile-img img {
+        width: 36px;
+        height: 36px;
+    }
+    
+    .post-text h4 {
+        font-size: 1rem;
+    }
+    
+    .post-text {
+        font-size: 14px;
+    }
+    
+    .post-action-btn {
+        padding: 5px;
+        font-size: 12px;
+    }
+    
+    .post-action-btn i {
+        font-size: 15px;
+        margin-right: 3px;
+    }
+    
+    /* Simplify comment interface on mobile */
     .comment-item {
-    padding: 10px 0;
-    border-bottom: 1px solid #eee;
+        padding: 8px 0;
     }
-    .comment-item:last-child {
-    border-bottom: none;
-    }
-    .comment-item b {
-    font-weight: bold;
-    }
-    .reply-button,
-    .edit-comment-button,
-    .delete-comment-button {
-    margin-left: 10px;
-    font-size: 12px;
-    cursor: pointer;
-    text-decoration: none;
-    }
-    /* Styling for nested replies */
+    
     .reply-item {
-    margin-left: 30px;
-    border-left: 2px solid #ddd;
-    padding-left: 10px;
-    margin-top: 5px;
+        margin-left: 15px;
+        padding-left: 8px;
     }
-    /* Replying target message */
-    .replying-to {
-    font-size: 14px;
-    color: #555;
-    margin-bottom: 5px;
+    
+    /* Stack post footer buttons on mobile */
+    .post-footer {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-top: 10px;
     }
-    /* Comment input area */
+    
+    .post-footer button {
+        width: 100%;
+        padding: 6px 12px;
+        font-size: 14px;
+    }
+    
+    /* Fix tab buttons */
+    .tab-btn {
+        padding: 10px 0;
+        font-size: 14px;
+    }
+    
+    /* Adjust mobile nav */
+    .mobile-menu-item {
+        font-size: 10px;
+    }
+    
+    .mobile-menu-item i {
+        font-size: 18px;
+    }
+    
+    /* Adjust modal on smaller screens */
+    .modal-content {
+        margin: 5% auto;
+        padding: 12px;
+    }
+    
+    /* Ensure form inputs are finger-friendly */
     .comment-input-area textarea {
-    width: 100%;
-    margin-top: 5px;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+        min-height: 60px;
+        font-size: 16px; /* Prevents iOS zoom on focus */
     }
-    .comment-input-area button {
-    margin-top: 5px;
+    .compose-submit {
+        padding: 10px 15px;
+        font-size: 12px;
+        border-radius: 15px;
     }
+
+
+}
+
+/* Extra small phones */
+@media (max-width: 375px) {
+    .post {
+        padding: 8px;
+    }
+    
+    .post-avatar img {
+        width: 32px;
+        height: 32px;
+    }
+    
+    .post-author {
+        font-size: 14px;
+    }
+    
+    .post-time {
+        font-size: 12px;
+    }
+    
+    .post-text h4 {
+        font-size: 0.9rem;
+    }
+    
+    .post-text p {
+        font-size: 13px;
+    }
+    
+    .compose-input {
+        min-height: 50px;
+    }
+    
+    .compose-submit {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+    
+    /* Adjust post actions for very small screens */
+    .post-actions {
+        gap: 5px;
+    }
+    
+    .post-action-btn {
+        padding: 4px;
+    }
+    
+    .post-action-btn i {
+        font-size: 14px;
+        margin-right: 2px;
+    }
+    
+    /* Compact tabs */
+    .tab-btn {
+        padding: 8px 0;
+        font-size: 12px;
+    }
+    
+    /* Adjust floating button position */
+    .mobile-post-btn {
+        bottom: 65px;
+        right: 15px;
+        width: 48px;
+        height: 48px;
+        font-size: 20px;
+    }
+}
+
+/* Fix mobile display visibility */
+.mobile-post-btn {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .mobile-post-btn {
+        display: flex;
+    }
+    
+    .feed-header {
+        display: block;
+    }
+}
+
+@media (min-width: 769px) {
+    .feed-header {
+        display: none;
+    }
+}
+
+
+
+.dropdown {
+    position: relative;
+  }
+  
+  .options-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background-color: white;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+    z-index: 100;
+    min-width: 150px;
+  }
+  
+  .options-menu.show {
+    display: block;
+  }
+  
+  .options-menu button {
+    white-space: nowrap;
+    text-align: left;
+    font-size: 14px;
+  }
+  
+  .options-btn {
+    background: none;
+    border: none;
+    color: #666;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .options-btn:hover {
+    background-color: rgba(221, 75, 57, 0.1);
+    color: #dd4b39;
+  }
