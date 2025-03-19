@@ -17,3 +17,9 @@ class CommunitySerializer(serializers.ModelSerializer):
             'created_by_username',
         ]
         read_only_fields = ['id', 'created_at', 'created_by_username']
+from .models import Community
+
+class CommunitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Community
+        fields = ['name', 'description', 'community_image', 'contact_email']

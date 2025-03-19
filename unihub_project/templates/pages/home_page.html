@@ -37,14 +37,9 @@
           </div>
           <div class="sidebar-menu">
 
-            <a href="{% url 'search_page' %}" class="menu-item active">
+            <a href="{% url 'search_page' %}" class="menu-item">
               <i class="fa-solid fa-search"></i>
               <span>Search</span>
-            </a>
-
-            <a href="#" class="menu-item active">
-              <i class="fa-solid fa-house"></i>
-              <span>Home</span>
             </a>
             <a href="#" class="menu-item">
               <i class="fa-solid fa-bell"></i>
@@ -74,13 +69,6 @@
 
       <!-- Main Feed -->
       <div class="main-feed">
-        <div class="feed-header">
-          <div class="feed-tabs">
-            <button class="tab-btn active btn btn-link">For You</button>
-            <button class="tab-btn btn btn-link">Following</button>
-            <button class="tab-btn btn btn-link">University</button>
-          </div>
-        </div>
         
         <!-- Compose Post (Inline in Feed) -->
         <div class="compose-post d-flex align-items-start mb-4">
@@ -92,16 +80,28 @@
             <textarea class="compose-input form-control" placeholder="What's happening?"></textarea>
             <!-- Tags input -->
             <input type="text" class="compose-tags-input form-control mb-2" placeholder="Hashtags (e.g., #study, #events)" style="border:none; margin-top: 10px;">
-            <div class="compose-actions d-flex justify-content-between align-items-center mt-2">
-              <div class="compose-tools">
-                <div class="form-group mt-2">
-                  <input type="file" class="" accept="image/*" >
-                </div>
+            
+            <!-- Image Preview Container (initially hidden) -->
+            <div class="image-preview-container" style="display: none; margin-top: 10px; margin-bottom: 10px;">
+              <div class="position-relative">
+                <img id="image-preview" src="#" alt="Preview" class="img-fluid rounded" style="max-height: 200px;" >
+                <button type="button" class="btn-close position-absolute top-0 end-0 bg-white rounded-circle m-1" id="remove-image" aria-label="Remove image"></button>
               </div>
-              <button class="compose-submit btn btn-success">Post</button>
             </div>
-          </div>
+    
+    <div class="compose-actions d-flex justify-content-between align-items-center mt-2">
+      <div class="compose-tools">
+        <div class="form-group mt-2">
+          <label class="img-upload" for="img-upload" style="cursor: pointer;">
+            <i class="fa-solid fa-camera"></i>
+          </label>
+          <input type="file" class="image-upload" style="display: none;" id="img-upload" accept="image/*">
         </div>
+      </div>
+      <button class="compose-submit btn btn-success">Post</button>
+    </div>
+  </div>
+</div>
         
         <!-- Recent Posts section -->
         <div class="post-divider mb-3">
@@ -132,9 +132,24 @@
                   {% endif %}
                 </div>
                 <div class="post-options">
-                  <button class="options-btn">
-                    <i class="fa-solid fa-ellipsis"></i>
-                  </button>
+                  <div class="dropdown">
+                    <button class="options-btn" onclick="toggleOptionsMenu(event, {{ post.id }})">
+                      <i class="fa-solid fa-ellipsis" style="font-weight: bolder;"></i>
+                    </button>
+                    <div class="options-menu" id="options-menu-{{ post.id }}">
+                      {% if post.can_edit and post.user == user %}
+                      <form action="{% url 'edit_post' post.id %}" method="get" style="display:block; margin-bottom: 10px;">
+                        <button type="submit" class="edit-button btn btn-warning w-100">Edit Post</button>
+                      </form>
+                      {% endif %}
+                      {% if post.user == user %}
+                      <form action="{% url 'delete_post' post.id %}" method="post" style="display:block;" onsubmit="return confirmDelete()">
+                        {% csrf_token %}
+                        <button type="submit" class="delete-button btn btn-danger w-100">Delete Post</button>
+                      </form>
+                      {% endif %}
+                    </div>
+                  </div>
                 </div>
               </div>
               <!-- Text -->
@@ -154,27 +169,27 @@
               <div class="post-actions">
                 {% if post.liked %}
                 <button onclick="toggleLike({{ post.id }})" id="like-button-{{ post.id }}" class="post-action-btn like-btn" data-liked="true">
-                  <i class="fas fa-thumbs-up"></i>
-                  <span id="like-text-{{ post.id }}">Unlike</span>
+                  <i class="fa-solid fa-heart"></i>
+                  <span id="like-text-{{ post.id }}"></span>
                   (<span id="like-count-{{ post.id }}">{{ post.likes_count }}</span>)
                 </button>
                 {% else %}
                 <button onclick="toggleLike({{ post.id }})" id="like-button-{{ post.id }}" class="post-action-btn like-btn" data-liked="false">
-                  <i class="fas fa-thumbs-up"></i>
-                  <span id="like-text-{{ post.id }}">Like</span>
-                  (<span id="like-count-{{ post.id }}">{{ post.likes_count }}</span>)
+                  <i class="fa-regular fa-heart"></i>
+                  <span id="like-text-{{ post.id }}"></span>
+                  <span id="like-count-{{ post.id }}">{{ post.likes_count }}</span>
                 </button>
                 {% endif %}
                 <div class="post-footer">
                   {% if post.can_edit and post.user == user %}
                   <form action="{% url 'edit_post' post.id %}" method="get" style="display:inline;">
-                    <button type="submit" class="edit-button btn btn-warning">Edit Post</button>
+                  <!-- <button type="submit" class="edit-button btn btn-warning">Edit Post</button> -->
                   </form>
                   {% endif %}
                   {% if post.user == user %}
                   <form action="{% url 'delete_post' post.id %}" method="post" style="display:inline;" onsubmit="return confirmDelete()">
                     {% csrf_token %}
-                    <button type="submit" class="delete-button btn btn-danger">Delete Post</button>
+                    <!-- <button type="submit" class="delete-button btn btn-danger">Delete Post</button> -->
                   </form>
                   {% endif %}
                 </div>
@@ -182,7 +197,7 @@
                 <button class="post-action-btn comment-btn" onclick="toggleComments({{ post.id }})">
                   <i class="fas fa-comment"></i>
                   <span>{{ post.comments_count }}</span>
-                  <span class="comments-text">comments</span>
+                  <span class="comments-text"></span>
                 </button>
               </div>
               
@@ -408,6 +423,7 @@
         const likeButton = document.getElementById(`like-button-${postId}`);
         const likeText = document.getElementById(`like-text-${postId}`);
         const likeCount = document.getElementById(`like-count-${postId}`);
+        const likeIcon = likeButton.querySelector('i'); // Get the icon element
         
         const response = await fetch(`/api/post/like-post/${postId}/`, {
           method: "POST",
@@ -417,9 +433,17 @@
         
         if (response.ok) {
           let data = await response.json();
-          likeText.textContent = data.liked ? "Unlike" : "Like";
           likeCount.textContent = data.like_count;
           likeButton.setAttribute("data-liked", data.liked);
+          
+          // Toggle between fa-solid and fa-regular classes
+          if (data.liked) {
+            likeIcon.classList.remove('fa-regular');
+            likeIcon.classList.add('fa-solid');
+          } else {
+            likeIcon.classList.remove('fa-solid');
+            likeIcon.classList.add('fa-regular');
+          }
         }
       }
       
@@ -525,38 +549,130 @@
       
     });
   </script>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('change', (e) => {
+if (e.target.classList.contains('image-upload') || e.target.id === 'img-upload') {
+const fileInput = e.target;
+
+const composeContainer = fileInput.closest('.compose-input-container');
+if (!composeContainer) return;
+
+const previewContainer = composeContainer.querySelector('.image-preview-container');
+const imagePreview = composeContainer.querySelector('#image-preview');
+
+if (!previewContainer || !imagePreview) return;
+
+if (fileInput.files && fileInput.files[0]) {
+const file = fileInput.files[0];
+
+if (!file.type.match('image.*')) {
+alert('Please select an image file.');
+fileInput.value = '';
+return;
+}
+
+// 10 MB limit
+if (file.size > 10 * 1024 * 1024) {
+alert('Image is too large. Please select an image under 5MB.');
+fileInput.value = '';
+return;
+}
+
+imagePreview.src = URL.createObjectURL(file);
+previewContainer.style.display = 'block';
+
+imagePreview.dataset.objectUrl = imagePreview.src;
+}
+}
+});
+document.addEventListener('click', (e) => {
+if (e.target.id === 'remove-image' || e.target.closest('#remove-image')) {
+e.preventDefault();
+
+const removeBtn = e.target.id === 'remove-image' ? e.target : e.target.closest('#remove-image');
+const previewContainer = removeBtn.closest('.image-preview-container');
+const composeContainer = removeBtn.closest('.compose-input-container');
+
+if (!previewContainer || !composeContainer) return;
+
+const fileInput = composeContainer.querySelector('input[type="file"]');
+const imagePreview = previewContainer.querySelector('#image-preview');
+
+if (fileInput) fileInput.value = '';
+
+// Revoke object URL to free memory
+if (imagePreview && imagePreview.dataset.objectUrl) {
+URL.revokeObjectURL(imagePreview.dataset.objectUrl);
+delete imagePreview.dataset.objectUrl;
+}
+
+previewContainer.style.display = 'none';
+}
+});
+});
+
+function toggleOptionsMenu(event, postId) {
+  event.stopPropagation(); // Prevent click from bubbling up
   
+  const menu = document.getElementById(`options-menu-${postId}`);
+  menu.classList.toggle('show');
+  
+  // Close all other open menus
+  document.querySelectorAll('.options-menu.show').forEach(openMenu => {
+    if (openMenu.id !== `options-menu-${postId}`) {
+      openMenu.classList.remove('show');
+    }
+  });
+  
+  // Close when clicking elsewhere
+  document.addEventListener('click', function closeMenu(e) {
+    if (!e.target.closest(`.options-btn`) && !e.target.closest(`#options-menu-${postId}`)) {
+      menu.classList.remove('show');
+      document.removeEventListener('click', closeMenu);
+    }
+  });
+}
+
+</script>
   <!-- Post Modal -->
   <div id="postModal" class="modal" style="display:none;">
-    <div class="modal-content" style="background: white; margin: 10% auto; padding: 20px; width: 80%; max-width: 500px; border-radius: 8px; position: relative;">
-      <span class="close-modal" style="position: absolute; top: 10px; right: 15px; font-size: 28px; cursor: pointer;">&times;</span>
-      <div class="modal-post-compose d-flex">
+    <div class="modal-content">
+      <span class="close-modal">&times;</span>
+      <div class="modal-post-compose d-flex align-items-start">
         <div class="compose-profile-img me-2">
           <img src="{% static 'bingus.jpg' %}" alt="Profile Photo" width="50" height="50">
         </div>
         <div class="compose-input-container flex-grow-1">
-          <input type="text" class="compose-title-input form-control mb-2" placeholder="Title..." style="margin-top: 20px;">
+          <input type="text" class="compose-title-input form-control mb-2" placeholder="Title...">
           <textarea class="compose-input form-control" placeholder="What's happening?"></textarea>
-          <!-- Tags input in modal -->
+          <!-- Tags input -->
           <input type="text" class="compose-tags-input form-control mb-2" placeholder="Hashtags (e.g., #study, #events)" style="border:none; margin-top: 10px;">
-          <!-- Optional file input for attachments -->
-
-          {% comment %} <div class="compose-actions d-flex justify-content-between align-items-center mt-2"> {% endcomment %}
-              {% comment %} <button class="compose-tool btn btn-light">
-                <i class="fa-solid fa-image"></i>
-              </button>
-              <button class="compose-tool btn btn-light">
-                <i class="fa-solid fa-calendar-day"></i>
-              </button> {% endcomment %}
+          
+          <!-- Image Preview Container (initially hidden) -->
+          <div class="image-preview-container" style="display: none; margin-top: 10px; margin-bottom: 10px;">
+            <div class="position-relative">
+              <img id="image-preview" src="#" alt="Preview" class="img-fluid rounded" style="max-height: 200px;">
+              <button type="button" class="btn-close position-absolute top-0 end-0 bg-white rounded-circle m-1" id="remove-image" aria-label="Remove image"></button>
+            </div>
+          </div>
+          
+          <div class="compose-actions d-flex justify-content-between align-items-center mt-2">
+            <div class="compose-tools">
               <div class="form-group mt-2">
-                <input type="file" class="" accept="image/*" >
+                <label class="img-upload" for="modal-img-upload">
+                  <i class="fa-solid fa-camera"></i>
+                </label>
+                <input type="file" class="image-upload" id="modal-img-upload" style="display: none;" accept="image/*">
               </div>
+            </div>
             <button class="compose-submit btn btn-success">Post</button>
-          {% comment %} </div> {% endcomment %}
+          </div>
         </div>
       </div>
     </div>
-  </div>
-  
 </body>
 </html>
+
+
