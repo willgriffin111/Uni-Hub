@@ -11,6 +11,7 @@
   <script src="https://kit.fontawesome.com/c43d240003.js" crossorigin="anonymous"></script>
   <!-- Custom CSS -->
   <link rel="stylesheet" href="{% static 'nav_footer.css' %}">
+  <!-- We reuse our create_post.css as a base; you can add community-specific adjustments in create_community.css -->
   <link rel="stylesheet" href="{% static 'create_community.css' %}">
 </head>
 <body>
@@ -86,13 +87,13 @@
 
     document.getElementById("community-form").addEventListener("submit", async function(event) {
       event.preventDefault();
-
+      // Gather form data
       const name = document.getElementById("community-name").value;
       const description = document.getElementById("community-description").value;
       const contactEmail = document.getElementById("community-contact").value;
       const logoInput = document.getElementById("community-logo").files[0];
       const csrfToken = getCSRFToken();
-
+    
       let formData = new FormData();
       formData.append("name", name);
       formData.append("description", description);
@@ -100,22 +101,20 @@
       if (logoInput) {
         formData.append("logo", logoInput);
       }
-
+    
       try {
         let response = await fetch("/api/community/community/", {
           method: "POST",
           credentials: "include",
           headers: {
-            "X-CSRFToken": csrfToken
+              "X-CSRFToken": csrfToken
           },
           body: formData
         });
         let result = await response.json();
         if (response.ok) {
-          // We expect result = { "redirect_url": "...", "name": "test6" }
-          document.getElementById("responseMessage").innerText = "Community created successfully!";
           // Redirect to the new community's detail page
-          window.location.href = "/community/" + encodeURIComponent(result.name) + "/";
+          window.location.href = result.redirect_url;
         } else {
           document.getElementById("responseMessage").innerText = "Error: " + JSON.stringify(result);
         }
@@ -123,7 +122,7 @@
         document.getElementById("responseMessage").innerText = "Network error!";
       }
     });
+    
   </script>
-  
 </body>
 </html>

@@ -1,4 +1,10 @@
 from rest_framework import generics, permissions, status
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from django.shortcuts import get_object_or_404
+from api.community.models import Community, CommunityRole
+from .serializers import CommunitySerializer
+from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.contrib.auth import get_user_model
@@ -148,3 +154,25 @@ class CreateCommunityView(generics.CreateAPIView):
         # Return the URL and the community name in the response
         return Response({"redirect_url": redirect_url, "name": community.name},
                         status=status.HTTP_201_CREATED)
+        
+class CreateCommunityView(generics.CreateAPIView):
+    """
+    POST /api/community/community/ -> Creates a new community.
+    The creator is set as the admin and automatically added as a member.
+    """
+    queryset = Community.objects.all()
+    serializer_class = CommunitySerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def create(self, request, *args, **kwargs):
+        # Validate data using the serializer.
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        # Save the community with created_by as the current user.
+        community = serializer.save(created_by=request.user)
+        # Add creator as a member and assign the admin role.
+        community.members.add(request.user)
+        CommunityRole.objects.create(user=request.user, community=community, role='admin')
+        # Construct the redirect URL (adjust as needed: here we use community name)
+        redirect_url = f"/community/{community.name}/"
+        return Response({"redirect_url": redirect_url}, status=status.HTTP_201_CREATED)

@@ -34,7 +34,7 @@ urlpatterns = [
     #comunities
     path('community/', community_list_view, name='community_list'),
     path('communities/<str:community_name>/', views.community_view, name="community_page"),
-    path('edit_community/<str:community_name>/', views.community_edit_view, name="community_edit_page"),
+    #path('edit_community/<str:community_name>/', views.community_edit_view, name="community_edit_page"),
 
     path('search/', views.search_view, name='search_page'),
     # Include API endpoints from the accounts app
@@ -49,7 +49,8 @@ urlpatterns = [
     path('community/<str:community_name>/', views.community_view, name='community_page'),
     path('community/<str:community_name>/', community_view, name='community_page'),
     path('community/create/', community_create_page, name='community_create_page'),
-
+    path('community/create/', views.community_create_page, name='community_create_page'),
+    
 
     
 

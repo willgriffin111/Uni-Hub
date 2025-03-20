@@ -1,5 +1,8 @@
 from rest_framework import serializers
+from django.contrib.auth import get_user_model
 from api.community.models import Community
+
+User = get_user_model()
 
 class CommunitySerializer(serializers.ModelSerializer):
     # Show the creator's username (read-only)
@@ -15,6 +18,7 @@ class CommunitySerializer(serializers.ModelSerializer):
             'contact_email',
             'created_at',
             'created_by_username',
+            'community_image',
         ]
         read_only_fields = ['id', 'created_at', 'created_by_username']
 from .models import Community
