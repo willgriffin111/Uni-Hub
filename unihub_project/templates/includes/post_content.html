@@ -142,21 +142,7 @@
   </div>
 </div>
 
-<!-- Image Modal for full-size images -->
-<div id="imageModal" class="modal">
-  <div class="modal-content-wrapper">
-    <span class="close" onclick="closeModal()">&times;</span>
-    <img class="modal-content" id="fullImage">
-  </div>
-</div>
 
-<!-- Image Modal for full-size images -->
-<div id="imageModal" class="modal">
-  <div class="modal-content-wrapper">
-    <span class="close" onclick="closeModal()">&times;</span>
-    <img class="modal-content" id="fullImage">
-  </div>
-</div>
 
   <script>
     // Post-related functions
@@ -389,6 +375,7 @@
         const title = titleInput.value.trim();
         const content = contentInput.value.trim();
         const tags = tagsInput ? tagsInput.value.trim() : "";
+        const community = {{ community.id }}
         
         if (!title || !content) {
         alert("Please fill in both title and content.");
@@ -399,6 +386,9 @@
         formData.append("title", title);
         formData.append("content", content);
         formData.append("tags", tags);
+        if (community) {
+          formData.append("community", community);
+        }
         
         if (fileInput && fileInput.files.length > 0) {
         formData.append("image", fileInput.files[0]);
@@ -539,4 +529,22 @@ function toggleOptionsMenu(event, postId) {
     scrollableContainer.addEventListener('scroll', scrollHandler);
   }
 }
+
+function openModal(imageSrc) {
+  var modal = document.getElementById("imageModal");
+  var modalImg = document.getElementById("fullImage");
+  modal.style.display = "flex";  // Show modal
+  modalImg.src = imageSrc;
+}
+
+function closeModal() {
+  document.getElementById("imageModal").style.display = "none";
+}
   </script>
+
+  <div id="imageModal" class="modal image-enlage">
+    <div class="modal-content-wrapper image-enlage">
+      <span class="close image-enlage" onclick="closeModal()">&times;</span>
+      <img class="modal-content image-enlage" id="fullImage">
+    </div>
+  </div>

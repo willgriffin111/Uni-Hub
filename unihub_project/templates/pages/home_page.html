@@ -162,7 +162,7 @@
               <!-- Media (if available) -->
               {% if post.image %}
               <div class="post-media">
-                <img src="{{ post.image.url }}" alt="Post Image">
+                <img src="{{ post.image.url }}" alt="Post Image" onclick="openModal('{{ post.image.url }}')">
               </div>
               {% endif %}
               
@@ -619,6 +619,17 @@ function toggleOptionsMenu(event, postId) {
   });
 }
 
+function openModal(imageSrc) {
+  var modal = document.getElementById("imageModal");
+  var modalImg = document.getElementById("fullImage");
+  modal.style.display = "flex";  // Show modal
+  modalImg.src = imageSrc;
+}
+
+function closeModal() {
+  document.getElementById("imageModal").style.display = "none";
+}
+
 </script>
   <!-- Post Modal -->
   <div id="postModal" class="modal" style="display:none;">
@@ -656,6 +667,14 @@ function toggleOptionsMenu(event, postId) {
         </div>
       </div>
     </div>
+
+</div>
+<div id="imageModal" class="modal image-enlage">
+  <div class="modal-content-wrapper image-enlage">
+    <span class="close image-enlage" onclick="closeModal()">&times;</span>
+    <img class="modal-content image-enlage" id="fullImage">
+  </div>
+</div>
 </body>
 </html>
 

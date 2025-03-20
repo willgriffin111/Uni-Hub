@@ -14,40 +14,12 @@
     <!-- Custom Styles -->
     <link rel="stylesheet" href="{% static 'community_view.css' %}">
     <link rel="stylesheet" href="{% static 'nav_footer.css' %}">
+    <link rel="stylesheet" href="{% static 'post_content.css' %}">
+    <link rel="stylesheet" href="{% static 'post_content.css' %}">
 </head>
 <body>
 
-    <nav class="navbar navbar-expand-lg">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="">UNI-HUB</a>
-            
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#navbarNav" aria-controls="navbarNav" 
-                    aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            
-            <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link" href="">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="">Profile</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="">Activities</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="">Communities</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="">Accessibility</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+    {% include '../includes/header.html' %}
     
     <!-- Community Page Content -->
     <div class="container community-container">
@@ -117,6 +89,7 @@
                             
                             <div class="posts-list">
                                 <!-- Posts content goes here -->
+                                {% include '../includes/post_content.html' %} 
                             </div>
                         </div>
                     </div>
@@ -651,14 +624,15 @@
       <span class="close-modal">&times;</span>
       <div class="modal-post-compose d-flex align-items-start">
         <div class="compose-profile-img me-2">
-          <img src="/unihub_project/images/asian-bingus.webp" alt="Profile Photo" width="50" height="50">
+          <img src="{% static 'bingus.jpg' %}" alt="Profile Photo" width="50" height="50">
         </div>
         <div class="compose-input-container flex-grow-1">
           <input type="text" class="compose-title-input form-control mb-2" placeholder="Title...">
           <textarea class="compose-input form-control" placeholder="What's happening?"></textarea>
-
+          <!-- Tags input -->
           <input type="text" class="compose-tags-input form-control mb-2" placeholder="Hashtags (e.g., #study, #events)" style="border:none; margin-top: 10px;">
           
+          <!-- Image Preview Container (initially hidden) -->
           <div class="image-preview-container" style="display: none; margin-top: 10px; margin-bottom: 10px;">
             <div class="position-relative">
               <img id="image-preview" src="#" alt="Preview" class="img-fluid rounded" style="max-height: 200px;">
@@ -675,7 +649,7 @@
                 <input type="file" class="image-upload" id="modal-img-upload" style="display: none;" accept="image/*">
               </div>
             </div>
-            <button class="compose-submit ">Post</button>
+            <button class="compose-submit btn btn-success">Post</button>
           </div>
         </div>
       </div>
