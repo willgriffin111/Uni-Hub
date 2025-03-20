@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UNI-HUB - Web Development Group</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- FontAwesome -->
+    <script src="https://kit.fontawesome.com/c43d240003.js" crossorigin="anonymous"></script>
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="/unihub_project/static/community_view.css">
+    <link rel="stylesheet" href="/unihub_project/static/nav_footer.css">
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{{ url_for('home') }}">UNI-HUB</a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#navbarNav" aria-controls="navbarNav" 
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="">Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="">Activities</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="">Communities</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="">Accessibility</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Community Page Content -->
+    <div class="container community-container">
+        <!-- Community Header -->
+        <div class="community-header">
+            <div class="community-cover-photo">
+                <div class="community-avatar">
+                    <img src="/unihub_project/images/webdev.webp" alt="Web Development Group">
+                </div>
+            </div>
+            
+            <div class="community-header-content">
+                <div class="community-title-area">
+                    <h1 class="community-name">Web Development Group</h1>
+                    <span class="community-category">Study Group</span>
+                    <span class="community-members">45 members</span>
+                </div>
+                
+                <div class="community-actions">
+                    <button id="joinLeaveBtn" class="btn-join-leave">Join Community</button>
+                    <button class="btn-contact"><i class="fa-solid fa-envelope"></i> Contact</button>
+                    <button class="btn-share"><i class="fa-solid fa-share-nodes"></i> Share</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Community Navigation -->
+        <div class="community-navigation">
+            <ul class="cnav-tabs" id="communityTabs" role="tablist">
+                <li class="cnav-item" role="presentation">
+                    <button class="cnav-link active" id="main-tab" data-bs-toggle="tab" data-bs-target="#main" type="button" role="tab" aria-controls="main" aria-selected="true">Main</button>
+                </li>
+                <li class="cnav-item" role="presentation">
+                    <button class="cnav-link" id="members-tab" data-bs-toggle="tab" data-bs-target="#members" type="button" role="tab" aria-controls="members" aria-selected="false">Members</button>
+                </li>
+                <li class="cnav-item" role="presentation">
+                    <button class="cnav-link" id="events-tab" data-bs-toggle="tab" data-bs-target="#events" type="button" role="tab" aria-controls="events" aria-selected="false">Events</button>
+                </li>
+                <li class="cnav-item" role="presentation">
+                    <button class="cnav-link" id="Moderator" data-bs-toggle="tab" data-bs-target="#moderator" type="button" role="tab" aria-controls="events" aria-selected="false">Admin</button>
+                </li>
+            </ul>
+        </div>
+        
+        <!-- Community Content Tabs -->
+        <div class="tab-content">
+            <!-- Main Tab -->
+            <div class="tab-pane fade show active" id="main">
+                <div class="content-grid">
+                    <div class="main-content">
+                        <!-- Community Posts -->
+                        <div class="content-card">
+                            <h2 class="card-title">Community Posts</h2>
+                            <!-- Create Post Area -->
+                                <div class="create-post content-card">
+                                    <div class="d-flex align-items-center">
+                                    <div class="post-avatar">
+                                        <img src="profile-image.jpg" alt="Your Profile">
+                                    </div>
+                                    <button class="post-btn ms-2" id="openPostModal">
+                                        <i class="fas fa-edit me-1"></i> Create Post
+                                    </button>
+                                    </div>
+                                </div>
+                            
+                            <div class="posts-list">
+                                <!-- Posts content goes here -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="sidebar">
+                        <!-- About Us Card -->
+                        <div class="content-card">
+                            <h2 class="card-title">About Us</h2>
+                            <div class="about-content">
+                                <p>Welcome to the Web Development Group! We are a community focused on web development and design at the University of the West of England.</p>
+                                
+                                <p>Our mission is to provide a supportive environment where members can:</p>
+                                <ul>
+                                    <li>Learn new web development technologies and frameworks</li>
+                                    <li>Collaborate on projects and build portfolios</li>
+                                    <li>Share knowledge and resources with like-minded individuals</li>
+                                    <li>Network with industry professionals and alumni</li>
+                                </ul>
+                                
+                                <p>We welcome students of all skill levels, from complete beginners to experienced developers. Whether you're interested in front-end, back-end, or full-stack development, there's a place for you in our community.</p>
+                                
+                                <p>Our regular activities include:</p>
+                                <ul>
+                                    <li>Weekly coding sessions and workshops</li>
+                                    <li>Monthly guest speakers from industry</li>
+                                    <li>Quarterly hackathons and project showcases</li>
+                                    <li>Online resources and support</li>
+                                </ul>
+                                
+                                <p>Join us to enhance your skills, build your portfolio, and connect with other passionate web developers!</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Leadership/Roles Card -->
+                        <div class="content-card">
+                            <h2 class="card-title">Leadership</h2>
+                            <div class="leadership-list">
+                                <div class="leadership-item">
+                                    <div class="leader-avatar">
+                                        <img src="/images/bingus.jpg">
+                                    </div>
+                                    <div class="leader-info">
+                                        <h4 class="leader-name">Alex Rogers</h4>
+                                        <p class="leader-role">Group Admin</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="leadership-item">
+                                    <div class="leader-avatar">
+                                        <img src="/images/y2ht5fgx63g61.webp" alt="Michael Chen">
+                                    </div>
+                                    <div class="leader-info">
+                                        <h4 class="leader-name">Michael Chen</h4>
+                                        <p class="leader-role">Moderator</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="leadership-item">
+                                    <div class="leader-avatar">
+                                        <img src="/images/xqaxoy5y2hi61.webp" alt="Sarah Johnson">
+                                    </div>
+                                    <div class="leader-info">
+                                        <h4 class="leader-name">Sarah Johnson</h4>
+                                        <p class="leader-role">Events Coordinator</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Contact Info Card -->
+                        <div class="content-card">
+                            <h2 class="card-title">Contact Information</h2>
+                            <div class="contact-list">
+                                <div class="contact-item">
+                                    <i class="fa-solid fa-envelope"></i>
+                                    <span>webdev@unihub.edu</span>
+                                </div>
+                                <div class="contact-item">
+                                    <i class="fa-brands fa-discord"></i>
+                                    <span>Discord: UNI-HUB WebDev</span>
+                                </div>
+                                <div class="contact-item">
+                                    <i class="fa-solid fa-location-dot"></i>
+                                    <span>Tech Lab, Room 302, Engineering Building</span>
+                                </div>
+                                <div class="contact-item">
+                                    <i class="fa-solid fa-clock"></i>
+                                    <span>Weekly Meetings: Tuesdays, 5:30 PM - 7:30 PM</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Community Details Card -->
+                        <div class="content-card">
+                            <h2 class="card-title">Community Details</h2>
+                            <div class="details-list">
+                                <div class="detail-item">
+                                    <div class="detail-label">Created</div>
+                                    <div class="detail-value">September 10, 2024</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Category</div>
+                                    <div class="detail-value">Study Group</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Department</div>
+                                    <div class="detail-value">Computer Science</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Visibility</div>
+                                    <div class="detail-value">Public</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Members Tab -->
+            <div class="tab-pane fade" id="members">
+                <div class="content-card">
+                    <div class="members-header">
+                        <h2 class="card-title">Community Members (45)</h2>
+                        <div class="members-search">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" placeholder="Search members..." class="members-search-input">
+                        </div>
+                    </div>
+                    
+                    <div class="members-list">
+                        <!-- Leadership Section -->
+                        <div class="members-section">
+                            <h3 class="section-title">Leadership Team</h3>
+                            <div class="members-grid">
+                                <!-- Leader 1 -->
+                                <div class="member-card">
+                                    <div class="member-avatar">
+                                        <img src="/images/bingus.jpg" alt="Alex Rogers">
+                                    </div>
+                                    <div class="member-info">
+                                        <h4 class="member-name">Alex Rogers</h4>
+                                        <p class="member-role">Group Admin</p>
+                                        <p class="member-details">Computer Science • Year 2</p>
+                                    </div>
+                                    <button class="member-action-btn"><i class="fa-solid fa-envelope"></i></button>
+                                </div>
+                                
+                                <!-- Leader 2 -->
+                                <div class="member-card">
+                                    <div class="member-avatar">
+                                        <img src="{% static 'images/y2ht5fgx63g61.webp' %}" alt="Michael Chen">
+                                    </div>
+                                    <div class="member-info">
+                                        <h4 class="member-name">Michael Chen</h4>
+                                        <p class="member-role">Moderator</p>
+                                        <p class="member-details">Electrical Engineering • Year 3</p>
+                                    </div>
+                                    <button class="member-action-btn"><i class="fa-solid fa-envelope"></i></button>
+                                </div>
+                                
+                                <!-- Leader 3 -->
+                                <div class="member-card">
+                                    <div class="member-avatar">
+                                        <img src="{% static 'images/xqaxoy5y2hi61.webp' %}" alt="Sarah Johnson">
+                                    </div>
+                                    <div class="member-info">
+                                        <h4 class="member-name">Sarah Johnson</h4>
+                                        <p class="member-role">Events Coordinator</p>
+                                        <p class="member-details">Computer Science • Year 2</p>
+                                    </div>
+                                    <button class="member-action-btn"><i class="fa-solid fa-envelope"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Regular Members Section -->
+                        <div class="members-section">
+                            <h3 class="section-title">Members</h3>
+                            <div class="members-grid">
+                                <!-- Render more members here, usually with a loop in the actual template -->
+                                <div class="member-card">
+                                    <div class="member-avatar">
+                                        <img src="{% static 'images/emma.jpg' %}" alt="Emma Watson">
+                                    </div>
+                                    <div class="member-info">
+                                        <h4 class="member-name">Emma Watson</h4>
+                                        <p class="member-details">Computer Science • Year 3</p>
+                                    </div>
+                                    <button class="member-action-btn"><i class="fa-solid fa-envelope"></i></button>
+                                </div>
+                                
+                                <!-- Show more members -->
+                                <div class="member-card">
+                                    <div class="member-avatar">
+                                        <img src="{% static 'images/default-avatar.jpg' %}" alt="John Smith">
+                                    </div>
+                                    <div class="member-info">
+                                        <h4 class="member-name">John Smith</h4>
+                                        <p class="member-details">Computer Science • Year 1</p>
+                                    </div>
+                                    <button class="member-action-btn"><i class="fa-solid fa-envelope"></i></button>
+                                </div>
+                                
+                                <div class="member-card">
+                                    <div class="member-avatar">
+                                        <img src="{% static 'images/default-avatar.jpg' %}" alt="Lisa Johnson">
+                                    </div>
+                                    <div class="member-info">
+                                        <h4 class="member-name">Lisa Johnson</h4>
+                                        <p class="member-details">Computer Science • Year 2</p>
+                                    </div>
+                                    <button class="member-action-btn"><i class="fa-solid fa-envelope"></i></button>
+                                </div>
+                                
+                                <!-- And so on for more members -->
+                            </div>
+                            
+                            <!-- Pagination -->
+                            <div class="pagination-container">
+                                <button class="pagination-btn prev-btn" disabled><i class="fa-solid fa-chevron-left"></i></button>
+                                <span class="pagination-text">Page 1 of 10</span>
+                                <button class="pagination-btn next-btn"><i class="fa-solid fa-chevron-right"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Events Tab -->
+            <div class="tab-pane fade" id="events">
+                <div class="content-grid">
+                    <div class="main-content">
+                        <div class="content-card">
+                            <div class="events-header">
+                                <h2 class="card-title">Upcoming Events</h2>
+
+                            </div>
+                            
+                            <div class="events-list">
+                                <!-- Event 1 -->
+                                <div class="event-card">
+                                    <div class="event-date">
+                                        <div class="event-month">MAR</div>
+                                        <div class="event-day">25</div>
+                                    </div>
+                                    <div class="event-details">
+                                        <h3 class="event-title">Spring Web Development Hackathon</h3>
+                                        <p class="event-time"><i class="fa-solid fa-clock"></i> 10:00 AM - 8:00 PM</p>
+                                        <p class="event-location"><i class="fa-solid fa-location-dot"></i> Tech Lab, Engineering Building</p>
+                                        <p class="event-description">Join our 10-hour hackathon to build a web application from scratch! Prizes for the best projects, free food and drinks provided.</p>
+                                        <div class="event-attendance">
+                                            <span class="attendance-count">28 attending</span>
+                                            <button class="attend-btn">Attend</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Event 2 -->
+                                <div class="event-card">
+                                    <div class="event-date">
+                                        <div class="event-month">APR</div>
+                                        <div class="event-day">05</div>
+                                    </div>
+                                    <div class="event-details">
+                                        <h3 class="event-title">Workshop: Introduction to TailwindCSS</h3>
+                                        <p class="event-time"><i class="fa-solid fa-clock"></i> 5:30 PM - 7:30 PM</p>
+                                        <p class="event-location"><i class="fa-solid fa-location-dot"></i> Room 302, Engineering Building</p>
+                                        <p class="event-description">Learn how to use TailwindCSS to speed up your front-end development workflow. Bring your laptop!</p>
+                                        <div class="event-attendance">
+                                            <span class="attendance-count">14 attending</span>
+                                            <button class="attend-btn attending">Attending</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="content-card">
+                            <h2 class="card-title">Past Events</h2>
+                            <div class="events-list">
+                                <!-- Past Event -->
+                                <div class="event-card past-event">
+                                    <div class="event-date">
+                                        <div class="event-month">FEB</div>
+                                        <div class="event-day">18</div>
+                                    </div>
+                                    <div class="event-details">
+                                        <h3 class="event-title">Guest Speaker: Front-End Trends 2025</h3>
+                                        <p class="event-time"><i class="fa-solid fa-clock"></i> 6:00 PM - 8:00 PM</p>
+                                        <p class="event-location"><i class="fa-solid fa-location-dot"></i> Lecture Hall B, Main Building</p>
+                                        <p class="event-description">Industry expert John Mitchell from Google discussed upcoming trends in front-end development.</p>
+                                        <div class="event-attendance">
+                                            <span class="attendance-count">32 attended</span>
+                                            <button class="view-photos-btn">View Photos</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="sidebar">
+
+                        
+                        <!-- Event Stats -->
+                        <div class="content-card">
+                            <h2 class="card-title">Event Statistics</h2>
+                            <div class="stats-list">
+                                <div class="stat-item">
+                                    <div class="stat-label">Upcoming Events</div>
+                                    <div class="stat-value">2</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-label">This Month</div>
+                                    <div class="stat-value">1</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-label">Total Events (2025)</div>
+                                    <div class="stat-value">8</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-label">Average Attendance</div>
+                                    <div class="stat-value">24</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Moderator Tab -->
+<div class="tab-pane fade" id="moderator">
+    <div class="content-card">
+        <h2 class="card-title">Moderator Dashboard</h2>
+        <p class="moderator-intro">Welcome to the moderator dashboard. Here you can manage the community settings, events, and content.</p>
+        
+        <!-- Moderator Grid -->
+        <div class="moderator-grid">
+            <!-- Event Settings Card -->
+            <div class="mod-card">
+                <div class="mod-card-icon">
+                    <i class="fa-solid fa-calendar-days"></i>
+                </div>
+                <h3 class="mod-card-title">Event Settings</h3>
+                <p class="mod-card-description">Manage community events, approvals, and event visibility settings.</p>
+                <div class="mod-card-actions">
+                    <button class="mod-card-btn">Manage</button>
+                </div>
+            </div>
+            
+            <!-- User Settings Card -->
+            <div class="mod-card">
+                <div class="mod-card-icon">
+                    <i class="fa-solid fa-users"></i>
+                </div>
+                <h3 class="mod-card-title">User Settings</h3>
+                <p class="mod-card-description">Manage community members, roles, and permissions.</p>
+                <div class="mod-card-actions">
+                    <button class="mod-card-btn">Manage</button>
+                </div>
+            </div>
+            
+            <!-- Session Settings Card -->
+            <div class="mod-card">
+                <div class="mod-card-icon">
+                    <i class="fa-solid fa-clock"></i>
+                </div>
+                <h3 class="mod-card-title">Session Settings</h3>
+                <p class="mod-card-description">Configure meeting times, session durations, and recurring events.</p>
+                <div class="mod-card-actions">
+                    <button class="mod-card-btn">Manage</button>
+                </div>
+            </div>
+            
+            <!-- General Settings Card -->
+            <div class="mod-card">
+                <div class="mod-card-icon">
+                    <i class="fa-solid fa-gear"></i>
+                </div>
+                <h3 class="mod-card-title">General Settings</h3>
+                <p class="mod-card-description">Control community details, visibility, and content guidelines.</p>
+                <div class="mod-card-actions">
+                    <button class="mod-card-btn">Manage</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    
+    <!-- JavaScript for community page functionality -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Join/Leave community functionality
+            const joinLeaveBtn = document.
+        });
+
+</script>   
+    <!-- JavaScript for community page functionality -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Join/Leave community functionality
+            const joinLeaveBtn = document.getElementById('joinLeaveBtn');
+            let isMember = false;
+            
+            joinLeaveBtn.addEventListener('click', function() {
+                isMember = !isMember;
+                
+                if (isMember) {
+                    // User is now a member
+                    joinLeaveBtn.textContent = 'Leave Community';
+                    joinLeaveBtn.classList.add('is-member');
+                    
+                    // In a real app, you would make an API call here
+                    console.log('User joined the community');
+                } else {
+                    // User is no longer a member
+                    joinLeaveBtn.textContent = 'Join Community';
+                    joinLeaveBtn.classList.remove('is-member');
+                    
+                    // In a real app, you would make an API call here
+                    console.log('User left the community');
+                }
+            });
+            
+            // Attend event functionality
+            const attendBtns = document.querySelectorAll('.attend-btn');
+            
+            attendBtns.forEach(btn => {
+                if (!btn.classList.contains('attending')) {
+                    btn.addEventListener('click', function() {
+                        const isAttending = btn.classList.contains('attending');
+                        const attendanceCountEl = btn.previousElementSibling;
+                        let count = parseInt(attendanceCountEl.textContent);
+                        
+                        if (isAttending) {
+                            // User is no longer attending
+                            btn.textContent = 'Attend';
+                            btn.classList.remove('attending');
+                            count--;
+                            attendanceCountEl.textContent = count + ' attending';
+                        } else {
+                            // User is now attending
+                            btn.textContent = 'Attending';
+                            btn.classList.add('attending');
+                            count++;
+                            attendanceCountEl.textContent = count + ' attending';
+                        }
+                    });
+                }
+            });
+        });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Post Modal Functionality
+        var modal = document.getElementById("postModal");
+        var postBtn = document.getElementById("openPostModal"); // Updated selector to target the specific button
+        var closeModal = document.getElementsByClassName("close-modal")[0];
+        var readonlyInput = document.querySelector(".create-post input[readonly]");
+        
+        // When the user clicks on the create post button or the readonly input
+        if (postBtn) {
+            postBtn.onclick = function() {
+            modal.style.display = "block";
+            document.querySelector(".modal-post-compose .compose-input").focus();
+            }
+        }
+        
+        // Also allow clicking on the readonly input to open the modal
+        if (readonlyInput) {
+            readonlyInput.onclick = function() {
+            modal.style.display = "block";
+            document.querySelector(".modal-post-compose .compose-input").focus();
+            }
+        }
+        
+        // When the user clicks on the close button
+        if (closeModal) {
+            closeModal.onclick = function() {
+            modal.style.display = "none";
+            }
+        }
+        
+        // When the user clicks anywhere outside of the modal
+        window.onclick = function(event) {
+            if (event.target == modal) {
+            modal.style.display = "none";
+            }
+        }
+        
+        // Image upload preview functionality
+        const imageUpload = document.getElementById('modal-img-upload');
+        const imagePreview = document.getElementById('image-preview');
+        const imagePreviewContainer = document.querySelector('.image-preview-container');
+        const removeImageBtn = document.getElementById('remove-image');
+        
+        if (imageUpload) {
+            imageUpload.addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                imagePreview.src = e.target.result;
+                imagePreviewContainer.style.display = 'block';
+                }
+                
+                reader.readAsDataURL(this.files[0]);
+            }
+            });
+        }
+        
+        if (removeImageBtn) {
+            removeImageBtn.addEventListener('click', function() {
+            imagePreview.src = '#';
+            imagePreviewContainer.style.display = 'none';
+            imageUpload.value = '';
+            });
+        }
+        
+        // Post submission logic
+        const submitBtn = document.querySelector('.compose-submit');
+        if (submitBtn) {
+            submitBtn.addEventListener('click', function() {
+            // Get post data
+            const title = document.querySelector('.compose-title-input').value;
+            const content = document.querySelector('.compose-input').value;
+            const tags = document.querySelector('.compose-tags-input').value;
+            
+            // Basic validation
+            if (!content.trim()) {
+                alert('Please enter some content for your post.');
+                return;
+            }
+            
+            // Here you would typically send the data to your server
+            console.log('Submitting post:', { title, content, tags });
+            
+            // Close the modal and reset form
+            modal.style.display = 'none';
+            document.querySelector('.compose-title-input').value = '';
+            document.querySelector('.compose-input').value = '';
+            document.querySelector('.compose-tags-input').value = '';
+            imagePreviewContainer.style.display = 'none';
+            imageUpload.value = '';
+            });
+        }
+        });
+    </script>   
+
+  <!-- Post Modal -->
+  <div id="postModal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <span class="close-modal">&times;</span>
+      <div class="modal-post-compose d-flex align-items-start">
+        <div class="compose-profile-img me-2">
+          <img src="/unihub_project/images/asian-bingus.webp" alt="Profile Photo" width="50" height="50">
+        </div>
+        <div class="compose-input-container flex-grow-1">
+          <input type="text" class="compose-title-input form-control mb-2" placeholder="Title...">
+          <textarea class="compose-input form-control" placeholder="What's happening?"></textarea>
+
+          <input type="text" class="compose-tags-input form-control mb-2" placeholder="Hashtags (e.g., #study, #events)" style="border:none; margin-top: 10px;">
+          
+          <div class="image-preview-container" style="display: none; margin-top: 10px; margin-bottom: 10px;">
+            <div class="position-relative">
+              <img id="image-preview" src="#" alt="Preview" class="img-fluid rounded" style="max-height: 200px;">
+              <button type="button" class="btn-close position-absolute top-0 end-0 bg-white rounded-circle m-1" id="remove-image" aria-label="Remove image"></button>
+            </div>
+          </div>
+          
+          <div class="compose-actions d-flex justify-content-between align-items-center mt-2">
+            <div class="compose-tools">
+              <div class="form-group mt-2">
+                <label class="img-upload" for="modal-img-upload">
+                  <i class="fa-solid fa-camera"></i>
+                </label>
+                <input type="file" class="image-upload" id="modal-img-upload" style="display: none;" accept="image/*">
+              </div>
+            </div>
+            <button class="compose-submit ">Post</button>
+          </div>
+        </div>
+      </div>
+    </div>
+</body>
+</body>
+</html>
