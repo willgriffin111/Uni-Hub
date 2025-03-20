@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import LoginAPI, RegisterAPI, LogoutAPI, VerifyAPI, PasswordResetAPI, PasswordResetConfirmAPI, ProfileUpdateAPI, DeleteAccountAPI
+from .views import LoginAPI, RegisterAPI, LogoutAPI, VerifyAPI, PasswordResetAPI, PasswordResetConfirmAPI, ProfileUpdateAPI, DeleteAccountAPI, RemoveProfilePictureAPI
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [
@@ -13,5 +13,6 @@ urlpatterns = [
     
     path('api/profile-edit/', ProfileUpdateAPI.as_view(), name='api-profile-update'),
     path('api/delete-account/', DeleteAccountAPI.as_view(), name='api-delete-account'),
+      path('api/remove-profile-picture/', RemoveProfilePictureAPI.as_view(), name='api-remove-profile-picture'),
 ]
 

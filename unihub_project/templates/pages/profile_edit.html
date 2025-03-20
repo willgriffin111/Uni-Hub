@@ -30,18 +30,23 @@
             </div>
             <div class="card-body text-center">
                 {% if user.profile_picture %}
-                <img src="{{ user.profile_picture.url }}" 
-                alt="Profile Photo" 
-                class="img-fluid rounded-circle mb-3" 
-                style="width: 200px; height: 200px; object-fit: cover;">
-           
-              {% else %}
-              <img src="{% static 'user-image.png' %}" alt="{{ post.user.username }}" width="200" height="200">
+                    <img src="{{ user.profile_picture.url }}" 
+                    alt="Profile Photo" 
+                    class="img-fluid rounded-circle mb-3" 
+                    style="width: 200px; height: 200px; object-fit: cover;">
+                {% else %}
+                    <img src="{% static 'user-image.png' %}" alt="Profile Photo" width="200" height="200">
                 {% endif %}
-              <div class="mb-3">
-                <input type="file" name="profile_picture" class="form-control">
-              </div>
+            
+                <div class="mb-3">
+                    <input type="file" name="profile_picture" class="form-control">
+                </div>
+            
+                {% if user.profile_picture %}
+                    <button type="button" class="btn btn-danger mt-2" id="removeProfilePictureBtn">Remove Profile Picture</button>
+                {% endif %}
             </div>
+            
           </div>
         </div>
 
@@ -185,6 +190,35 @@
             });
         }
     });
+    const removeProfilePictureBtn = document.getElementById("removeProfilePictureBtn");
+    if (removeProfilePictureBtn) {
+      removeProfilePictureBtn.addEventListener("click", function() {
+        if (confirm("Are you sure you want to remove your profile picture?")) {
+          fetch("{% url 'api-remove-profile-picture' %}", {  
+            method: "DELETE",
+            credentials: "same-origin",
+            headers: {
+              "X-CSRFToken": getCSRFToken()
+            }
+          })
+          .then(response => response.json())
+          .then(data => {
+            if (data.message) {
+              alert("Your profile picture has been removed.");
+              window.location.reload();
+            } else {
+              alert("Error removing profile picture. Please try again.");
+            }
+          })
+          .catch(error => {
+            console.error("Error removing profile picture:", error);
+            alert("An error occurred while removing your profile picture.");
+          });
+        }
+      });
+    }
+
+
   </script>
 </body>
 </html>

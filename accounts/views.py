@@ -18,6 +18,7 @@ from django.utils.encoding import force_bytes
 from django.conf import settings
 from rest_framework.parsers import MultiPartParser, FormParser
 import os
+from django.core.files.storage import default_storage
 
 
 from django.contrib.auth.tokens import default_token_generator
@@ -262,3 +263,23 @@ class DeleteAccountAPI(APIView):
             return Response({"message": "Account and profile picture deleted successfully."}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        
+class RemoveProfilePictureAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request):
+        user = request.user
+
+        # Check if user has a profile picture
+        if user.profile_picture:
+            # Delete the profile picture file from storage
+            if default_storage.exists(user.profile_picture.name):  
+                default_storage.delete(user.profile_picture.name)  
+
+            # Remove the profile picture reference from user model
+            user.profile_picture = None
+            user.save()
+
+            return Response({"message": "Profile picture removed successfully."}, status=status.HTTP_200_OK)
+
+        return Response({"error": "No profile picture found."}, status=status.HTTP_400_BAD_REQUEST)
