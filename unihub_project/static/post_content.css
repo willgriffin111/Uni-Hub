@@ -1,0 +1,777 @@
+/* Posts */
+.post {
+    display: flex;
+    padding: 16px;
+    border-bottom: 1px solid #eee;
+    transition: background-color 0.2s;
+}
+
+.post:hover {
+    background-color: rgba(0, 0, 0, 0.02);
+}
+
+.post-avatar img {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 12px;
+}
+
+.post-content {
+    flex: 1;
+    overflow-wrap: break-word;
+}
+
+.post-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4px;
+}
+
+.post-user-info {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.post-author {
+    font-size: 15px;
+    font-weight: 700;
+    margin: 0;
+    cursor: pointer;
+}
+
+.post-author:hover {
+    text-decoration: underline;
+}
+
+.post-username {
+    font-size: 14px;
+    color: #666;
+    margin-left: 4px;
+}
+
+.post-text h4 {
+    color: #333;
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.post-action-btn.like-btn {
+    color: #c23321;
+}
+
+.likes-text {
+    margin-left: 3px;
+    font-size: 14px;
+    color: #666;
+}
+
+.post-time {
+    font-size: 14px;
+    color: #666;
+    margin-left: 4px;
+}
+
+.post-verified {
+    color: #dd4b39;
+    font-size: 14px;
+    margin: 0 4px;
+}
+
+.options-btn {
+    background: none;
+    border: none;
+    color: #666;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.options-btn:hover {
+    background-color: rgba(221, 75, 57, 0.1);
+    color: #dd4b39;
+}
+
+.post-text {
+    margin-bottom: 12px;
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+.post-text p {
+    margin: 0;
+}
+
+.post-media {
+    margin: 12px 0;
+    border-radius: 16px;
+    overflow: hidden;
+    width: 100%;
+}
+
+.post-media img {
+    width: 100%;
+    max-height: 400px;
+    object-fit: cover;
+    border-radius: 16px;
+    display: block;
+}
+
+.post-actions {
+    display: flex;
+    justify-content: space-between;
+    max-width: 425px;
+}
+
+.post-action-btn {
+    display: flex;
+    align-items: center;
+    color: #666;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 8px;
+    border-radius: 50%;
+    transition: all 0.2s;
+}
+
+.post-action-btn i {
+    font-size: 18px;
+    margin-right: 6px;
+}
+
+.post-action-btn:hover {
+    color: #dd4b39;
+    background-color: rgba(221, 75, 57, 0.1);
+}
+
+.like-btn:hover {
+    color: #dd4b39;
+}
+
+.like-btn.active {
+    color: #dd4b39;
+}
+
+.repost-btn:hover {
+    color: #17bf63;
+}
+
+.repost-btn.active {
+    color: #17bf63;
+}
+
+/* Comments */
+.comments {
+    margin-top: 15px;
+    padding-top: 10px;
+    border-top: 1px solid #ddd;
+}
+
+.comments h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.comments-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.comment-item {
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.comment-item:last-child {
+    border-bottom: none;
+}
+
+.comment-item b {
+    font-weight: bold;
+}
+
+.reply-button,
+.edit-comment-button,
+.delete-comment-button {
+    margin-left: 10px;
+    font-size: 12px;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.reply-item {
+    margin-left: 30px;
+    border-left: 2px solid #ddd;
+    padding-left: 10px;
+    margin-top: 5px;
+}
+
+.replying-to {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 5px;
+}
+
+.comment-input-area textarea {
+    width: 100%;
+    margin-top: 5px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.comment-input-area button {
+    margin-top: 5px;
+}
+
+/* Modal post box */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
+}
+  
+.modal-content {
+    background-color: white;
+    margin: 10% auto;
+    padding: 20px;
+    border-radius: 15px;
+    width: 550px;
+    max-width: 95%;
+    position: relative;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+  
+.close-modal {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    position: absolute;
+    right: 20px;
+    top: 10px;
+}
+  
+.close-modal:hover,
+.close-modal:focus {
+    color: #dd4b39;
+    text-decoration: none;
+}
+  
+.modal-post-compose {
+    display: flex;
+    padding: 16px 0;
+}
+
+.compose-title-input {
+    width: 100%;
+    padding: 10px 0;
+    border: none;
+    border-bottom: 1px solid #eee;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    outline: none;
+}
+  
+.compose-title-input:focus {
+    border-bottom: 1px solid #dd4b39;
+}
+
+/* Dropdown menu for post options */
+.dropdown {
+    position: relative;
+}
+  
+.options-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background-color: white;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+    z-index: 100;
+    min-width: 150px;
+}
+  
+.options-menu.show {
+    display: block;
+}
+  
+.options-menu button {
+    white-space: nowrap;
+    text-align: left;
+    font-size: 14px;
+}
+
+/* Post compose section */
+.compose-post {
+    display: flex;
+    padding: 16px;
+    border-bottom: 1px solid #eee;
+}
+
+.compose-profile-img img {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 12px;
+}
+
+.compose-input-container {
+    flex: 1;
+}
+
+.compose-input {
+    width: 100%;
+    min-height: 80px;
+    border: none;
+    outline: none;
+    resize: none;
+    font-size: 18px;
+    padding: 12px 0;
+}
+
+.compose-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 12px;
+    border-top: 1px solid #eee;
+    padding-top: 12px;
+}
+
+.compose-tools {
+    display: flex;
+}
+
+.compose-submit {
+    background-color: #dd4b39;
+    color: white;
+    border: none;
+    border-radius: 30px;
+    padding: 10px 20px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.compose-submit:hover {
+    background-color: #c23321;
+}
+
+.img-upload {
+     padding: 10px 15px;
+     background-color: #dd4b39;
+     border-radius: 15px;
+     color: white;
+     font-weight: 600;
+}
+
+.img-upload:hover {
+    background-color: #c23321;
+}
+
+.img-fluid {
+    border: #000;
+}
+
+/* Tags styling */
+.tags {
+    color: #6c757d;
+    font-size: 14px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+}
+
+/* Mobile responsive styles */
+@media (max-width: 768px) {
+    .post {
+        padding: 12px;
+    }
+    
+    .post-avatar img {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .post-actions {
+        flex-wrap: wrap;
+        max-width: 100%;
+    }
+    
+    .modal-content {
+        margin: 10% auto;
+        width: 92%;
+        padding: 16px;
+        max-height: 80vh;
+        overflow-y: auto;
+    }
+    
+    .compose-post {
+        padding: 10px;
+    }
+    
+    .compose-input {
+        min-height: 60px;
+        font-size: 16px;
+    }
+    
+    .compose-title-input {
+        font-size: 16px;
+    }
+}
+
+/* Small phones */
+@media (max-width: 480px) {
+    .post {
+        padding: 10px;
+    }
+    
+    .post-content {
+        font-size: 14px;
+    }
+    
+    .compose-post {
+        padding: 10px;
+    }
+    
+    .compose-profile-img img {
+        width: 36px;
+        height: 36px;
+    }
+    
+    .post-text h4 {
+        font-size: 1rem;
+    }
+    
+    .post-text {
+        font-size: 14px;
+    }
+    
+    .post-action-btn {
+        padding: 5px;
+        font-size: 12px;
+    }
+    
+    .post-action-btn i {
+        font-size: 15px;
+        margin-right: 3px;
+    }
+    
+    /* Simplify comment interface on mobile */
+    .comment-item {
+        padding: 8px 0;
+    }
+    
+    .reply-item {
+        margin-left: 15px;
+        padding-left: 8px;
+    }
+    
+    /* Stack post footer buttons on mobile */
+    .post-footer {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-top: 10px;
+    }
+    
+    .post-footer button {
+        width: 100%;
+        padding: 6px 12px;
+        font-size: 14px;
+    }
+    
+    /* Ensure form inputs are finger-friendly */
+    .comment-input-area textarea {
+        min-height: 60px;
+        font-size: 16px; /* Prevents iOS zoom on focus */
+    }
+    
+    .compose-submit {
+        padding: 10px 15px;
+        font-size: 12px;
+        border-radius: 15px;
+    }
+}
+
+/* Extra small phones */
+@media (max-width: 375px) {
+    .post {
+        padding: 8px;
+    }
+    
+    .post-avatar img {
+        width: 32px;
+        height: 32px;
+    }
+    
+    .post-author {
+        font-size: 14px;
+    }
+    
+    .post-time {
+        font-size: 12px;
+    }
+    
+    .post-text h4 {
+        font-size: 0.9rem;
+    }
+    
+    .post-text p {
+        font-size: 13px;
+    }
+    
+    .compose-input {
+        min-height: 50px;
+    }
+    
+    .compose-submit {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+    
+    /* Adjust post actions for very small screens */
+    .post-actions {
+        gap: 5px;
+    }
+    
+    .post-action-btn {
+        padding: 4px;
+    }
+    
+    .post-action-btn i {
+        font-size: 14px;
+        margin-right: 2px;
+    }
+}
+
+/* Scrollable Post Container Styles */
+.post-container-scrollable {
+    max-height: 600px; /* Adjust this height as needed */
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 5px; /* Add some padding for scrollbar */
+  }
+  
+  /* Custom scrollbar styling */
+  .post-container-scrollable::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  .post-container-scrollable::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+  }
+  
+  .post-container-scrollable::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 10px;
+  }
+  
+  .post-container-scrollable::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+  }
+  
+  /* Posts container to ensure proper spacing */
+  .posts-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  /* Ensure posts don't stick to the edges */
+  .post {
+    margin-bottom: 0; /* Remove default margin and let the container's gap handle spacing */
+    border-bottom: none; /* Remove bottom border since we're using gap for spacing */
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+  
+  /* Add a divider between posts */
+  .post:not(:last-child) {
+    border-bottom: 1px solid #e1e8ed;
+    padding-bottom: 15px;
+  }
+  
+  /* Ensure comment sections don't overflow */
+  .comments {
+    max-height: 300px;
+    overflow-y: auto;
+    padding-right: 5px;
+  }
+  
+  /* Comments scrollbar */
+  .comments::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .comments::-webkit-scrollbar-track {
+    background: #f8f9fa;
+  }
+  
+  .comments::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 10px;
+  }
+  
+  /* Make sure images don't cause horizontal overflow */
+  .post-media img {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .post-container-scrollable {
+      max-height: 500px;
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .post-container-scrollable {
+      max-height: 450px;
+    }
+  }
+
+/* Enhanced Scrollable Post Container Styles */
+.profile-card .card-body.post-container-scrollable {
+  max-height: 600px !important; /* Force the max-height with !important */
+  min-height: 400px !important; /* Ensure a minimum height */
+  height: 600px !important; /* Set a fixed height */
+  overflow-y: auto !important; /* Force vertical scrolling */
+  overflow-x: hidden !important; /* Prevent horizontal scrolling */
+  padding-right: 10px !important; /* Add some padding for scrollbar */
+  display: block !important; /* Ensure proper display */
+  position: relative !important; /* Establish positioning context */
+}
+
+/* Custom scrollbar styling with higher specificity */
+.profile-card .card-body.post-container-scrollable::-webkit-scrollbar {
+  width: 8px !important;
+}
+
+.profile-card .card-body.post-container-scrollable::-webkit-scrollbar-track {
+  background: #f1f1f1 !important;
+  border-radius: 10px !important;
+}
+
+.profile-card .card-body.post-container-scrollable::-webkit-scrollbar-thumb {
+  background: #c1c1c1 !important;
+  border-radius: 10px !important;
+}
+
+.profile-card .card-body.post-container-scrollable::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8 !important;
+}
+
+/* Posts container to ensure proper spacing with higher specificity */
+.profile-card .card-body.post-container-scrollable .posts-container {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 15px !important;
+  padding-bottom: 15px !important; /* Add padding at the bottom */
+}
+
+/* Ensure posts have proper styling */
+.profile-card .card-body.post-container-scrollable .post {
+  margin-bottom: 0 !important; /* Remove default margin and let the container's gap handle spacing */
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1) !important;
+  background-color: #fff !important;
+  border-radius: 8px !important;
+  transition: background-color 0.2s !important;
+}
+
+/* Add divider between posts */
+.profile-card .card-body.post-container-scrollable .post:not(:last-child) {
+  border-bottom: 1px solid #e1e8ed !important;
+  padding-bottom: 15px !important;
+}
+
+/* Ensure comment sections don't overflow */
+.profile-card .card-body.post-container-scrollable .comments {
+  max-height: 300px !important;
+  overflow-y: auto !important;
+  padding-right: 5px !important;
+}
+
+/* Comments scrollbar */
+.profile-card .card-body.post-container-scrollable .comments::-webkit-scrollbar {
+  width: 6px !important;
+}
+
+.profile-card .card-body.post-container-scrollable .comments::-webkit-scrollbar-track {
+  background: #f8f9fa !important;
+}
+
+.profile-card .card-body.post-container-scrollable .comments::-webkit-scrollbar-thumb {
+  background: #c1c1c1 !important;
+  border-radius: 10px !important;
+}
+
+/* Make sure the post media doesn't cause overflow */
+.profile-card .card-body.post-container-scrollable .post-media img {
+  max-width: 100% !important;
+  height: auto !important;
+  max-height: 300px !important;
+  object-fit: contain !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .profile-card .card-body.post-container-scrollable {
+    max-height: 500px !important;
+    height: 500px !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .profile-card .card-body.post-container-scrollable {
+    max-height: 450px !important;
+    height: 450px !important;
+  }
+}
+
+/* Fix for possible flexbox issues */
+.profile-content .row {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.profile-content .col-md-8 {
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-content .col-md-8 .profile-card {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.profile-content .col-md-8 .profile-card .card-body {
+  flex: 1;
+}

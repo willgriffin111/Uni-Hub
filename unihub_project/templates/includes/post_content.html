@@ -1,0 +1,542 @@
+{% load static %}
+<!-- Posts Display Card with Enhanced Scrollable Content -->
+<div class="profile-card">
+  <div class="card-header">
+    <h3>Recent Posts</h3>
+  </div>
+  <div class="card-body post-container-scrollable">
+    <!-- Posts Container (important for proper spacing and layout) -->
+    <div class="posts-container">
+      {% for post in posts %}
+      <div class="post">
+        <!-- Post Avatar -->
+        <div class="post-avatar">
+          <img src="{{ post.user.profile.image.url|default:'/static/bingus.jpg' }}" alt="{{ post.user.username }}">
+        </div>
+        
+        <!-- Post Content -->
+        <div class="post-content">
+          <!-- Header -->
+          <div class="post-header">
+            <div class="post-user-info">
+              <h4 class="post-author">{{ post.user.username }}</h4>
+              <span class="post-time">· {{ post.created_at|timesince }} ago</span>
+              {% if post.community.name %}
+                <h4 class="post-author">
+                  <a href="{% url 'community_page' community_name=post.community.name %}">{{ post.community.name }}</a>
+                </h4>
+              {% endif %}
+            </div>
+            <div class="post-options">
+              <div class="dropdown">
+                <button class="options-btn" onclick="toggleOptionsMenu(event, {{ post.id }})">
+                  <i class="fa-solid fa-ellipsis" style="font-weight: bolder;"></i>
+                </button>
+                <div class="options-menu" id="options-menu-{{ post.id }}">
+                  {% if post.can_edit and post.user == user %}
+                  <form action="{% url 'edit_post' post.id %}" method="get" style="display:block; margin-bottom: 10px;">
+                    <button type="submit" class="edit-button btn btn-warning w-100">Edit Post</button>
+                  </form>
+                  {% endif %}
+                  {% if post.user == user %}
+                  <form action="{% url 'delete_post' post.id %}" method="post" style="display:block;" onsubmit="return confirmDelete()">
+                    {% csrf_token %}
+                    <button type="submit" class="delete-button btn btn-danger w-100">Delete Post</button>
+                  </form>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Text -->
+          <div class="post-text">
+            <h4>{{ post.title }}</h4>
+            <p>{{ post.content }}</p>
+          </div>
+          <!-- Tags -->
+          {% if post.tags %}
+          <div class="tags">Tags: {{ post.tags }}</div>
+          {% endif %}
+          <!-- Media (if available) -->
+          {% if post.image %}
+          <div class="post-media">
+            <img src="{{ post.image.url }}" alt="Post Image" onclick="openModal('{{ post.image.url }}')">
+          </div>
+          {% endif %}
+          
+          <div class="post-actions">
+            {% if post.liked %}
+            <button onclick="toggleLike({{ post.id }})" id="like-button-{{ post.id }}" class="post-action-btn like-btn" data-liked="true">
+              <i class="fa-solid fa-heart"></i>
+              <span id="like-count-{{ post.id }}">{{ post.likes_count }}</span>
+            </button>
+            {% else %}
+            <button onclick="toggleLike({{ post.id }})" id="like-button-{{ post.id }}" class="post-action-btn like-btn" data-liked="false">
+              <i class="fa-regular fa-heart"></i>
+              <span id="like-count-{{ post.id }}">{{ post.likes_count }}</span>
+            </button>
+            {% endif %}
+
+            <button class="post-action-btn comment-btn" onclick="toggleComments({{ post.id }})">
+              <i class="fas fa-comment"></i>
+              <span id="comment-count-{{ post.id }}">{{ post.comments_count }}</span>
+            </button>
+          </div>
+          
+          <div class="comments" id="comments-section-{{ post.id }}" style="display:none;">
+            <h5>Comments ({{ post.comments_count }})</h5>
+            <!-- Hidden input to store parent comment ID when replying -->
+            <input type="hidden" id="reply-parent-{{ post.id }}" value="">
+            <!-- Div to display current reply target -->
+            <div id="replying-to-{{ post.id }}" class="replying-to" style="display:none;"></div>
+            
+            <!-- Main Comments List: Only top-level comments -->
+            <ul class="comments-list" id="comments-list-{{ post.id }}">
+              {% for comment in post.comments.all %}
+                {% if not comment.parent %}
+                <li class="comment-item" id="comment-{{ comment.id }}">
+                  <b>{{ comment.user.username }}:</b>
+                  <span id="comment-content-{{ comment.id }}">{{ comment.content }}</span>
+                  {% if comment.user == request.user %}
+                    <a href="{% url 'edit_comment_page' comment.id %}" style="text-decoration:none;">
+                      <button class="edit-comment-button btn btn-link">✏️</button>
+                    </a>
+                    <button class="delete-comment-button btn btn-link" onclick="deleteComment({{ comment.id }}, {{ post.id }})">❌</button>
+                  {% endif %}
+                  <button class="reply-button btn btn-link" onclick="replyToComment({{ post.id }}, '{{ comment.id }}', '{{ comment.user.username }}')">Reply</button>
+                  <!-- Nested Replies -->
+                  <ul class="comments-list">
+                    {% for reply in comment.replies.all %}
+                    <li class="reply-item" id="comment-{{ reply.id }}">
+                      <b>{{ reply.user.username }}:</b>
+                      <span id="comment-content-{{ reply.id }}">{{ reply.content }}</span>
+                      {% if reply.user == request.user %}
+                        <a href="{% url 'edit_comment_page' reply.id %}" style="text-decoration:none;">
+                          <button class="edit-comment-button btn btn-link">✏️</button>
+                        </a>
+                        <button class="delete-comment-button btn btn-link" onclick="deleteComment({{ reply.id }}, {{ post.id }})">❌</button>
+                      {% endif %}
+                    </li>
+                    {% endfor %}
+                  </ul>
+                </li>
+                {% endif %}
+              {% endfor %}
+            </ul>
+            <!-- Comment Input & Reply Controls -->
+            <div class="comment-input-area">
+              <textarea id="comment-input-{{ post.id }}" placeholder="Write a comment..." style="width:100%;"></textarea>
+              <button onclick="addComment({{ post.id }})" class="comment-button btn btn-primary">Comment</button>
+              <button class="cancel-reply btn btn-link" id="cancel-reply-{{ post.id }}" style="display:none;" onclick="cancelReply({{ post.id }})">Cancel Reply</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% empty %}
+      <!-- Empty state when there are no posts -->
+      <div class="no-posts-message">
+        <p>No posts to display yet.</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<!-- Image Modal for full-size images -->
+<div id="imageModal" class="modal">
+  <div class="modal-content-wrapper">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <img class="modal-content" id="fullImage">
+  </div>
+</div>
+
+<!-- Image Modal for full-size images -->
+<div id="imageModal" class="modal">
+  <div class="modal-content-wrapper">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <img class="modal-content" id="fullImage">
+  </div>
+</div>
+
+  <script>
+    // Post-related functions
+    function toggleOptionsMenu(event, postId) {
+    event.stopPropagation(); // Prevent click from bubbling up
+    
+    const menu = document.getElementById(`options-menu-${postId}`);
+    menu.classList.toggle('show');
+    
+    // Close all other open menus
+    document.querySelectorAll('.options-menu.show').forEach(openMenu => {
+        if (openMenu.id !== `options-menu-${postId}`) {
+        openMenu.classList.remove('show');
+        }
+    });
+    
+    // Close when clicking elsewhere
+    document.addEventListener('click', function closeMenu(e) {
+        if (!e.target.closest(`.options-btn`) && !e.target.closest(`#options-menu-${postId}`)) {
+        menu.classList.remove('show');
+        document.removeEventListener('click', closeMenu);
+        }
+    });
+    }
+
+    function toggleComments(postId) {
+    const commentsSection = document.getElementById('comments-section-' + postId);
+    if (commentsSection.style.display === 'none' || commentsSection.style.display === '') {
+        commentsSection.style.display = 'block';
+    } else {
+        commentsSection.style.display = 'none';
+    }
+    }
+
+    async function toggleLike(postId) {
+    const likeButton = document.getElementById(`like-button-${postId}`);
+    const likeText = document.getElementById(`like-text-${postId}`);
+    const likeCount = document.getElementById(`like-count-${postId}`);
+    const likeIcon = likeButton.querySelector('i'); // Get the icon element
+    
+    const response = await fetch(`/api/post/like-post/${postId}/`, {
+        method: "POST",
+        credentials: "include",
+        headers: { "X-CSRFToken": getCSRFToken() }
+    });
+    
+    if (response.ok) {
+        let data = await response.json();
+        likeCount.textContent = data.like_count;
+        likeButton.setAttribute("data-liked", data.liked);
+        
+        // Toggle between fa-solid and fa-regular classes
+        if (data.liked) {
+        likeIcon.classList.remove('fa-regular');
+        likeIcon.classList.add('fa-solid');
+        } else {
+        likeIcon.classList.remove('fa-solid');
+        likeIcon.classList.add('fa-regular');
+        }
+    }
+    }
+
+    // Comment-related functions
+    async function addComment(postId) {
+    const commentInput = document.getElementById(`comment-input-${postId}`);
+    const content = commentInput.value.trim();
+    if (!content) return;
+    
+    const parentInput = document.getElementById(`reply-parent-${postId}`);
+    const parentId = parentInput.value || null;
+    
+    const response = await fetch(`/api/post/comment-post/${postId}/`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+        "X-CSRFToken": getCSRFToken(),
+        "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ content: content, parent_id: parentId })
+    });
+    
+    if (response.ok) {
+        location.reload();
+    }
+    }
+
+    async function deleteComment(commentId, postId) {
+    const response = await fetch(`/api/post/delete-comment/${commentId}/`, {
+        method: "DELETE",
+        credentials: "include",
+        headers: { "X-CSRFToken": getCSRFToken() }
+    });
+    if (response.ok) {
+        location.reload();
+    } else {
+        alert("Failed to delete comment. Please try again.");
+    }
+    }
+
+    function replyToComment(postId, commentId, username) {
+    document.getElementById('reply-parent-' + postId).value = commentId;
+    document.getElementById('comment-input-' + postId).placeholder = 'Replying to ' + username + '...';
+    document.getElementById('replying-to-' + postId).style.display = 'inline';
+    document.getElementById('replying-to-' + postId).textContent = 'Replying to ' + username;
+    document.getElementById('cancel-reply-' + postId).style.display = 'inline';
+    }
+
+    function cancelReply(postId) {
+    document.getElementById('reply-parent-' + postId).value = '';
+    document.getElementById('comment-input-' + postId).placeholder = 'Write a comment...';
+    document.getElementById('replying-to-' + postId).style.display = 'none';
+    document.getElementById('cancel-reply-' + postId).style.display = 'none';
+    }
+
+    function confirmDelete() {
+    return confirm("Are you sure you want to delete this post?");
+    }
+
+    function getCSRFToken() {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== "") {
+        const cookies = document.cookie.split(";");
+        for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.startsWith("csrftoken=")) {
+            cookieValue = cookie.substring("csrftoken=".length, cookie.length);
+            break;
+        }
+        }
+    }
+    return cookieValue;
+    }
+
+    // Image handling functions
+    document.addEventListener('DOMContentLoaded', () => {
+    // Image upload preview
+    document.addEventListener('change', (e) => {
+        if (e.target.classList.contains('image-upload') || e.target.id === 'img-upload' || e.target.id === 'modal-img-upload') {
+        const fileInput = e.target;
+        const composeContainer = fileInput.closest('.compose-input-container');
+        if (!composeContainer) return;
+
+        const previewContainer = composeContainer.querySelector('.image-preview-container');
+        const imagePreview = composeContainer.querySelector('#image-preview');
+
+        if (!previewContainer || !imagePreview) return;
+
+        if (fileInput.files && fileInput.files[0]) {
+            const file = fileInput.files[0];
+
+            if (!file.type.match('image.*')) {
+            alert('Please select an image file.');
+            fileInput.value = '';
+            return;
+            }
+
+            // 10 MB limit
+            if (file.size > 10 * 1024 * 1024) {
+            alert('Image is too large. Please select an image under 5MB.');
+            fileInput.value = '';
+            return;
+            }
+
+            imagePreview.src = URL.createObjectURL(file);
+            previewContainer.style.display = 'block';
+            imagePreview.dataset.objectUrl = imagePreview.src;
+        }
+        }
+    });
+
+    // Remove image preview
+    document.addEventListener('click', (e) => {
+        if (e.target.id === 'remove-image' || e.target.closest('#remove-image')) {
+        e.preventDefault();
+
+        const removeBtn = e.target.id === 'remove-image' ? e.target : e.target.closest('#remove-image');
+        const previewContainer = removeBtn.closest('.image-preview-container');
+        const composeContainer = removeBtn.closest('.compose-input-container');
+
+        if (!previewContainer || !composeContainer) return;
+
+        const fileInput = composeContainer.querySelector('input[type="file"]');
+        const imagePreview = previewContainer.querySelector('#image-preview');
+
+        if (fileInput) fileInput.value = '';
+
+        // Revoke object URL to free memory
+        if (imagePreview && imagePreview.dataset.objectUrl) {
+            URL.revokeObjectURL(imagePreview.dataset.objectUrl);
+            delete imagePreview.dataset.objectUrl;
+        }
+
+        previewContainer.style.display = 'none';
+        }
+    });
+
+    // Post Modal functionality
+    const modal = document.getElementById("postModal");
+    const postBtn = document.querySelector(".post-btn");
+    const closeModal = document.getElementsByClassName("close-modal")[0];
+    
+    if (postBtn) {
+        postBtn.onclick = function() {
+        modal.style.display = "block";
+        document.querySelector(".modal-post-compose .compose-input").focus();
+        }
+    }
+    
+    if (closeModal) {
+        closeModal.onclick = function() {
+        modal.style.display = "none";
+        }
+    }
+    
+    window.onclick = function(event) {
+        if (event.target == modal) {
+        modal.style.display = "none";
+        }
+    }
+
+    // Post creation function
+    function createPost(event) {
+        event.preventDefault();
+        const button = event.target;
+        const container = button.closest('.compose-input-container');
+        const titleInput = container.querySelector('.compose-title-input');
+        const contentInput = container.querySelector('.compose-input');
+        const fileInput = container.querySelector('input[type="file"]');
+        const tagsInput = container.querySelector('.compose-tags-input');
+        const title = titleInput.value.trim();
+        const content = contentInput.value.trim();
+        const tags = tagsInput ? tagsInput.value.trim() : "";
+        
+        if (!title || !content) {
+        alert("Please fill in both title and content.");
+        return;
+        }
+        
+        let formData = new FormData();
+        formData.append("title", title);
+        formData.append("content", content);
+        formData.append("tags", tags);
+        
+        if (fileInput && fileInput.files.length > 0) {
+        formData.append("image", fileInput.files[0]);
+        }
+        
+        fetch("/api/post/post/", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+            "X-CSRFToken": getCSRFToken()
+        },
+        body: formData
+        })
+        .then(response => {
+        if (response.ok) return response.json();
+        else throw new Error("Failed to create post.");
+        })
+        .then(data => {
+        location.reload();
+        })
+        .catch(error => {
+        console.error(error);
+        alert("Error creating post. Please try again.");
+        });
+    }
+    
+    const composeSubmitButtons = document.querySelectorAll('.compose-submit');
+    composeSubmitButtons.forEach(button => {
+        button.addEventListener('click', createPost);
+    });
+    });
+
+    // Add these functions to your existing JavaScript to handle scrollable post container interactions
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Initialize scrollable container functionality
+  initScrollableContainer();
+});
+
+function initScrollableContainer() {
+  const scrollableContainer = document.querySelector('.post-container-scrollable');
+  
+  if (scrollableContainer) {
+    // Close option menus when scrolling
+    scrollableContainer.addEventListener('scroll', function() {
+      document.querySelectorAll('.options-menu.show').forEach(menu => {
+        menu.classList.remove('show');
+      });
+    });
+    
+    // Ensure comments don't overflow and stay in view when opened
+    scrollableContainer.addEventListener('click', function(e) {
+      if (e.target.classList.contains('comment-btn') || e.target.closest('.comment-btn')) {
+        // Add slight delay to wait for comment section to expand
+        setTimeout(function() {
+          const commentBtn = e.target.closest('.comment-btn');
+          if (!commentBtn) return;
+          
+          const postId = commentBtn.getAttribute('onclick').match(/\d+/)[0];
+          const commentSection = document.getElementById('comments-section-' + postId);
+          
+          if (commentSection && commentSection.style.display !== 'none') {
+            // Scroll comment section into view with some padding
+            const rect = commentSection.getBoundingClientRect();
+            const containerRect = scrollableContainer.getBoundingClientRect();
+            
+            // Check if comment section is partially out of view
+            if (rect.bottom > containerRect.bottom) {
+              // Scroll the container to make the bottom of the comment section visible
+              scrollableContainer.scrollTop += (rect.bottom - containerRect.bottom + 20); // 20px padding
+            }
+          }
+        }, 50);
+      }
+    });
+  }
+}
+
+// Modified toggleComments function to handle scrolling
+function toggleComments(postId) {
+  const commentsSection = document.getElementById('comments-section-' + postId);
+  if (commentsSection.style.display === 'none' || commentsSection.style.display === '') {
+    commentsSection.style.display = 'block';
+    
+    // Auto-focus the comment input
+    setTimeout(() => {
+      const commentInput = document.getElementById('comment-input-' + postId);
+      if (commentInput) {
+        commentInput.focus();
+      }
+      
+      // Scroll to make comment section visible in the scrollable container
+      const scrollableContainer = document.querySelector('.post-container-scrollable');
+      if (scrollableContainer) {
+        const rect = commentsSection.getBoundingClientRect();
+        const containerRect = scrollableContainer.getBoundingClientRect();
+        
+        if (rect.bottom > containerRect.bottom) {
+          scrollableContainer.scrollTop += (rect.bottom - containerRect.bottom + 20);
+        }
+      }
+    }, 50);
+  } else {
+    commentsSection.style.display = 'none';
+  }
+}
+
+// Modified toggleOptionsMenu to ensure menus close when clicking outside
+function toggleOptionsMenu(event, postId) {
+  event.stopPropagation(); // Prevent click from bubbling up
+  
+  const menu = document.getElementById(`options-menu-${postId}`);
+  menu.classList.toggle('show');
+  
+  // Close all other open menus
+  document.querySelectorAll('.options-menu.show').forEach(openMenu => {
+    if (openMenu.id !== `options-menu-${postId}`) {
+      openMenu.classList.remove('show');
+    }
+  });
+  
+  // Close when clicking elsewhere, but limit scope to document.body
+  document.addEventListener('click', function closeMenu(e) {
+    if (!e.target.closest(`.options-btn`) && !e.target.closest(`#options-menu-${postId}`)) {
+      menu.classList.remove('show');
+      document.removeEventListener('click', closeMenu);
+    }
+  });
+  
+  // Also close the menu when scrolling the container
+  const scrollableContainer = document.querySelector('.post-container-scrollable');
+  if (scrollableContainer) {
+    const scrollHandler = function() {
+      menu.classList.remove('show');
+      scrollableContainer.removeEventListener('scroll', scrollHandler);
+    };
+    
+    scrollableContainer.addEventListener('scroll', scrollHandler);
+  }
+}
+  </script>
