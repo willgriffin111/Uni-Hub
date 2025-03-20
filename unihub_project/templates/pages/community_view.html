@@ -256,41 +256,18 @@
                             <h3 class="section-title">Members</h3>
                             <div class="members-grid">
                                 <!-- Render more members here, usually with a loop in the actual template -->
+                                {%for member in members %}
                                 <div class="member-card">
                                     <div class="member-avatar">
-                                        <img src="" alt="Emma Watson">
+                                        <img src="{{member.profile_picture.url}}" alt="{{member.username}}">
                                     </div>
                                     <div class="member-info">
-                                        <h4 class="member-name">Emma Watson</h4>
+                                        <h4 class="member-name">{{member.username}}</h4>
                                         <p class="member-details">Computer Science • Year 3</p>
                                     </div>
                                     <button class="member-action-btn"><i class="fa-solid fa-envelope"></i></button>
                                 </div>
-                                
-                                <!-- Show more members -->
-                                <div class="member-card">
-                                    <div class="member-avatar">
-                                        <img src="" alt="John Smith">
-                                    </div>
-                                    <div class="member-info">
-                                        <h4 class="member-name">John Smith</h4>
-                                        <p class="member-details">Computer Science • Year 1</p>
-                                    </div>
-                                    <button class="member-action-btn"><i class="fa-solid fa-envelope"></i></button>
-                                </div>
-                                
-                                <div class="member-card">
-                                    <div class="member-avatar">
-                                        <img src="{% static 'images/default-avatar.jpg' %}" alt="Lisa Johnson">
-                                    </div>
-                                    <div class="member-info">
-                                        <h4 class="member-name">Lisa Johnson</h4>
-                                        <p class="member-details">Computer Science • Year 2</p>
-                                    </div>
-                                    <button class="member-action-btn"><i class="fa-solid fa-envelope"></i></button>
-                                </div>
-                                
-                                <!-- And so on for more members -->
+                                {%endfor%}
                             </div>
                             
                             <!-- Pagination -->
@@ -458,7 +435,9 @@
                 <h3 class="mod-card-title">General Settings</h3>
                 <p class="mod-card-description">Control community details, visibility, and content guidelines.</p>
                 <div class="mod-card-actions">
+                    <a href="{% url 'community_edit_page' community_name=community.name %}">
                     <button class="mod-card-btn">Manage</button>
+                    </a>
                 </div>
             </div>
         </div>
@@ -474,7 +453,7 @@
       <span class="close-modal">&times;</span>
       <div class="modal-post-compose d-flex align-items-start">
         <div class="compose-profile-img me-2">
-          <img src="{% static 'bingus.jpg' %}" alt="Profile Photo" width="50" height="50">
+          <img src="{{ user.profile_picture.url }}" alt="Profile Photo" width="50" height="50">
         </div>
         <div class="compose-input-container flex-grow-1">
           <input type="text" class="compose-title-input form-control mb-2" placeholder="Title...">
