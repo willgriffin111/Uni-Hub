@@ -88,7 +88,7 @@ def community_view(request, community_name):
         # allow editing within 30 minutes
         post.can_edit = (current_time - post.created_at).total_seconds() <= 30 * 60
 
-    return render(request, 'pages/community.html', {
+    return render(request, 'pages/community_view.html', {
         "community": community,
         "posts": posts,
         "user": request.user,

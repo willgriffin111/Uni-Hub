@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,14 +12,14 @@
     <!-- FontAwesome -->
     <script src="https://kit.fontawesome.com/c43d240003.js" crossorigin="anonymous"></script>
     <!-- Custom Styles -->
-    <link rel="stylesheet" href="/unihub_project/static/community_view.css">
-    <link rel="stylesheet" href="/unihub_project/static/nav_footer.css">
+    <link rel="stylesheet" href="{% static 'community_view.css' %}">
+    <link rel="stylesheet" href="{% static 'nav_footer.css' %}">
 </head>
 <body>
 
     <nav class="navbar navbar-expand-lg">
         <div class="container-fluid">
-            <a class="navbar-brand" href="{{ url_for('home') }}">UNI-HUB</a>
+            <a class="navbar-brand" href="">UNI-HUB</a>
             
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
                     data-bs-target="#navbarNav" aria-controls="navbarNav" 
@@ -54,19 +55,21 @@
         <div class="community-header">
             <div class="community-cover-photo">
                 <div class="community-avatar">
-                    <img src="/unihub_project/images/webdev.webp" alt="Web Development Group">
+                    <img src="{{ community.community_image.url }}" alt="Web Development Group">
                 </div>
             </div>
             
             <div class="community-header-content">
                 <div class="community-title-area">
-                    <h1 class="community-name">Web Development Group</h1>
+                    <h1 class="community-name">{{ community.name }}</h1>
                     <span class="community-category">Study Group</span>
                     <span class="community-members">45 members</span>
                 </div>
                 
                 <div class="community-actions">
-                    <button id="joinLeaveBtn" class="btn-join-leave">Join Community</button>
+                    {% if community.created_by != user %}
+                        <button id="joinLeaveBtn" class="btn-join-leave">Join Community</button>
+                    {% endif %}
                     <button class="btn-contact"><i class="fa-solid fa-envelope"></i> Contact</button>
                     <button class="btn-share"><i class="fa-solid fa-share-nodes"></i> Share</button>
                 </div>
@@ -123,27 +126,7 @@
                         <div class="content-card">
                             <h2 class="card-title">About Us</h2>
                             <div class="about-content">
-                                <p>Welcome to the Web Development Group! We are a community focused on web development and design at the University of the West of England.</p>
-                                
-                                <p>Our mission is to provide a supportive environment where members can:</p>
-                                <ul>
-                                    <li>Learn new web development technologies and frameworks</li>
-                                    <li>Collaborate on projects and build portfolios</li>
-                                    <li>Share knowledge and resources with like-minded individuals</li>
-                                    <li>Network with industry professionals and alumni</li>
-                                </ul>
-                                
-                                <p>We welcome students of all skill levels, from complete beginners to experienced developers. Whether you're interested in front-end, back-end, or full-stack development, there's a place for you in our community.</p>
-                                
-                                <p>Our regular activities include:</p>
-                                <ul>
-                                    <li>Weekly coding sessions and workshops</li>
-                                    <li>Monthly guest speakers from industry</li>
-                                    <li>Quarterly hackathons and project showcases</li>
-                                    <li>Online resources and support</li>
-                                </ul>
-                                
-                                <p>Join us to enhance your skills, build your portfolio, and connect with other passionate web developers!</p>
+                                <p>{{ community.description }}</p>
                             </div>
                         </div>
                         
@@ -264,7 +247,7 @@
                                 <!-- Leader 2 -->
                                 <div class="member-card">
                                     <div class="member-avatar">
-                                        <img src="{% static 'images/y2ht5fgx63g61.webp' %}" alt="Michael Chen">
+                                        <img src="" alt="Michael Chen">
                                     </div>
                                     <div class="member-info">
                                         <h4 class="member-name">Michael Chen</h4>
@@ -277,7 +260,7 @@
                                 <!-- Leader 3 -->
                                 <div class="member-card">
                                     <div class="member-avatar">
-                                        <img src="{% static 'images/xqaxoy5y2hi61.webp' %}" alt="Sarah Johnson">
+                                        <img src="" alt="Sarah Johnson">
                                     </div>
                                     <div class="member-info">
                                         <h4 class="member-name">Sarah Johnson</h4>
@@ -296,7 +279,7 @@
                                 <!-- Render more members here, usually with a loop in the actual template -->
                                 <div class="member-card">
                                     <div class="member-avatar">
-                                        <img src="{% static 'images/emma.jpg' %}" alt="Emma Watson">
+                                        <img src="" alt="Emma Watson">
                                     </div>
                                     <div class="member-info">
                                         <h4 class="member-name">Emma Watson</h4>
@@ -308,7 +291,7 @@
                                 <!-- Show more members -->
                                 <div class="member-card">
                                     <div class="member-avatar">
-                                        <img src="{% static 'images/default-avatar.jpg' %}" alt="John Smith">
+                                        <img src="" alt="John Smith">
                                     </div>
                                     <div class="member-info">
                                         <h4 class="member-name">John Smith</h4>
