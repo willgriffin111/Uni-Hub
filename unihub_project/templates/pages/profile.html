@@ -15,6 +15,7 @@
     <!-- style sheets CSS -->
     <link rel="stylesheet" href="{% static 'profile.css' %}">
     <link rel="stylesheet" href="{% static 'nav_footer.css' %}">
+    <link rel="stylesheet" href="{% static 'post_content.css' %}">
 
 </head>
 <body>
@@ -126,65 +127,23 @@
                     </div>
 
                     <!-- Recent Posts Card -->
-                    <div class="profile-card">
-                        <div class="card-header">
-                            <h3>Recent Posts</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="posts-list">
-                                <!-- Post Item -->
-                                {% for post in posts %}
-                                    <div class="post-item">
-                                        <div class="post-content">
-                                            <h4>{{ post.title }}</h4>
-                                            <p class="post-text">{{ post.content }}</p>
-                                            {% if post.image %}
-                                                <div class="post-image-container">
-                                                    <img src="{{ post.image.url }}" alt="Post Image" class="post-image" onclick="openModal('{{ post.image.url }}')">
-                                                </div>
-                                            {% endif %}
-                                            <div class="post-meta">
-                                                <span class="post-date">Posted on {{ post.created_at|date:"F j, Y" }}</span>
-                                                <span class="post-interactions">
-                                                    <button class="like-button"><i class="fa-solid fa-heart"></i></button>
-                                                    <span class="likes-counter">0</span>
-                                                    <span class="likes-text">likes</span>
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                {% endfor %}
-
-                                <!-- Modal for Image Popup -->
-                                <div id="imageModal" class="modal">
-                                    <div class="modal-content-wrapper">
-                                        <span class="close" onclick="closeModal()">&times;</span>
-                                        <img class="modal-content" id="fullImage">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    {% include '../includes/post_content.html' %} 
+                    
                 </div>
             </div>
         </div>
     </div>
+    
 
     <!-- footer -->
     {% include '../includes/footer.html' %}
 
     <script>
-        function openModal(imageSrc) {
-            var modal = document.getElementById("imageModal");
-            var modalImg = document.getElementById("fullImage");
-            modal.style.display = "flex";  // Show modal
-            modalImg.src = imageSrc;
-        }
-        
-        function closeModal() {
-            document.getElementById("imageModal").style.display = "none";
-        }
-
+        document.getElementById("click-me-button").addEventListener("click", function() {
+            // Display the message when the button is clicked
+            document.getElementById("click-message").style.display = "block";
+        });
+    
         // Extract CSRF token from the cookie
         function getCSRFToken() {
             let cookieValue = null;
@@ -218,6 +177,17 @@
                 console.log("Logout failed:", response.statusText);
             }
         });
+
+
+        
     </script>
+
+    <div id="imageModal" class="modal image-enlage">
+        <div class="modal-content-wrapper image-enlage">
+          <span class="close image-enlage" onclick="closeModal()">&times;</span>
+          <img class="modal-content image-enlage" id="fullImage">
+        </div>
+      </div>
 </body>
+
 </html>
