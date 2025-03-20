@@ -95,6 +95,15 @@ def community_view(request, community_name):
     posts = Post.objects.filter(community=community).order_by('-created_at')
     current_time = timezone.now()
     
+    # Get the members of the community
+    members = community.members.all()
+    
+    # Get the number of members
+    members_count = members.count()
+    
+    # Check if the current user is a member of the community
+    is_member = request.user in members
+
     for post in posts:
         post.likes_count = post.likes.count()
         post.liked = post.likes.filter(user=request.user).exists()
@@ -106,6 +115,9 @@ def community_view(request, community_name):
         "community": community,
         "posts": posts,
         "user": request.user,
+        "members": members,
+        "members_count": members_count,
+        "is_member": is_member,
     })
 
 @login_required
