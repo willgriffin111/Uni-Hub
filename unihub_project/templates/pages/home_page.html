@@ -258,36 +258,20 @@
       <div class="sidebar right-sidebar">
         <div class="sidebar-card mb-4">
           <h3 class="sidebar-title">Active Communities</h3>
-          <div class="community-item d-flex justify-content-between align-items-center mb-3">
-            <div class="community-info">
-              <span class="community-category">Study Group</span>
-              <h4 class="community-title">Web Development Group</h4>
-              <span class="community-stats">45 members</span>
+          {% for community in top_communities %}
+          <a href="{% url 'community_page' community.name %}" class="community-link">
+            <div class="community-item d-flex justify-content-between align-items-center mb-3">
+                <div class="community-info">
+                    <span class="community-category">Study Group</span>
+                    <h4 class="community-title">{{ community.name }}</h4>
+                    <span class="community-stats">{{ community.num_members }} members</span>
+                </div>
+                <div class="community-image">
+                    <img src="{{ community.community_image.url }}" alt="Web Development" width="50">
+                </div>
             </div>
-            <div class="community-image">
-              <img src="/unihub_project/images/webdev.webp" alt="Web Development" width="50">
-            </div>
-          </div>
-          <div class="community-item d-flex justify-content-between align-items-center mb-3">
-            <div class="community-info">
-              <span class="community-category">Cultural</span>
-              <h4 class="community-title">International Students Network</h4>
-              <span class="community-stats">128 members</span>
-            </div>
-            <div class="community-image">
-              <img src="/unihub_project/images/international.png" alt="International Students" width="50">
-            </div>
-          </div>
-          <div class="community-item d-flex justify-content-between align-items-center mb-3">
-            <div class="community-info">
-              <span class="community-category">Sports</span>
-              <h4 class="community-title">Motorcycle Club</h4>
-              <span class="community-stats">78 members</span>
-            </div>
-            <div class="community-image">
-              <img src="/unihub_project/images/motor.webp" alt="Motorcycle Club" width="50">
-            </div>
-          </div>
+        </a>
+          {% endfor %}
           <a href="#" class="see-more">Show more</a>
         </div>
         
