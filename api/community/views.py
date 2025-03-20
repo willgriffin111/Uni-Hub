@@ -130,31 +130,7 @@ class CommunityJoinAPI(APIView):
         return Response({"detail": "Successfully joined the community!"}, status=status.HTTP_200_OK)
     
     
-class CreateCommunityView(generics.CreateAPIView):
 
-    queryset = Community.objects.all()
-    serializer_class = CommunitySerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-    def create(self, request, *args, **kwargs):
-        # Validate incoming data
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        
-        # Save community with the current user as creator
-        community = serializer.save(created_by=request.user)
-        
-        # Add the creator as a member and assign them as admin
-        community.members.add(request.user)
-        CommunityRole.objects.create(user=request.user, community=community, role='admin')
-        
-        # Build a redirect URL using the community name (assuming it’s unique)
-        redirect_url = f"/community/{community.name}/"
-        
-        # Return the URL and the community name in the response
-        return Response({"redirect_url": redirect_url, "name": community.name},
-                        status=status.HTTP_201_CREATED)
-        
 class CreateCommunityView(generics.CreateAPIView):
     """
     POST /api/community/community/ -> Creates a new community.

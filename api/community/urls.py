@@ -1,5 +1,6 @@
 from django.urls import path
 from .views import CreateCommunityView
+from . import views
 
 urlpatterns = [
     path('editcommunity/', views.CommunityEditAPI.as_view(), name='api-community-edit'),
