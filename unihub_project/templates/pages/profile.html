@@ -26,7 +26,12 @@
         <!-- Profile Header -->
         <div class="profile-header-simple">
             <div class="profile-photo-container">
-                <img src="{% static 'bingus.jpg' %}" alt="Profile Photo" class="profile-photo">
+                {% if user.profile_picture %}
+                <img src="{{ user.profile_picture.url }}" alt="Profile Photo" class="profile-photo">
+                {% else %}
+                <img src="{% static 'user-image.png' %}" alt="{{ post.user.username }}" width="200" height="200">
+                
+                {% endif %}
             </div>
             <h1 class="profile-name">{{ user.first_name }} {{ user.last_name }}</h1>
             <p class="university-name">{{ user.university }}</p>
@@ -43,12 +48,16 @@
                     <div class="profile-card">
                         <div class="card-header">
                             <h3>About me</h3>
-                            <button class="edit-btn">Edit</button>
+                            <a class="edit-btn btn btn-primary" href="{% url 'profile_edit_page' %}">Edit</a>
                         </div>
                         <div class="card-body">
                             <div class="info-item">
                                 <span class="label">Gender:</span>
-                                <span class="value">Male</span>
+                                {% if user.gender %}
+                                <span class="value"> {{user.gender}}</span>
+                                {% else %}
+                                <span class="value"> Not set</span>
+                                {% endif %}
                             </div>
                             <div class="info-item">
                                 <span class="label">Email:</span>
@@ -56,11 +65,22 @@
                             </div>
                             <div class="info-item">
                                 <span class="label">Date of Birth:</span>
-                                <span class="value">{{ user.dob }}</span>
+                                <span class="value">
+                                    {% if user.dob %}
+                                        {{ user.dob|date:"F j, Y" }}  
+                                    {% else %}
+                                        Not set
+                                    {% endif %}
+                                </span>
+                                
                             </div>
                             <div class="info-item">
                                 <span class="label">Bio:</span>
-                                <span class="value">Hey! I'm Alex, a Computer Science student who loves motorcycles and coding. Looking to connect with fellow riders and tech enthusiasts on campus.</span>
+                                {% if user.bio %}
+                                <span class="value"> {{user.bio}}</span>
+                                {% else %}
+                                <span class="value"> Not set</span>
+                                {% endif %}
                             </div>
                         </div>
                     </div>

@@ -21,6 +21,8 @@ urlpatterns = [
     path('register/', views.register_view, name="register_page"),
     path('VerifyEmail/', views.Verify_view, name="Verify_page"),
     
+    path('profile-edit/', views.profile_edit_view, name="profile_edit_page"),
+    
     #homepage
     path('dashboard/', views.dashboard_view, name="dashboard_page"),
     path('profile/', views.profile_view, name="profile_page"),

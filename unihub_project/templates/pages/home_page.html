@@ -28,7 +28,12 @@
         <div class="sidebar-card">
           <div class="profile-preview">
             <div class="profile-preview-img">
-              <img src="{% static 'bingus.jpg' %}" alt="Profile Photo">
+              {% if user.profile_picture %}
+                  <img src="{{ user.profile_picture.url }}" alt="Profile Photo" width="50" height="50">
+                  {% else %}
+                  <img src="{% static 'user-image.png' %}" alt="Profile Photo" width="50" height="50">
+              {% endif %}
+
             </div>
             <div class="profile-preview-info">
               <h3>{{ user.first_name }} {{ user.last_name }}</h3>
@@ -73,7 +78,12 @@
         <!-- Compose Post (Inline in Feed) -->
         <div class="compose-post d-flex align-items-start mb-4">
           <div class="compose-profile-img me-2">
-            <img src="{% static 'bingus.jpg' %}" alt="Profile Photo" width="50" height="50">
+            {% if post.user.profile_picture %}
+                <img src="{{ post.user.profile_picture.url }}" alt="{{ post.user.username }}" width="50" height="50">
+                {% else %}
+                <img src="{% static 'user-image.png' %}" alt="Profile Photo" width="50" height="50">
+            {% endif %}
+
           </div>
           <div class="compose-input-container flex-grow-1">
             <input type="text" class="compose-title-input form-control mb-2" placeholder="Title...">
@@ -115,7 +125,12 @@
           <div class="post">
             <!-- Post Avatar -->
             <div class="post-avatar">
-              <img src="{{ post.user.profile.image.url|default:'/static/bingus.jpg' }}" alt="{{ post.user.username }}">
+              {% if post.user.profile_picture %}
+              <img src="{{ post.user.profile_picture.url}}" alt="{{ post.user.username }}">
+              {% else %}
+              <img src="{% static 'user-image.png' %}" alt="{{ post.user.username }}" width="50" height="50">
+              {% endif %}
+
             </div>
             
             <!-- Post Content -->
@@ -637,7 +652,12 @@ function closeModal() {
       <span class="close-modal">&times;</span>
       <div class="modal-post-compose d-flex align-items-start">
         <div class="compose-profile-img me-2">
-          <img src="{% static 'bingus.jpg' %}" alt="Profile Photo" width="50" height="50">
+          {% if post.user.profile_picture %}
+          <img src="{{ post.user.profile_picture.url }}" alt="{{ post.user.username }}" width="50" height="50">
+          {% else %}
+          <img src="{% static 'user-image.png' %}" alt="Profile Photo" width="50" height="50">
+      {% endif %}
+      
         </div>
         <div class="compose-input-container flex-grow-1">
           <input type="text" class="compose-title-input form-control mb-2" placeholder="Title...">

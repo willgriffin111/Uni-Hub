@@ -52,6 +52,10 @@ def profile_view(request):
     posts = Post.objects.filter(user_id=request.user).order_by('-created_at')  # '-' makes it descending (newest first)
     return render(request, "pages/profile.html", {"user": request.user, "posts": posts})
 
+def profile_edit_view(request):
+    """Render the profile edit page."""
+    return render(request, "pages/profile_edit.html")
+
 
 def edit_post(request, post_id):
     # Get the post ID from the URL

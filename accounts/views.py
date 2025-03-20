@@ -16,6 +16,8 @@ from rest_framework import status
 from .emailopt import send_email_password_reset 
 from django.utils.encoding import force_bytes
 from django.conf import settings
+from rest_framework.parsers import MultiPartParser, FormParser
+import os
 
 
 from django.contrib.auth.tokens import default_token_generator
@@ -190,3 +192,73 @@ class PasswordResetConfirmAPI(APIView):
         user.save()
         
         return Response({"message": "Password successfully reset."}, status=status.HTTP_200_OK)
+
+class ProfileUpdateAPI(APIView):
+    permission_classes = [IsAuthenticated]
+    parser_classes = (MultiPartParser, FormParser)
+
+    def put(self, request):
+        user = request.user
+        data = request.data
+
+        if "profile_picture" in request.FILES:
+            if user.profile_picture:
+                user.profile_picture.delete(save=False)
+            user.profile_picture = request.FILES["profile_picture"]
+
+        user.first_name = data.get('first_name', user.first_name)
+        user.last_name = data.get('last_name', user.last_name)
+        user.username = data.get('username', user.username)
+        user.email = data.get('email', user.email)
+
+        # handles dob correctly
+        dob = data.get('dob')
+        if dob and dob.strip() != '':
+            user.dob = dob
+        else:
+            user.dob = None
+
+        user.university = data.get('university', user.university)
+        user.student_id = data.get('student_id', user.student_id)
+        user.bio = data.get('bio', user.bio)
+        user.gender = data.get('gender', user.gender)
+
+        try:
+            user.save()
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response({
+            "message": "Profile updated successfully",
+            "data": {
+                "profile_picture": user.profile_picture.url if user.profile_picture else None,
+                "first_name": user.first_name,
+                "last_name": user.last_name,
+                "username": user.username,
+                "email": user.email,
+                "dob": user.dob,
+                "university": user.university,
+                "student_id": user.student_id,
+                "bio": user.bio,
+                "gender": user.gender,
+            }
+        }, status=status.HTTP_200_OK)
+
+class DeleteAccountAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request):
+        user = request.user
+        try:
+            # Check if user has a profile picture
+            if user.profile_picture:
+                # Delete the profile picture file from the filesystem
+                if os.path.exists(user.profile_picture.path):
+                    os.remove(user.profile_picture.path)
+
+            # Delete user account
+            user.delete()
+
+            return Response({"message": "Account and profile picture deleted successfully."}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
