@@ -79,7 +79,13 @@
                                 <div class="create-post content-card">
                                     <div class="d-flex align-items-center">
                                     <div class="post-avatar">
-                                        <img src="profile-image.jpg" alt="Your Profile">
+                                        <div class="compose-profile-img me-2">
+                                            {% if user.profile_picture %}
+                                                <img src="{{ user.profile_picture.url }}" alt="Profile Photo" width="50" height="50" class="rounded-circle object-fit-cover">
+                                            {% else %}
+                                                <img src="{% static 'user-image.png' %}" alt="Profile Photo" width="50" height="50" class="rounded-circle object-fit-cover">
+                                            {% endif %}
+                                        </div>
                                     </div>
                                     <button class="post-btn ms-2" id="openPostModal">
                                         <i class="fas fa-edit me-1"></i> Create Post

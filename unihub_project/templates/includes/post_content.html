@@ -11,7 +11,11 @@
       <div class="post">
         <!-- Post Avatar -->
         <div class="post-avatar">
-          <img src="{{ post.user.profile.image.url|default:'/static/bingus.jpg' }}" alt="{{ post.user.username }}">
+          {% if post.user.profile_picture %}
+          <img src="{{ post.user.profile_picture.url}}" alt="{{ post.user.username }}">
+          {% else %}
+          <img src="{% static 'user-image.png' %}" alt="{{ post.user.username }}" width="50" height="50" >
+          {% endif %}
         </div>
         
         <!-- Post Content -->

@@ -78,11 +78,13 @@
         <!-- Compose Post (Inline in Feed) -->
         <div class="compose-post d-flex align-items-start mb-4">
           <div class="compose-profile-img me-2">
-            {% if post.user.profile_picture %}
-                <img src="{{ post.user.profile_picture.url }}" alt="{{ post.user.username }}" width="50" height="50">
-                {% else %}
-                <img src="{% static 'user-image.png' %}" alt="Profile Photo" width="50" height="50">
-            {% endif %}
+            <div class="compose-profile-img me-2">
+              {% if user.profile_picture %}
+                  <img src="{{ user.profile_picture.url }}" alt="Profile Photo" width="50" height="50" class="rounded-circle object-fit-cover">
+              {% else %}
+                  <img src="{% static 'user-image.png' %}" alt="Profile Photo" width="50" height="50" class="rounded-circle object-fit-cover">
+              {% endif %}
+          </div>
 
           </div>
           <div class="compose-input-container flex-grow-1">
@@ -652,11 +654,13 @@ function closeModal() {
       <span class="close-modal">&times;</span>
       <div class="modal-post-compose d-flex align-items-start">
         <div class="compose-profile-img me-2">
-          {% if post.user.profile_picture %}
-          <img src="{{ post.user.profile_picture.url }}" alt="{{ post.user.username }}" width="50" height="50">
-          {% else %}
-          <img src="{% static 'user-image.png' %}" alt="Profile Photo" width="50" height="50">
-      {% endif %}
+          <div class="compose-profile-img me-2">
+            {% if user.profile_picture %}
+                <img src="{{ user.profile_picture.url }}" alt="Profile Photo" width="50" height="50" class="rounded-circle object-fit-cover">
+            {% else %}
+                <img src="{% static 'user-image.png' %}" alt="Profile Photo" width="50" height="50" class="rounded-circle object-fit-cover">
+            {% endif %}
+        </div>
       
         </div>
         <div class="compose-input-container flex-grow-1">
