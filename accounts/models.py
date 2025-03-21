@@ -17,7 +17,7 @@ class CustomUser(AbstractUser):
     ]
     user_type = models.CharField(max_length=20, choices=USER_TYPES, default='student')
     
-    profile_picture = models.ImageField(upload_to="profile_pics/", null=True, blank=True)
+    profile_picture = models.ImageField(upload_to="profile_pics/", default='profile_pics/user-image.png',null=False, blank=False)
     bio = models.TextField(null=True, blank=True)
     gender = models.CharField(
         max_length=10, 

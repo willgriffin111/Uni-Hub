@@ -35,7 +35,7 @@
                 <div class="community-title-area">
                     <h1 class="community-name">{{ community.name }}</h1>
                     <span class="community-category">Study Group</span>
-                    <span class="community-members">45 members</span>
+                    <span class="community-members">{{ members_count }} members</span>
                 </div>
                 
                 <div class="community-actions">
@@ -201,7 +201,7 @@
             <div class="tab-pane fade" id="members">
                 <div class="content-card">
                     <div class="members-header">
-                        <h2 class="card-title">Community Members (45)</h2>
+                        <h2 class="card-title">Community Members ({{ members_count }})</h2>
                         <div class="members-search">
                             <i class="fa-solid fa-magnifying-glass"></i>
                             <input type="text" placeholder="Search members..." class="members-search-input">
@@ -259,41 +259,18 @@
                             <h3 class="section-title">Members</h3>
                             <div class="members-grid">
                                 <!-- Render more members here, usually with a loop in the actual template -->
+                                {%for member in members %}
                                 <div class="member-card">
                                     <div class="member-avatar">
-                                        <img src="" alt="Emma Watson">
+                                        <img src="{{member.profile_picture.url}}" alt="{{member.username}}">
                                     </div>
                                     <div class="member-info">
-                                        <h4 class="member-name">Emma Watson</h4>
+                                        <h4 class="member-name">{{member.username}}</h4>
                                         <p class="member-details">Computer Science • Year 3</p>
                                     </div>
                                     <button class="member-action-btn"><i class="fa-solid fa-envelope"></i></button>
                                 </div>
-                                
-                                <!-- Show more members -->
-                                <div class="member-card">
-                                    <div class="member-avatar">
-                                        <img src="" alt="John Smith">
-                                    </div>
-                                    <div class="member-info">
-                                        <h4 class="member-name">John Smith</h4>
-                                        <p class="member-details">Computer Science • Year 1</p>
-                                    </div>
-                                    <button class="member-action-btn"><i class="fa-solid fa-envelope"></i></button>
-                                </div>
-                                
-                                <div class="member-card">
-                                    <div class="member-avatar">
-                                        <img src="{% static 'images/default-avatar.jpg' %}" alt="Lisa Johnson">
-                                    </div>
-                                    <div class="member-info">
-                                        <h4 class="member-name">Lisa Johnson</h4>
-                                        <p class="member-details">Computer Science • Year 2</p>
-                                    </div>
-                                    <button class="member-action-btn"><i class="fa-solid fa-envelope"></i></button>
-                                </div>
-                                
-                                <!-- And so on for more members -->
+                                {%endfor%}
                             </div>
                             
                             <!-- Pagination -->
@@ -461,171 +438,222 @@
                 <h3 class="mod-card-title">General Settings</h3>
                 <p class="mod-card-description">Control community details, visibility, and content guidelines.</p>
                 <div class="mod-card-actions">
+                    <a href="{% url 'community_edit_page' community_name=community.name %}">
                     <button class="mod-card-btn">Manage</button>
+                    </a>
                 </div>
             </div>
         </div>
     </div>
 </div>
     
-    <!-- JavaScript for community page functionality -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Join/Leave community functionality
-            const joinLeaveBtn = document.
-        });
+     
+      
 
-</script>   
-    <!-- JavaScript for community page functionality -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Join/Leave community functionality
-            const joinLeaveBtn = document.getElementById('joinLeaveBtn');
-            let isMember = false;
-            
-            joinLeaveBtn.addEventListener('click', function() {
-                isMember = !isMember;
-                
-                if (isMember) {
-                    // User is now a member
-                    joinLeaveBtn.textContent = 'Leave Community';
-                    joinLeaveBtn.classList.add('is-member');
-                    
-                    // In a real app, you would make an API call here
-                    console.log('User joined the community');
-                } else {
-                    // User is no longer a member
-                    joinLeaveBtn.textContent = 'Join Community';
-                    joinLeaveBtn.classList.remove('is-member');
-                    
-                    // In a real app, you would make an API call here
-                    console.log('User left the community');
-                }
-            });
-            
-            // Attend event functionality
-            const attendBtns = document.querySelectorAll('.attend-btn');
-            
-            attendBtns.forEach(btn => {
-                if (!btn.classList.contains('attending')) {
-                    btn.addEventListener('click', function() {
-                        const isAttending = btn.classList.contains('attending');
-                        const attendanceCountEl = btn.previousElementSibling;
-                        let count = parseInt(attendanceCountEl.textContent);
-                        
-                        if (isAttending) {
-                            // User is no longer attending
-                            btn.textContent = 'Attend';
-                            btn.classList.remove('attending');
-                            count--;
-                            attendanceCountEl.textContent = count + ' attending';
-                        } else {
-                            // User is now attending
-                            btn.textContent = 'Attending';
-                            btn.classList.add('attending');
-                            count++;
-                            attendanceCountEl.textContent = count + ' attending';
-                        }
-                    });
-                }
-            });
-        });
+  <!-- Post Modal -->
+  <div id="postModal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <span class="close-modal">&times;</span>
+      <div class="modal-post-compose d-flex align-items-start">
+        <div class="compose-profile-img me-2">
+            {% if user.profile_picture %}
+            <img src="{{ user.profile_picture.url }}" alt="Profile Photo" width="50" height="50" class="rounded-circle object-fit-cover">
+        {% else %}
+            <img src="{% static 'user-image.png' %}" alt="Profile Photo" width="50" height="50" class="rounded-circle object-fit-cover">
+        {% endif %}
+        </div>
+        <div class="compose-input-container flex-grow-1">
+          <input type="text" class="compose-title-input form-control mb-2" placeholder="Title...">
+          <textarea class="compose-input form-control" placeholder="What's happening?"></textarea>
+          <!-- Tags input -->
+          <input type="text" class="compose-tags-input form-control mb-2" placeholder="Hashtags (e.g., #study, #events)" style="border:none; margin-top: 10px;">
+          
+          <!-- Image Preview Container (initially hidden) -->
+          <div class="image-preview-container" style="display: none; margin-top: 10px; margin-bottom: 10px;">
+            <div class="position-relative">
+              <img id="image-preview" src="#" alt="Preview" class="img-fluid rounded" style="max-height: 200px;">
+              <button type="button" class="btn-close position-absolute top-0 end-0 bg-white rounded-circle m-1" id="remove-image" aria-label="Remove image"></button>
+            </div>
+          </div>
+          
+          <div class="compose-actions d-flex justify-content-between align-items-center mt-2">
+            <div class="compose-tools">
+              <div class="form-group mt-2">
+                <label class="img-upload" for="modal-img-upload">
+                  <i class="fa-solid fa-camera"></i>
+                </label>
+                <input type="file" class="image-upload" id="modal-img-upload" style="display: none;" accept="image/*">
+              </div>
+            </div>
+            <button class="compose-submit btn btn-success">Post</button>
+          </div>
+        </div>
+      </div>
+    </div>
+</body>
 
+<script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Post Modal Functionality
-        var modal = document.getElementById("postModal");
-        var postBtn = document.getElementById("openPostModal"); // Updated selector to target the specific button
-        var closeModal = document.getElementsByClassName("close-modal")[0];
-        var readonlyInput = document.querySelector(".create-post input[readonly]");
-        
-        // When the user clicks on the create post button or the readonly input
-        if (postBtn) {
-            postBtn.onclick = function() {
-            modal.style.display = "block";
-            document.querySelector(".modal-post-compose .compose-input").focus();
-            }
-        }
-        
-        // Also allow clicking on the readonly input to open the modal
-        if (readonlyInput) {
-            readonlyInput.onclick = function() {
-            modal.style.display = "block";
-            document.querySelector(".modal-post-compose .compose-input").focus();
-            }
-        }
-        
-        // When the user clicks on the close button
-        if (closeModal) {
-            closeModal.onclick = function() {
-            modal.style.display = "none";
-            }
-        }
-        
-        // When the user clicks anywhere outside of the modal
-        window.onclick = function(event) {
-            if (event.target == modal) {
-            modal.style.display = "none";
-            }
-        }
-        
-        // Image upload preview functionality
-        const imageUpload = document.getElementById('modal-img-upload');
-        const imagePreview = document.getElementById('image-preview');
-        const imagePreviewContainer = document.querySelector('.image-preview-container');
-        const removeImageBtn = document.getElementById('remove-image');
-        
-        if (imageUpload) {
-            imageUpload.addEventListener('change', function() {
-            if (this.files && this.files[0]) {
-                const reader = new FileReader();
-                
-                reader.onload = function(e) {
-                imagePreview.src = e.target.result;
-                imagePreviewContainer.style.display = 'block';
-                }
-                
-                reader.readAsDataURL(this.files[0]);
-            }
-            });
-        }
-        
-        if (removeImageBtn) {
-            removeImageBtn.addEventListener('click', function() {
-            imagePreview.src = '#';
-            imagePreviewContainer.style.display = 'none';
-            imageUpload.value = '';
-            });
-        }
-        
-        // Post submission logic
-        const submitBtn = document.querySelector('.compose-submit');
-        if (submitBtn) {
-            submitBtn.addEventListener('click', function() {
-            // Get post data
-            const title = document.querySelector('.compose-title-input').value;
-            const content = document.querySelector('.compose-input').value;
-            const tags = document.querySelector('.compose-tags-input').value;
+        // Get the button
+        const joinLeaveBtn = document.getElementById('joinLeaveBtn');
+        if (!joinLeaveBtn) return;
+    
+        // Convert Django boolean value to JavaScript boolean
+        let isMember = "{{ is_member }}".toLowerCase() === "true";
+        const communityId = "{{ community.id }}"; // Django renders this as a string
+        const csrftoken = "{{ csrf_token }}"; // CSRF token from Django
+    
+        // Set initial button text based on membership
+        joinLeaveBtn.textContent = isMember ? 'Leave Community' : 'Join Community';
+        joinLeaveBtn.classList.toggle('is-member', isMember);
+    
+        joinLeaveBtn.addEventListener('click', function() {
+            // Toggle membership status
+            isMember = !isMember;
             
-            // Basic validation
-            if (!content.trim()) {
-                alert('Please enter some content for your post.');
-                return;
+            // Update button text
+            joinLeaveBtn.textContent = isMember ? 'Leave Community' : 'Join Community';
+            joinLeaveBtn.classList.toggle('is-member', isMember);
+    
+            // Send the request to the server
+            fetch('{% url "api-communityjoin" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken, // CSRF token for security
+                },
+                body: JSON.stringify({
+                    community_id: communityId
+                })
+            })
+            .then(response => response.json())
+            .then(data => console.log('Response:', data))
+            .catch(error => console.error('Error joining/leaving community:', error));
+        });
+    });
+        
+        // Attend event functionality
+        const attendBtns = document.querySelectorAll('.attend-btn');
+        
+        attendBtns.forEach(btn => {
+            if (!btn.classList.contains('attending')) {
+                btn.addEventListener('click', function() {
+                    const isAttending = btn.classList.contains('attending');
+                    const attendanceCountEl = btn.previousElementSibling;
+                    let count = parseInt(attendanceCountEl.textContent);
+                    
+                    if (isAttending) {
+                        // User is no longer attending
+                        btn.textContent = 'Attend';
+                        btn.classList.remove('attending');
+                        count--;
+                        attendanceCountEl.textContent = count + ' attending';
+                    } else {
+                        // User is now attending
+                        btn.textContent = 'Attending';
+                        btn.classList.add('attending');
+                        count++;
+                        attendanceCountEl.textContent = count + ' attending';
+                    }
+                });
+            }
+        });
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Post Modal Functionality
+    var modal = document.getElementById("postModal");
+    var postBtn = document.getElementById("openPostModal"); // Updated selector to target the specific button
+    var closeModal = document.getElementsByClassName("close-modal")[0];
+    var readonlyInput = document.querySelector(".create-post input[readonly]");
+    
+    // When the user clicks on the create post button or the readonly input
+    if (postBtn) {
+        postBtn.onclick = function() {
+        modal.style.display = "block";
+        document.querySelector(".modal-post-compose .compose-input").focus();
+        }
+    }
+    
+    // Also allow clicking on the readonly input to open the modal
+    if (readonlyInput) {
+        readonlyInput.onclick = function() {
+        modal.style.display = "block";
+        document.querySelector(".modal-post-compose .compose-input").focus();
+        }
+    }
+    
+    // When the user clicks on the close button
+    if (closeModal) {
+        closeModal.onclick = function() {
+        modal.style.display = "none";
+        }
+    }
+    
+    // When the user clicks anywhere outside of the modal
+    window.onclick = function(event) {
+        if (event.target == modal) {
+        modal.style.display = "none";
+        }
+    }
+    
+    // Image upload preview functionality
+    const imageUpload = document.getElementById('modal-img-upload');
+    const imagePreview = document.getElementById('image-preview');
+    const imagePreviewContainer = document.querySelector('.image-preview-container');
+    const removeImageBtn = document.getElementById('remove-image');
+    
+    if (imageUpload) {
+        imageUpload.addEventListener('change', function() {
+        if (this.files && this.files[0]) {
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+            imagePreview.src = e.target.result;
+            imagePreviewContainer.style.display = 'block';
             }
             
-            // Here you would typically send the data to your server
-            console.log('Submitting post:', { title, content, tags });
-            
-            // Close the modal and reset form
-            modal.style.display = 'none';
-            document.querySelector('.compose-title-input').value = '';
-            document.querySelector('.compose-input').value = '';
-            document.querySelector('.compose-tags-input').value = '';
-            imagePreviewContainer.style.display = 'none';
-            imageUpload.value = '';
-            });
+            reader.readAsDataURL(this.files[0]);
         }
         });
-    </script>
+    }
+    
+    if (removeImageBtn) {
+        removeImageBtn.addEventListener('click', function() {
+        imagePreview.src = '#';
+        imagePreviewContainer.style.display = 'none';
+        imageUpload.value = '';
+        });
+    }
+    
+    // Post submission logic
+    const submitBtn = document.querySelector('.compose-submit');
+    if (submitBtn) {
+        submitBtn.addEventListener('click', function() {
+        // Get post data
+        const title = document.querySelector('.compose-title-input').value;
+        const content = document.querySelector('.compose-input').value;
+        const tags = document.querySelector('.compose-tags-input').value;
+        
+        // Basic validation
+        if (!content.trim()) {
+            alert('Please enter some content for your post.');
+            return;
+        }
+        
+        // Here you would typically send the data to your server
+        console.log('Submitting post:', { title, content, tags });
+        
+        // Close the modal and reset form
+        modal.style.display = 'none';
+        document.querySelector('.compose-title-input').value = '';
+        document.querySelector('.compose-input').value = '';
+        document.querySelector('.compose-tags-input').value = '';
+        imagePreviewContainer.style.display = 'none';
+        imageUpload.value = '';
+        });
+    }
+    });
+</script> 
 
     <!-- Notification Container -->
 <div id="deleteNotification" class="notification" style="display: none;">

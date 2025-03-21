@@ -203,7 +203,7 @@ class ProfileUpdateAPI(APIView):
         data = request.data
 
         if "profile_picture" in request.FILES:
-            if user.profile_picture:
+            if user.profile_picture and user.profile_picture.name != 'profile_pics/user-image.png':
                 user.profile_picture.delete(save=False)
             user.profile_picture = request.FILES["profile_picture"]
 

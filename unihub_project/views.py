@@ -50,6 +50,16 @@ def Verify_view(request):
 def profile_view(request):
     """Render the profile page (requires login)."""
     posts = Post.objects.filter(user_id=request.user).order_by('-created_at')  # '-' makes it descending (newest first)
+    current_time = timezone.now()
+    
+    # For each post, get like count, check if the user liked it, and get comment count
+    for post in posts:
+        post.likes_count = post.likes.count()  # Get total like count
+        post.liked = post.likes.filter(user=request.user).exists()  # Check if the user has liked this post
+        post.comments_count = post.comments.count()
+        
+        # Check if the post was created within 30 minutes (for edit permission)
+        post.can_edit = (current_time - post.created_at).total_seconds() <= 30 * 60
     return render(request, "pages/profile.html", {"user": request.user, "posts": posts})
 
 def profile_edit_view(request):
@@ -85,6 +95,15 @@ def community_view(request, community_name):
     posts = Post.objects.filter(community=community).order_by('-created_at')
     current_time = timezone.now()
     
+    # Get the members of the community
+    members = community.members.all()
+    
+    # Get the number of members
+    members_count = members.count()
+    
+    # Check if the current user is a member of the community
+    is_member = request.user in members
+
     for post in posts:
         post.likes_count = post.likes.count()
         post.liked = post.likes.filter(user=request.user).exists()
@@ -96,6 +115,9 @@ def community_view(request, community_name):
         "community": community,
         "posts": posts,
         "user": request.user,
+        "members": members,
+        "members_count": members_count,
+        "is_member": is_member,
     })
 
 @login_required
@@ -115,6 +137,8 @@ def community_create_page(request):
 def community_edit_view(request, community_name):
     community = get_object_or_404(Community, name=community_name)
     return render(request, "pages/community_edit.html", {'community': community, "user": request.user})
+
+
 # THESE ARE OLD VIEWS:
 
 @login_required
@@ -122,22 +146,7 @@ def post_view(request):
     """Render the profile page (requires login)."""
     return render(request, "pages/posts.html", {"user": request.user})
 
-@login_required
-def post_list(request):
-    """Render the post display page with correct like count and user like status."""
-    
-    posts = Post.objects.all().order_by('-created_at')  # Order by newest first
-    current_time = timezone.now()
-    for post in posts:
-        post.likes_count = post.likes.count()  # Get total like count
-        post.liked = post.likes.filter(user=request.user).exists()  # Check if the user has liked this post
-        post.comments_count = post.comments.count()
-        
-        
-        # Check if the post was created within 30 minutes (for edit permission)
-        post.can_edit = (current_time - post.created_at).total_seconds() <= 30 * 60
 
-    return render(request, 'pages/post_display.html', {'posts': posts, 'current_time': current_time})
 
 @login_required
 def dashboard_view(request):

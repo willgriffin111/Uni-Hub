@@ -346,26 +346,27 @@
     // Post Modal functionality
     const modal = document.getElementById("postModal");
     const postBtn = document.querySelector(".post-btn");
-    const closeModal = document.getElementsByClassName("close-modal")[0];
-    
-    if (postBtn) {
+    const closeModal = document.querySelector(".close-modal");
+
+    if (postBtn && modal) {
         postBtn.onclick = function() {
-        modal.style.display = "block";
-        document.querySelector(".modal-post-compose .compose-input").focus();
-        }
+            modal.style.display = "block";
+            const inputField = document.querySelector(".modal-post-compose .compose-input");
+            if (inputField) inputField.focus();
+        };
     }
-    
-    if (closeModal) {
+
+    if (closeModal && modal) {
         closeModal.onclick = function() {
-        modal.style.display = "none";
-        }
+            modal.style.display = "none";
+        };
     }
-    
+
     window.onclick = function(event) {
-        if (event.target == modal) {
-        modal.style.display = "none";
+        if (modal && event.target == modal) {
+            modal.style.display = "none";
         }
-    }
+    };
 
     // Post creation function
     function createPost(event) {
@@ -379,7 +380,7 @@
         const title = titleInput.value.trim();
         const content = contentInput.value.trim();
         const tags = tagsInput ? tagsInput.value.trim() : "";
-        const community = {{ community.id }}
+        const community = "{{ community.id|default:'' }}";
         
         if (!title || !content) {
         alert("Please fill in both title and content.");

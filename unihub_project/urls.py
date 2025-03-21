@@ -27,7 +27,6 @@ urlpatterns = [
     path('dashboard/', views.dashboard_view, name="dashboard_page"),
     path('profile/', views.profile_view, name="profile_page"),
     path('post/', views.post_view, name="post_page"),
-    path('posts/', views.post_list, name="post_list"),
 
     path('edit_post/<int:post_id>/', views.edit_post, name="edit_post"),
     
