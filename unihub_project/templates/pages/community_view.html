@@ -44,6 +44,9 @@
                     {% endif %}
                     <button class="btn-contact"><i class="fa-solid fa-envelope"></i> Contact</button>
                     <button class="btn-share"><i class="fa-solid fa-share-nodes"></i> Share</button>
+                    {% if community.created_by == user %}
+                        <button class="btn-delete" id="deleteCommunityBtn"><i class="fa-solid fa-trash"></i> Delete</button>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -622,7 +625,68 @@
             });
         }
         });
-    </script>   
+    </script>
+
+    <!-- Notification Container -->
+<div id="deleteNotification" class="notification" style="display: none;">
+    <span class="message"></span>
+    <button class="close-btn">&times;</button>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const deleteBtn = document.getElementById('deleteCommunityBtn');
+        if (deleteBtn) {
+            deleteBtn.addEventListener('click', async function() {
+                const confirmDelete = confirm("Are you sure you want to delete this community?");
+                if (!confirmDelete) return;
+    
+                const communityId = "{{ community.id }}";
+                const url = `/api/community/community/${communityId}/delete/`;
+    
+                try {
+                    const response = await fetch(url, {
+                        method: "DELETE",
+                        headers: {
+                            "X-CSRFToken": getCSRFToken(),
+                            "X-Requested-With": "XMLHttpRequest"
+                        },
+                        credentials: "include"
+                    });
+    
+                    if (response.ok) {
+                        // Store message and redirect immediately
+                        sessionStorage.setItem("deleteSuccess", 
+                            `Community '{{ community.name }}' deleted successfully`
+                        );
+                        window.location.href = "{% url 'index_page' %}";
+                    } else {
+                        alert("Failed to delete community.");
+                    }
+                } catch (error) {
+                    console.error(error);
+                    alert("An error occurred while deleting the community.");
+                }
+            });
+        }
+    });
+
+        function getCSRFToken() {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== "") {
+                const cookies = document.cookie.split(";");
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.startsWith("csrftoken=")) {
+                        cookieValue = cookie.substring("csrftoken=".length, cookie.length);
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+</script>
+        
 
   <!-- Post Modal -->
   <div id="postModal" class="modal" style="display:none;">

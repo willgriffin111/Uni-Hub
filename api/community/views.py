@@ -1,25 +1,18 @@
-from rest_framework import generics, permissions, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from django.shortcuts import get_object_or_404
 from api.community.models import Community, CommunityRole
 from .serializers import CommunitySerializer
 from rest_framework import generics, permissions, status
-from rest_framework.response import Response
-from rest_framework.views import APIView
-from django.contrib.auth import get_user_model
 from django.http import JsonResponse
 import os
 from django.core.files import File
-from rest_framework import status
 from .models import Community, CommunityRole
-from .serializers import CommunitySerializer
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.contrib.auth import get_user_model
-from .serializers import CommunitySerializer
 from rest_framework.permissions import IsAuthenticated
 from django.core.files.storage import default_storage
+
 
 class CommunityEditAPI(APIView):
     permission_classes = [IsAuthenticated]
@@ -152,3 +145,26 @@ class CreateCommunityView(generics.CreateAPIView):
         # Construct the redirect URL (adjust as needed: here we use community name)
         redirect_url = f"/community/{community.name}/"
         return Response({"redirect_url": redirect_url}, status=status.HTTP_201_CREATED)
+
+class DeleteCommunityView(APIView):
+    permission_classes = [IsAuthenticated]  # Require the user to be logged in
+
+    def delete(self, request, community_id, *args, **kwargs):
+        # 1) Get the community or 404
+        community = get_object_or_404(Community, id=community_id)
+
+        # 2) Check if the user is the creator or has an 'admin' role
+        if community.created_by != request.user:
+            # Not the creator, so check if user is an admin in this community
+            try:
+                role = CommunityRole.objects.get(user=request.user, community=community)
+                if role.role != 'admin':
+                    return Response({"detail": "You do not have permission to delete this community."},
+                                    status=status.HTTP_403_FORBIDDEN)
+            except CommunityRole.DoesNotExist:
+                return Response({"detail": "You do not have permission to delete this community."},
+                                status=status.HTTP_403_FORBIDDEN)
+
+        # 3) If checks pass, delete the community
+        community.delete()
+        return Response({"detail": "Community deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
