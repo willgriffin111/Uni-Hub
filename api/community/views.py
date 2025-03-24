@@ -177,11 +177,9 @@ class CommunityEventCreateAPI(APIView):
 
     def post(self, request, community_id):
         community = get_object_or_404(Community, id=community_id)
-        data = request.data.copy()
-        data['community'] = community.id
-        serializer = CommunityEventSerializer(data=data)
+        serializer = CommunityEventSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            serializer.save(community=community)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -231,3 +229,12 @@ class AttendanceListAPI(APIView):
         attendances = event.attendances.all()
         serializer = CommunityEventAttendanceSerializer(attendances, many=True)
         return Response(serializer.data)
+    
+    
+class CommunityEventDeleteAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request, event_id):
+        event = get_object_or_404(CommunityEvent, id=event_id)
+        event.delete()
+        return Response({"detail": "Event deleted successfully."}, status=status.HTTP_204_NO_CONTENT)

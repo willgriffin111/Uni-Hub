@@ -15,4 +15,5 @@ urlpatterns = [
     path('events/<int:event_id>/', CommunityEventDetailAPI.as_view()),
     path('events/<int:event_id>/attendance/', MarkAttendanceAPI.as_view()),
     path('events/<int:event_id>/attendees/', AttendanceListAPI.as_view()),
+    path('events/<int:event_id>/delete/', CommunityEventDeleteAPI.as_view()),
 ]
