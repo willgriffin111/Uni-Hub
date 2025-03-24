@@ -68,35 +68,36 @@ class CommunityRole(models.Model):
         return f"{self.user.username} - {self.get_role_display()} in {self.community.name}"
 
 
-class VirtualSession(models.Model):
-    """
-    Represents a virtual or interactive session scheduled by community leaders.
+# ARE WE STILL GOING TO DO THIS? - WILL
+# class VirtualSession(models.Model):
+#     """
+#     Represents a virtual or interactive session scheduled by community leaders.
     
-    Fields:
-      - community: The community hosting the session.
-      - title: Session title.
-      - description: Detailed info about the session.
-      - scheduled_at: DateTime when the session will start.
-      - duration_minutes: How long the session lasts (in minutes).
-      - session_link: URL for accessing the virtual session.
-      - created_at: Timestamp when the session was created.
-      - updated_at: Timestamp for last update.
-    """
-    community = models.ForeignKey(
-        Community, 
-        on_delete=models.CASCADE, 
-        related_name="virtual_sessions"
-    )
-    title = models.CharField(max_length=255)
-    description = models.TextField(blank=True)
-    scheduled_at = models.DateTimeField()
-    duration_minutes = models.PositiveIntegerField(default=60)
-    session_link = models.URLField(blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+#     Fields:
+#       - community: The community hosting the session.
+#       - title: Session title.
+#       - description: Detailed info about the session.
+#       - scheduled_at: DateTime when the session will start.
+#       - duration_minutes: How long the session lasts (in minutes).
+#       - session_link: URL for accessing the virtual session.
+#       - created_at: Timestamp when the session was created.
+#       - updated_at: Timestamp for last update.
+#     """
+#     community = models.ForeignKey(
+#         Community, 
+#         on_delete=models.CASCADE, 
+#         related_name="virtual_sessions"
+#     )
+#     title = models.CharField(max_length=255)
+#     description = models.TextField(blank=True)
+#     scheduled_at = models.DateTimeField()
+#     duration_minutes = models.PositiveIntegerField(default=60)
+#     session_link = models.URLField(blank=True, null=True)
+#     created_at = models.DateTimeField(auto_now_add=True)
+#     updated_at = models.DateTimeField(auto_now=True)
 
-    def __str__(self):
-        return f"{self.title} ({self.community.name})"
+#     def __str__(self):
+#         return f"{self.title} ({self.community.name})"
 
 
 class CommunityEvent(models.Model):
@@ -128,3 +129,20 @@ class CommunityEvent(models.Model):
 
     def __str__(self):
         return f"{self.title} - {self.event_date} ({self.community.name})"
+    
+    
+class CommunityEventAttendance(models.Model):
+    ATTENDANCE_CHOICES = [
+        ('yes', 'Attending'),
+        ('no', 'Not Attending'),
+    ]
+
+    event = models.ForeignKey(CommunityEvent, on_delete=models.CASCADE, related_name='attendances')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    status = models.CharField(max_length=3, choices=ATTENDANCE_CHOICES)
+
+    class Meta:
+        unique_together = ('event', 'user')
+
+    def __str__(self):
+        return f"{self.user.username} - {self.status} for {self.event.title}"

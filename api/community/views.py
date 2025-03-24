@@ -1,12 +1,12 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from api.community.models import Community, CommunityRole
-from .serializers import CommunitySerializer
+from .serializers import CommunitySerializer, CommunityEventSerializer, CommunityEventAttendanceSerializer
 from rest_framework import generics, permissions, status
 from django.http import JsonResponse
 import os
 from django.core.files import File
-from .models import Community, CommunityRole
+from .models import Community, CommunityRole, CommunityEvent, CommunityEventAttendance
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.contrib.auth import get_user_model
@@ -168,3 +168,66 @@ class DeleteCommunityView(APIView):
         # 3) If checks pass, delete the community
         community.delete()
         return Response({"detail": "Community deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
+
+
+# ------------------------EVENTS------------------------
+
+class CommunityEventCreateAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, community_id):
+        community = get_object_or_404(Community, id=community_id)
+        data = request.data.copy()
+        data['community'] = community.id
+        serializer = CommunityEventSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class CommunityEventListAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, community_id):
+        community = get_object_or_404(Community, id=community_id)
+        events = community.events.all().order_by('event_date', 'event_time')
+        serializer = CommunityEventSerializer(events, many=True, context={'request': request})
+        return Response(serializer.data)
+
+
+
+class CommunityEventDetailAPI(APIView):
+    def get(self, request, event_id):
+        event = get_object_or_404(CommunityEvent, id=event_id)
+        serializer = CommunityEventSerializer(event)
+        return Response(serializer.data)
+
+
+class MarkAttendanceAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, event_id):
+        event = get_object_or_404(CommunityEvent, id=event_id)
+        status_choice = request.data.get('status')
+
+        if status_choice not in ['yes', 'no']:
+            return Response({"detail": "Invalid status. Use 'yes' or 'no'."},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        attendance, created = CommunityEventAttendance.objects.update_or_create(
+            user=request.user,
+            event=event,
+            defaults={'status': status_choice}
+        )
+
+        return Response({"detail": f"Marked as {status_choice} for event '{event.title}'"},
+                        status=status.HTTP_200_OK)
+
+
+class AttendanceListAPI(APIView):
+    def get(self, request, event_id):
+        event = get_object_or_404(CommunityEvent, id=event_id)
+        attendances = event.attendances.all()
+        serializer = CommunityEventAttendanceSerializer(attendances, many=True)
+        return Response(serializer.data)
