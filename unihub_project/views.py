@@ -3,34 +3,38 @@ from django.contrib.auth.decorators import login_required
 from api.posts.models import Post, Comment, Community
 from django.utils import timezone
 from api.community.models import Community
-from django.db.models import Count
+from django.db.models import Count, Q
 from api.community.models import CommunityEvent
 
 
 @login_required
 def home_page(request):
-    """Render the post display page with correct like count and user like status, 
-    and show top 3 communities with the most members."""
+    """Render the home page with posts, top communities, 
+    and upcoming events ordered by attendee count."""
     
     posts = Post.objects.all().order_by('-created_at')  # Order by newest first
     current_time = timezone.now()
     
-    # For each post, get like count, check if the user liked it, and get comment count
+    # Process posts: like count, user liked, comment count, etc.
     for post in posts:
-        post.likes_count = post.likes.count()  # Get total like count
-        post.liked = post.likes.filter(user=request.user).exists()  # Check if the user has liked this post
+        post.likes_count = post.likes.count()
+        post.liked = post.likes.filter(user=request.user).exists()
         post.comments_count = post.comments.count()
-        
-        # Check if the post was created within 30 minutes (for edit permission)
         post.can_edit = (current_time - post.created_at).total_seconds() <= 30 * 60
     
-    # Retrieve the top 3 communities with the most members
+    # Retrieve top 3 communities with most members
     top_communities = Community.objects.annotate(num_members=Count('members')).order_by('-num_members')[:3]
     
+    now_date = current_time.date()
+    upcoming_events = CommunityEvent.objects.filter(event_date__gte=now_date).annotate(
+        attendance_count=Count('attendances')
+    ).order_by('-attendance_count')[:3]
+
     return render(request, 'pages/home_page.html', {
-        'posts': posts, 
+        'posts': posts,
         'user': request.user,
-        'top_communities': top_communities  
+        'top_communities': top_communities,
+        'events': upcoming_events
     })
 
 def login_view(request):

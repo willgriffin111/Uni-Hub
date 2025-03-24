@@ -13,6 +13,6 @@ urlpatterns = [
     
     path('api/profile-edit/', ProfileUpdateAPI.as_view(), name='api-profile-update'),
     path('api/delete-account/', DeleteAccountAPI.as_view(), name='api-delete-account'),
-      path('api/remove-profile-picture/', RemoveProfilePictureAPI.as_view(), name='api-remove-profile-picture'),
+    path('api/remove-profile-picture/', RemoveProfilePictureAPI.as_view(), name='api-remove-profile-picture'),
 ]
 
