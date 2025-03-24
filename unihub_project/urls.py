@@ -5,7 +5,7 @@ from django.urls import path, include
 from . import views
 from unihub_project.views import community_list_view
 from unihub_project.views import community_view
-from unihub_project.views import community_create_page
+from unihub_project.views import community_create_page, event_edit_view
 
 urlpatterns = [
     
@@ -52,6 +52,8 @@ urlpatterns = [
     path('community/create/', community_create_page, name='community_create_page'),
     path('community/create/', views.community_create_page, name='community_create_page'),
     
+    path('community/event/<int:event_id>/edit/', event_edit_view, name='event_edit_page'),
+
 
     
 

@@ -4,6 +4,7 @@ from api.posts.models import Post, Comment, Community
 from django.utils import timezone
 from api.community.models import Community
 from django.db.models import Count
+from api.community.models import CommunityEvent
 
 
 @login_required
@@ -138,6 +139,9 @@ def community_edit_view(request, community_name):
     community = get_object_or_404(Community, name=community_name)
     return render(request, "pages/community_edit.html", {'community': community, "user": request.user})
 
+def event_edit_view(request, event_id):
+    event = get_object_or_404(CommunityEvent, id=event_id)
+    return render(request, 'pages/event_edit.html', {'event': event})
 
 # THESE ARE OLD VIEWS:
 

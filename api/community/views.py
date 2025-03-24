@@ -238,3 +238,19 @@ class CommunityEventDeleteAPI(APIView):
         event = get_object_or_404(CommunityEvent, id=event_id)
         event.delete()
         return Response({"detail": "Event deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
+    
+class CommunityEventEditAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def put(self, request, event_id):
+        event = get_object_or_404(CommunityEvent, id=event_id)
+        serializer = CommunityEventSerializer(
+            event,
+            data=request.data,
+            partial=True,
+            context={'request': request}
+        )
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
