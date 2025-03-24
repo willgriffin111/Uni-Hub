@@ -269,17 +269,16 @@ class RemoveProfilePictureAPI(APIView):
 
     def delete(self, request):
         user = request.user
-
-        # Check if user has a profile picture
+        default_pic = 'profile_pics/user-image.png'
+        
         if user.profile_picture:
-            # Delete the profile picture file from storage
-            if default_storage.exists(user.profile_picture.name):  
-                default_storage.delete(user.profile_picture.name)  
-
-            # Remove the profile picture reference from user model
-            user.profile_picture = None
+            if user.profile_picture.name != default_pic:
+                if default_storage.exists(user.profile_picture.name):
+                    default_storage.delete(user.profile_picture.name)
+                    
+            # Reset the user's profile picture to the default.
+            user.profile_picture = default_pic
             user.save()
-
-            return Response({"message": "Profile picture removed successfully."}, status=status.HTTP_200_OK)
+            return Response({"message": "Profile picture removed and reset to default."}, status=status.HTTP_200_OK)
 
         return Response({"error": "No profile picture found."}, status=status.HTTP_400_BAD_REQUEST)

@@ -42,7 +42,7 @@
                     <input type="file" name="profile_picture" class="form-control">
                 </div>
             
-                {% if user.profile_picture %}
+                {% if user.profile_picture and user.profile_picture.name != 'profile_pics/user-image.png' %}
                     <button type="button" class="btn btn-danger mt-2" id="removeProfilePictureBtn">Remove Profile Picture</button>
                 {% endif %}
             </div>
