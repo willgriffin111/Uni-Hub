@@ -86,6 +86,7 @@ function performSearch() {
                 
                 data.forEach(user => {
                     const userItem = document.createElement('a');
+                    userItem.href = `/userprofile/${user.username}`;
                     userItem.className = 'list-group-item list-group-item-action';
                     userItem.innerHTML = `
                         <div class="d-flex w-100 justify-content-between">

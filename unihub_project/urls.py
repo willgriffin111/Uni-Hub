@@ -3,9 +3,8 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path, include
 from . import views
-from unihub_project.views import community_list_view
-from unihub_project.views import community_view
-from unihub_project.views import community_create_page, event_edit_view
+from unihub_project.views import *
+
 
 urlpatterns = [
     
@@ -53,6 +52,9 @@ urlpatterns = [
     path('community/create/', views.community_create_page, name='community_create_page'),
     
     path('community/event/<int:event_id>/edit/', event_edit_view, name='event_edit_page'),
+    
+    path('userprofile/<str:username>/', user_profile_page, name='user-profile-page'),
+
 
 
     
