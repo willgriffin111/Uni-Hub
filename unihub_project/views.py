@@ -1,10 +1,9 @@
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from api.posts.models import Post, Comment, Community
+from api.posts.models import Post, Comment
 from django.utils import timezone
-from api.community.models import Community
+from api.community.models import Community, CommunityEvent, CommunityRole
 from django.db.models import Count, Q
-from api.community.models import CommunityEvent
 from django.contrib.auth import get_user_model
 
 
@@ -97,9 +96,18 @@ def search_view(request):
 #community views
 @login_required
 def community_view(request, community_name):
+    
     community = get_object_or_404(Community, name=community_name)
     posts = Post.objects.filter(community=community).order_by('-created_at')
     current_time = timezone.now()
+    
+    ROLE_HIERARCHY = {
+        "member": 1,
+        "event_leader": 2,
+        "community_leader": 3,
+        "admin": 4,
+    }
+    user_role_level = 0
     
     # Get the members of the community
     members = community.members.all()
@@ -109,7 +117,10 @@ def community_view(request, community_name):
     
     # Check if the current user is a member of the community
     is_member = request.user in members
-
+    if is_member:
+        user_role = CommunityRole.objects.filter(community=community, user=request.user).first()
+        user_role_level = ROLE_HIERARCHY.get(user_role.role, 0)
+        
     for post in posts:
         post.likes_count = post.likes.count()
         post.liked = post.likes.filter(user=request.user).exists()
@@ -123,6 +134,7 @@ def community_view(request, community_name):
         "user": request.user,
         "members": members,
         "members_count": members_count,
+        "user_role_level": user_role_level,
         "is_member": is_member,
     })
 

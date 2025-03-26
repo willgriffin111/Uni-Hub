@@ -39,12 +39,12 @@
                 </div>
                 
                 <div class="community-actions">
-                    {% if community.created_by != user %}
+                    {% if user_role_level <= 1 %}
                         <button id="joinLeaveBtn" class="btn-join-leave">Join Community</button>
                     {% endif %}
                     <button class="btn-contact"><i class="fa-solid fa-envelope"></i> Contact</button>
                     <button class="btn-share"><i class="fa-solid fa-share-nodes"></i> Share</button>
-                    {% if community.created_by == user %}
+                    {% if user_role_level >= 3 %}
                         <button class="btn-delete" id="deleteCommunityBtn"><i class="fa-solid fa-trash"></i> Delete</button>
                     {% endif %}
                 </div>
@@ -63,9 +63,11 @@
                 <li class="cnav-item" role="presentation">
                     <button class="cnav-link" id="events-tab" data-bs-toggle="tab" data-bs-target="#events" type="button" role="tab" aria-controls="events" aria-selected="false">Events</button>
                 </li>
+                {% if user_role_level >= 3 %}
                 <li class="cnav-item" role="presentation">
                     <button class="cnav-link" id="Moderator" data-bs-toggle="tab" data-bs-target="#moderator" type="button" role="tab" aria-controls="events" aria-selected="false">Admin</button>
                 </li>
+                {% endif %}
             </ul>
         </div>
         
@@ -79,6 +81,7 @@
                         <div class="content-card">
                             <h2 class="card-title">Community Posts</h2>
                             <!-- Create Post Area -->
+                              {% if user_role_level >= 1 %}
                                 <div class="create-post content-card">
                                     <div class="d-flex align-items-center">
                                     <div class="post-avatar">
@@ -95,6 +98,7 @@
                                     </button>
                                     </div>
                                 </div>
+                              {% endif %}
                             
                             <div class="posts-list">
                                 <!-- Posts content goes here -->
@@ -294,7 +298,9 @@
                     <div class="events-header d-flex justify-content-between align-items-center">
                         <h2 class="card-title">Upcoming Events</h2>
                         <!-- Button to open create event modal -->
+                        {% if user_role_level >= 2 %}
                         <button id="createEventBtn" class="btn btn-primary">Create Event</button>
+                        {% endif %}
                     </div>
                     <div id="upcomingEventsList" class="events-list">
                         <!-- Upcoming events will be injected here via JS -->
@@ -340,6 +346,7 @@
                 </div>
             </div>
             <!-- Create Event Modal (only visible when triggered) -->
+            {% if user_role_level >= 2 %}
             <div id="createEventModal" class="modal" style="display:none;">
                 <div class="modal-content">
                     <span class="close-create-modal" style="cursor:pointer;">&times;</span>
@@ -369,8 +376,10 @@
                     </form>
                 </div>
             </div>
+            {% endif %}
             
             <!-- Moderator Tab -->
+{% if user_role_level >= 3 %}
 <div class="tab-pane fade" id="moderator">
     <div class="content-card">
         <h2 class="card-title">Moderator Dashboard</h2>
@@ -430,11 +439,13 @@
         </div>
     </div>
 </div>
+{% endif %}
     
      
       
 
   <!-- Post Modal -->
+  {% if user_role_level >= 1 %}
   <div id="postModal" class="modal" style="display:none;">
     <div class="modal-content">
       <span class="close-modal">&times;</span>
@@ -474,6 +485,8 @@
         </div>
       </div>
     </div>
+  </div>
+  {% endif %}
 </body>
 
 <script>
@@ -511,7 +524,13 @@
                 })
             })
             .then(response => response.json())
-            .then(data => console.log('Response:', data))
+            .then(data => {
+              if (data.detail) {
+                  location.reload(); // Reload the page on success
+              } else {
+                  alert("Something went wrong.");
+              }
+            })
             .catch(error => console.error('Error joining/leaving community:', error));
         });
     });
