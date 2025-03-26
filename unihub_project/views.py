@@ -7,7 +7,7 @@ from django.db.models import Count, Q
 from api.community.models import CommunityEvent
 from django.contrib.auth import get_user_model
 
-
+User = get_user_model()
 @login_required
 def home_page(request):
     """Render the home page with posts, top communities, 
@@ -30,12 +30,23 @@ def home_page(request):
     upcoming_events = CommunityEvent.objects.filter(event_date__gte=now_date).annotate(
         attendance_count=Count('attendances')
     ).order_by('-attendance_count')[:3]
+    
+    current_user = request.user
+    suggestions = User.objects.exclude(id=current_user.id)\
+                    .exclude(id__in=current_user.friends.values_list('id', flat=True))[:3]
+    filtered_suggestions = []
+    for user in suggestions:
+        if str(user) != "root":
+            filtered_suggestions.append(user)
+    suggestions = filtered_suggestions
+    # print(suggestions)
 
     return render(request, 'pages/home_page.html', {
         'posts': posts,
         'user': request.user,
         'top_communities': top_communities,
-        'events': upcoming_events
+        'events': upcoming_events,
+        'suggestions': suggestions
     })
 
 def login_view(request):
@@ -148,6 +159,21 @@ def event_edit_view(request, event_id):
     event = get_object_or_404(CommunityEvent, id=event_id)
     return render(request, 'pages/event_edit.html', {'event': event})
 
+
+
+
+def user_profile_page(request, username):
+    selected_user = get_object_or_404(User, username=username)
+    
+    posts = Post.objects.filter(user=selected_user)
+    is_friend = selected_user in request.user.friends.all()
+    return render(request, 'pages/user_profile.html', {
+        'user': selected_user,
+        'posts': posts,
+        'is_friend': is_friend
+    })
+    
+    
 # THESE ARE OLD VIEWS:
 
 @login_required
@@ -162,15 +188,3 @@ def dashboard_view(request):
     """Render the dashboard page (requires login)."""
     return render(request, "pages/dashboard.html", {"user": request.user})
 
-User = get_user_model()
-
-def user_profile_page(request, username):
-    selected_user = get_object_or_404(User, username=username)
-    
-    posts = Post.objects.filter(user=selected_user)
-    is_friend = selected_user in request.user.friends.all()
-    return render(request, 'pages/user_profile.html', {
-        'user': selected_user,
-        'posts': posts,
-        'is_friend': is_friend
-    })

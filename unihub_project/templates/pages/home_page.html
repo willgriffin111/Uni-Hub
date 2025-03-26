@@ -320,34 +320,36 @@
         </div>
         </div>
         
-        <!-- Friend Suggestions -->
-        <div class="sidebar-card">
-          <h3 class="sidebar-title">Friend Suggestions</h3>
-          <div class="add-person-item d-flex align-items-center mb-3">
-            <div class="add-person-avatar me-2">
-              <img src="/unihub_project/images/kawaii-bingus.webp" alt="person" width="50">
-            </div>
-            <div class="add-person-info flex-grow-1">
-              <div class="add-person-user">
-                <a href="#" class="add-person-name">Sarah Johnson</a>
+
+      <!-- Friend Suggestions -->
+      <div class="sidebar-card">
+        <h3 class="sidebar-title">Friend Suggestions</h3>
+        {% if suggestions %}
+          {% for suggestion in suggestions %}
+            <div class="add-person-item d-flex align-items-center mb-3">
+              <div class="add-person-avatar me-2">
+                {% if suggestion.profile_picture %}
+                  <img src="{{ suggestion.profile_picture.url }}" alt="{{ suggestion.username }}" width="50">
+                {% else %}
+                  <img src="{% static 'user-image.png' %}" alt="{{ suggestion.username }}" width="50">
+                {% endif %}
               </div>
-              <p class="add-person-bio">Computer Science</p>
-            </div>
-            <button class="add-person-btn btn btn-primary">Add</button>
-          </div>
-          <div class="add-person-item d-flex align-items-center mb-3">
-            <div class="add-person-avatar me-2">
-              <img src="/unihub_project/images/asian-bingus.webp" alt="person" width="50">
-            </div>
-            <div class="add-person-info flex-grow-1">
-              <div class="add-person-user">
-                <a href="#" class="add-person-name">Michael Chen</a>
+              <div class="add-person-info flex-grow-1">
+                <div class="add-person-user">
+                  <a href="{% url 'user-profile-page' suggestion.username %}" class="add-person-name">
+                    {{ suggestion.first_name }} {{ suggestion.last_name }}
+                  </a>
+                </div>
+                <p class="add-person-bio">{{ suggestion.university }}</p>
               </div>
-              <p class="add-person-bio">Electrical Engineering</p>
+              <button class="friend-suggestion-btn btn btn-primary" data-username="{{ suggestion.username }}">
+                Add
+              </button>
             </div>
-            <button class="add-person-btn btn btn-primary">Add</button>
-          </div>
-          {% comment %} <a href="#" class="see-more">Show more</a> {% endcomment %}
+          {% endfor %}
+        {% else %}
+          <p>No suggestions available.</p>
+        {% endif %}
         </div>
       </div>
     </div>
@@ -647,6 +649,66 @@ function closeModal() {
   document.getElementById("imageModal").style.display = "none";
 }
 
+    // Friend System 
+    document.addEventListener("DOMContentLoaded", function() {
+      const suggestionButtons = document.querySelectorAll(".friend-suggestion-btn");
+      suggestionButtons.forEach(button => {
+        button.addEventListener("click", function() {
+          const btn = this;
+          const username = btn.getAttribute("data-username");
+          const csrfToken = getCSRFToken();
+          if (btn.textContent.trim() === "Add") {
+            // Add friend via API
+            fetch("{% url 'api-friend-add' %}", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": csrfToken
+              },
+              body: JSON.stringify({ username: username })
+            })
+            .then(response => response.json())
+            .then(data => {
+              if (data.success) {
+                btn.textContent = "Unfriend";
+                btn.classList.remove("btn-primary");
+                btn.classList.add("btn-danger");
+              } else {
+                alert("Error: " + data.message);
+              }
+            })
+            .catch(error => {
+              console.error("Error adding friend:", error);
+              alert("Error adding friend.");
+            });
+          } else {
+            // Remove friend via API
+            fetch("{% url 'api-friend-remove' %}", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": csrfToken
+              },
+              body: JSON.stringify({ username: username })
+            })
+            .then(response => response.json())
+            .then(data => {
+              if (data.success) {
+                btn.textContent = "Add";
+                btn.classList.remove("btn-danger");
+                btn.classList.add("btn-primary");
+              } else {
+                alert("Error: " + data.message);
+              }
+            })
+            .catch(error => {
+              console.error("Error removing friend:", error);
+              alert("Error removing friend.");
+            });
+          }
+        });
+      });
+    });
 </script>
   <!-- Post Modal -->
   <div id="postModal" class="modal" style="display:none;">
