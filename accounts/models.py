@@ -8,6 +8,7 @@ class CustomUser(AbstractUser):
     university = models.CharField(max_length=255, null=True, blank=True)
     student_id = models.CharField(max_length=50, null=True, blank=True)
     email_verified = models.BooleanField(default=False)
+    friends = models.ManyToManyField('self', blank=True, symmetrical=True)
     #all possible user types accepted
     USER_TYPES = [
         ('student', 'Student'),

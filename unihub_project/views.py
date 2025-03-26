@@ -5,6 +5,7 @@ from django.utils import timezone
 from api.community.models import Community
 from django.db.models import Count, Q
 from api.community.models import CommunityEvent
+from django.contrib.auth import get_user_model
 
 
 @login_required
@@ -160,3 +161,16 @@ def post_view(request):
 def dashboard_view(request):
     """Render the dashboard page (requires login)."""
     return render(request, "pages/dashboard.html", {"user": request.user})
+
+User = get_user_model()
+
+def user_profile_page(request, username):
+    selected_user = get_object_or_404(User, username=username)
+    
+    posts = Post.objects.filter(user=selected_user)
+    is_friend = selected_user in request.user.friends.all()
+    return render(request, 'pages/user_profile.html', {
+        'user': selected_user,
+        'posts': posts,
+        'is_friend': is_friend
+    })

@@ -282,3 +282,54 @@ class RemoveProfilePictureAPI(APIView):
             return Response({"message": "Profile picture removed and reset to default."}, status=status.HTTP_200_OK)
 
         return Response({"error": "No profile picture found."}, status=status.HTTP_400_BAD_REQUEST)
+
+class UserProfileAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        serializer = CustomUserSerializer(request.user)
+        return Response(serializer.data)
+
+class FriendAddAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        username = request.data.get('username')
+        if not username:
+            return Response({'success': False, 'message': 'No username provided.'}, status=status.HTTP_400_BAD_REQUEST)
+        if username == request.user.username:
+            return Response({'success': False, 'message': "You cannot add yourself as a friend."}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            friend = User.objects.get(username=username)
+        except User.DoesNotExist:
+            return Response({'success': False, 'message': 'User does not exist.'}, status=status.HTTP_404_NOT_FOUND)
+        
+   
+        if friend in request.user.friends.all():
+            return Response({'success': False, 'message': 'Already friends.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+
+        request.user.friends.add(friend)
+        return Response({'success': True, 'message': 'Friend added successfully.'})
+
+
+class FriendRemoveAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        username = request.data.get('username')
+        if not username:
+            return Response({'success': False, 'message': 'No username provided.'}, status=status.HTTP_400_BAD_REQUEST)
+        if username == request.user.username:
+            return Response({'success': False, 'message': "You cannot remove yourself."}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            friend = User.objects.get(username=username)
+        except User.DoesNotExist:
+            return Response({'success': False, 'message': 'User does not exist.'}, status=status.HTTP_404_NOT_FOUND)
+        
+        if friend not in request.user.friends.all():
+            return Response({'success': False, 'message': 'Not friends.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Remove friend
+        request.user.friends.remove(friend)
+        return Response({'success': True, 'message': 'Friend removed successfully.'})
