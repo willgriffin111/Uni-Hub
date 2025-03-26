@@ -273,87 +273,86 @@
 
       <!-- Right Sidebar -->
       <div class="sidebar right-sidebar">
+        <!-- Active Communities Card -->
         <div class="sidebar-card mb-4">
           <h3 class="sidebar-title">Active Communities</h3>
           {% for community in top_communities %}
-          <a href="{% url 'community_page' community.name %}" class="community-link">
-            <div class="community-item d-flex justify-content-between align-items-center mb-3">
+            <a href="{% url 'community_page' community.name %}" class="community-link">
+              <div class="community-item d-flex justify-content-between align-items-center mb-3">
                 <div class="community-info">
-                    <span class="community-category">Study Group</span>
-                    <h4 class="community-title">{{ community.name }}</h4>
-                    <span class="community-stats">{{ community.num_members }} members</span>
+                  <span class="community-category">Study Group</span>
+                  <h4 class="community-title">{{ community.name }}</h4>
+                  <span class="community-stats">{{ community.num_members }} members</span>
                 </div>
                 <div class="community-image">
-                    <img src="{{ community.community_image.url }}" alt="Web Development" width="50">
+                  <img src="{{ community.community_image.url }}" alt="Web Development" width="50">
                 </div>
-            </div>
-        </a>
+              </div>
+            </a>
           {% endfor %}
-          {% comment %} <a href="#" class="see-more">Show more</a> {% endcomment %}
         </div>
         
-        <!-- Sidebar Card: Upcoming Events -->
-        <div class="sidebar-card mb-4">
-          <h3 class="sidebar-title">Upcoming Events</h3>
-          {% for event in events %}
-            <div class="event-item d-flex mb-3">
-              <div class="event-date text-center me-3">
-                <span class="day d-block">{{ event.event_date|date:"d" }}</span>
-                <span class="month d-block">{{ event.event_date|date:"M" }}</span>
-              </div>
-              <div class="event-info">
-                <h4 class="event-title">{{ event.title }}</h4>
-                <p class="event-location">
-                  <i class="fa-solid fa-location-dot"></i> {{ event.location }}
-                </p>
-                <p class="event-time">
-                  <i class="fa-solid fa-clock"></i> {{ event.event_time|time:"g:i A" }}
-                </p>
-                <p class="event-time">
-                  <i class="fa-solid fa-user"></i> {{ event.attendance_count|default:"0" }} attending
-                </p>
-            </div>
-          {% empty %}
-            <p>No upcoming events.</p>
-          {% endfor %}
-
-        </div>
-        </div>
-        
-
-      <!-- Friend Suggestions -->
-      <div class="sidebar-card">
-        <h3 class="sidebar-title">Friend Suggestions</h3>
-        {% if suggestions %}
-          {% for suggestion in suggestions %}
-            <div class="add-person-item d-flex align-items-center mb-3">
-              <div class="add-person-avatar me-2">
-                {% if suggestion.profile_picture %}
-                  <img src="{{ suggestion.profile_picture.url }}" alt="{{ suggestion.username }}" width="50">
-                {% else %}
-                  <img src="{% static 'user-image.png' %}" alt="{{ suggestion.username }}" width="50">
-                {% endif %}
-              </div>
-              <div class="add-person-info flex-grow-1">
-                <div class="add-person-user">
-                  <a href="{% url 'user-profile-page' suggestion.username %}" class="add-person-name">
-                    {{ suggestion.first_name }} {{ suggestion.last_name }}
-                  </a>
+        <div class="sidebar-cards-container d-flex flex-column gap-4">
+          <!-- Upcoming Events Card -->
+          <div class="sidebar-card">
+            <h3 class="sidebar-title">Upcoming Events</h3>
+            {% for event in events %}
+              <div class="event-item d-flex flex-column mb-3 w-100">
+                <div class="event-date text-center me-3">
+                  <span class="day d-block">{{ event.event_date|date:"d" }}</span>
+                  <span class="month d-block">{{ event.event_date|date:"M" }}</span>
                 </div>
-                <p class="add-person-bio">{{ suggestion.university }}</p>
+                <div class="event-info">
+                  <h4 class="event-title">{{ event.title }}</h4>
+                  <p class="event-location">
+                    <i class="fa-solid fa-location-dot"></i> {{ event.location }}
+                  </p>
+                  <p class="event-time">
+                    <i class="fa-solid fa-clock"></i> {{ event.event_time|time:"g:i A" }}
+                  </p>
+                  <p class="event-time">
+                    <i class="fa-solid fa-user"></i> {{ event.attendance_count|default:"0" }} attending
+                  </p>
+                </div>
               </div>
-              <button class="friend-suggestion-btn btn btn-primary" data-username="{{ suggestion.username }}">
-                Add
-              </button>
-            </div>
-          {% endfor %}
-        {% else %}
-          <p>No suggestions available.</p>
-        {% endif %}
+            {% empty %}
+              <p>No upcoming events.</p>
+            {% endfor %}
+          </div>
+        
+          <!-- Friend Suggestions Card -->
+          <div class="sidebar-card">
+            <h3 class="sidebar-title">Friend Suggestions</h3>
+            {% if suggestions %}
+              {% for suggestion in suggestions %}
+                <div class="add-person-item d-flex align-items-center mb-3">
+                  <div class="add-person-avatar me-2">
+                    {% if suggestion.profile_picture %}
+                      <img src="{{ suggestion.profile_picture.url }}" alt="{{ suggestion.username }}" width="50">
+                    {% else %}
+                      <img src="{% static 'user-image.png' %}" alt="{{ suggestion.username }}" width="50">
+                    {% endif %}
+                  </div>
+                  <div class="add-person-info flex-grow-1">
+                    <div class="add-person-user">
+                      <a href="{% url 'user-profile-page' suggestion.username %}" class="add-person-name">
+                        {{ suggestion.first_name }} {{ suggestion.last_name }}
+                      </a>
+                    </div>
+                    <p class="add-person-bio">{{ suggestion.university }}</p>
+                  </div>
+                  <button class="friend-suggestion-btn btn btn-primary" data-username="{{ suggestion.username }}">
+                    Add
+                  </button>
+                </div>
+              {% endfor %}
+            {% else %}
+              <p>No suggestions available.</p>
+            {% endif %}
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
   <!-- footer -->
   {% include '../includes/footer.html' %}
