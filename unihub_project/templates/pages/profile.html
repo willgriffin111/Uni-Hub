@@ -86,20 +86,36 @@
                         </div>
                     </div>
 
-                    <!-- Quick Links Card -->
-                    <div class="profile-card">
-                        <div class="card-header">
-                            <h3>My Activities</h3>
-                        </div>
-                        <div class="card-body">
-                            <ul class="quick-links">
-                                <li><a href="#"><i class="fa-solid fa-user"></i> Friends</a></li>
-                                <li><a href="#"><i class="fa-solid fa-user-group"></i> Communities</a></li>
-                                <li><a href="#"><i class="fa-solid fa-calendar-days"></i> Events</a></li>
-                            </ul>
-                        </div>
-                    </div>
+               <!-- Friends List Card -->
+               <div class="profile-card">
+                <div class="card-header">
+                  <h3>My Friends</h3>
                 </div>
+                <div class="card-body">
+                  {% if user.friends.all %}
+                    <ul class="list-unstyled">
+                      {% for friend in user.friends.all %}
+                        <li class="mb-2">
+                          <a href="{% url 'user-profile-page' friend.username %}" style="text-decoration: none;">
+                            {% if friend.profile_picture %}
+                              <img src="{{ friend.profile_picture.url }}" alt="{{ friend.username }}" style="width:30px; height:30px; border-radius:50%;">
+                            {% else %}
+                              <img src="{% static 'user-image.png' %}" alt="{{ friend.username }}" style="width:30px; height:30px; border-radius:50%;">
+                            {% endif %}
+                            {{ friend.first_name }} {{ friend.last_name }}
+                          </a>
+                        </li>
+                      {% empty %}
+                        <li>No friends to display.</li>
+                      {% endfor %}
+                    </ul>
+                  {% else %}
+                    <p>No friends to display.</p>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+    
 
                 <!-- Right Column -->
                 <div class="col-md-8">
