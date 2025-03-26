@@ -44,6 +44,9 @@
                     {% endif %}
                     <button class="btn-contact"><i class="fa-solid fa-envelope"></i> Contact</button>
                     <button class="btn-share"><i class="fa-solid fa-share-nodes"></i> Share</button>
+                    {% if community.created_by == user %}
+                        <button class="btn-delete" id="deleteCommunityBtn"><i class="fa-solid fa-trash"></i> Delete</button>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -273,7 +276,7 @@
                             <!-- Pagination -->
                             <div class="pagination-container">
                                 <button class="pagination-btn prev-btn" disabled><i class="fa-solid fa-chevron-left"></i></button>
-                                <span class="pagination-text">Page 1 of 10</span>
+                                {% comment %} <span class="pagination-text">Page 1 of 10</span> {% endcomment %}
                                 <button class="pagination-btn next-btn"><i class="fa-solid fa-chevron-right"></i></button>
                             </div>
                         </div>
@@ -284,102 +287,86 @@
             <!-- Events Tab -->
             <div class="tab-pane fade" id="events">
                 <div class="content-grid">
-                    <div class="main-content">
-                        <div class="content-card">
-                            <div class="events-header">
-                                <h2 class="card-title">Upcoming Events</h2>
+                <!-- Main Events Content -->
+                <div class="main-content">
+                    <!-- Upcoming Events Section -->
+                    <div class="content-card">
+                    <div class="events-header d-flex justify-content-between align-items-center">
+                        <h2 class="card-title">Upcoming Events</h2>
+                        <!-- Button to open create event modal -->
+                        <button id="createEventBtn" class="btn btn-primary">Create Event</button>
+                    </div>
+                    <div id="upcomingEventsList" class="events-list">
+                        <!-- Upcoming events will be injected here via JS -->
+                        <p>Loading upcoming events...</p>
+                    </div>
+                    </div>
 
-                            </div>
-                            
-                            <div class="events-list">
-                                <!-- Event 1 -->
-                                <div class="event-card">
-                                    <div class="event-date">
-                                        <div class="event-month">MAR</div>
-                                        <div class="event-day">25</div>
-                                    </div>
-                                    <div class="event-details">
-                                        <h3 class="event-title">Spring Web Development Hackathon</h3>
-                                        <p class="event-time"><i class="fa-solid fa-clock"></i> 10:00 AM - 8:00 PM</p>
-                                        <p class="event-location"><i class="fa-solid fa-location-dot"></i> Tech Lab, Engineering Building</p>
-                                        <p class="event-description">Join our 10-hour hackathon to build a web application from scratch! Prizes for the best projects, free food and drinks provided.</p>
-                                        <div class="event-attendance">
-                                            <span class="attendance-count">28 attending</span>
-                                            <button class="attend-btn">Attend</button>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <!-- Event 2 -->
-                                <div class="event-card">
-                                    <div class="event-date">
-                                        <div class="event-month">APR</div>
-                                        <div class="event-day">05</div>
-                                    </div>
-                                    <div class="event-details">
-                                        <h3 class="event-title">Workshop: Introduction to TailwindCSS</h3>
-                                        <p class="event-time"><i class="fa-solid fa-clock"></i> 5:30 PM - 7:30 PM</p>
-                                        <p class="event-location"><i class="fa-solid fa-location-dot"></i> Room 302, Engineering Building</p>
-                                        <p class="event-description">Learn how to use TailwindCSS to speed up your front-end development workflow. Bring your laptop!</p>
-                                        <div class="event-attendance">
-                                            <span class="attendance-count">14 attending</span>
-                                            <button class="attend-btn attending">Attending</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                    <!-- Past Events Section -->
+                    <div class="content-card">
+                    <h2 class="card-title">Past Events</h2>
+                    <div id="pastEventsList" class="events-list">
+                        <!-- Past events will be injected here via JS -->
+                        <p>Loading past events...</p>
+                    </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar: Event Statistics -->
+                <div class="sidebar">
+                    <div class="content-card">
+                    <h2 class="card-title">Event Statistics</h2>
+                    <div id="eventStats" class="stats-list">
+                        <!-- Event stats (calculated client-side) -->
+                        <div class="stat-item">
+                        <div class="stat-label">Upcoming Events</div>
+                        <div class="stat-value" id="statsUpcoming">0</div>
                         </div>
-                        
-                        <div class="content-card">
-                            <h2 class="card-title">Past Events</h2>
-                            <div class="events-list">
-                                <!-- Past Event -->
-                                <div class="event-card past-event">
-                                    <div class="event-date">
-                                        <div class="event-month">FEB</div>
-                                        <div class="event-day">18</div>
-                                    </div>
-                                    <div class="event-details">
-                                        <h3 class="event-title">Guest Speaker: Front-End Trends 2025</h3>
-                                        <p class="event-time"><i class="fa-solid fa-clock"></i> 6:00 PM - 8:00 PM</p>
-                                        <p class="event-location"><i class="fa-solid fa-location-dot"></i> Lecture Hall B, Main Building</p>
-                                        <p class="event-description">Industry expert John Mitchell from Google discussed upcoming trends in front-end development.</p>
-                                        <div class="event-attendance">
-                                            <span class="attendance-count">32 attended</span>
-                                            <button class="view-photos-btn">View Photos</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="stat-item">
+                        <div class="stat-label">Past Events</div>
+                        <div class="stat-value" id="statsPast">0</div>
+                        </div>
+                        <div class="stat-item">
+                        <div class="stat-label">Total Events</div>
+                        <div class="stat-value" id="statsTotal">0</div>
+                        </div>
+                        <div class="stat-item">
+                        <div class="stat-label">Avg. Attendance</div>
+                        <div class="stat-value" id="statsAvg">0</div>
                         </div>
                     </div>
-                    
-                    <div class="sidebar">
-
-                        
-                        <!-- Event Stats -->
-                        <div class="content-card">
-                            <h2 class="card-title">Event Statistics</h2>
-                            <div class="stats-list">
-                                <div class="stat-item">
-                                    <div class="stat-label">Upcoming Events</div>
-                                    <div class="stat-value">2</div>
-                                </div>
-                                <div class="stat-item">
-                                    <div class="stat-label">This Month</div>
-                                    <div class="stat-value">1</div>
-                                </div>
-                                <div class="stat-item">
-                                    <div class="stat-label">Total Events (2025)</div>
-                                    <div class="stat-value">8</div>
-                                </div>
-                                <div class="stat-item">
-                                    <div class="stat-label">Average Attendance</div>
-                                    <div class="stat-value">24</div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
+                </div>
+                </div>
+            </div>
+            <!-- Create Event Modal (only visible when triggered) -->
+            <div id="createEventModal" class="modal" style="display:none;">
+                <div class="modal-content">
+                    <span class="close-create-modal" style="cursor:pointer;">&times;</span>
+                    <h2>Create Event</h2>
+                    <form id="createEventForm">
+                        <div class="form-group">
+                            <label for="eventTitle">Title:</label>
+                            <input type="text" id="eventTitle" name="title" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="eventDescription">Description:</label>
+                            <textarea id="eventDescription" name="description" class="form-control" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="eventDate">Date:</label>
+                            <input type="date" id="eventDate" name="event_date" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="eventTime">Time:</label>
+                            <input type="time" id="eventTime" name="event_time" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="eventLocation">Location:</label>
+                            <input type="text" id="eventLocation" name="location" class="form-control" required>
+                        </div>
+                        <button type="submit" class="btn btn-success">Create Event</button>
+                    </form>
                 </div>
             </div>
             
@@ -650,6 +637,376 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     });
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const csrftoken = "{{ csrf_token }}";
+        const communityId = "{{ community.id }}";
+
+        const eventsListUrl = `/api/community/community/${communityId}/events/`;
+        function formatDate(isoDate) {
+          const d = new Date(isoDate);
+          return {
+            month: d.toLocaleString('default', { month: 'short' }),
+            day: d.getDate()
+          };
+        }
+  
+        // Load events from API endpoint
+        function loadEvents() {
+          fetch(eventsListUrl, { credentials: 'include' })
+            .then(response => response.json())
+            .then(events => {
+              const now = new Date();
+              const upcomingEvents = [];
+              const pastEvents = [];
+              let totalAttendance = 0;
+              events.forEach(event => {
+                const eventDateTime = new Date(event.event_date + 'T' + event.event_time);
+                totalAttendance += event.attendance_count || 0;
+                if (eventDateTime >= now) {
+                  upcomingEvents.push(event);
+                } else {
+                  pastEvents.push(event);
+                }
+              });
+              renderEvents(upcomingEvents, pastEvents);
+              updateStats(events.length, upcomingEvents.length, pastEvents.length, totalAttendance);
+            })
+            .catch(error => console.error("Error fetching events:", error));
+        }
+  
+        // Render events into Upcoming and Past containers
+        function renderEvents(upcoming, past) {
+          const upcomingContainer = document.getElementById('upcomingEventsList');
+          const pastContainer = document.getElementById('pastEventsList');
+          upcomingContainer.innerHTML = "";
+          pastContainer.innerHTML = "";
+  
+          // Render upcoming events
+          if (upcoming.length === 0) {
+            upcomingContainer.innerHTML = "<p>No upcoming events.</p>";
+          } else {
+            upcoming.forEach(event => {
+              const dt = formatDate(event.event_date);
+              const attendees = event.attendees || [];
+              upcomingContainer.innerHTML += `
+                <div class="event-card" data-event-id="${event.id}">
+                  <div class="event-date">
+                    <div class="event-month">${dt.month}</div>
+                    <div class="event-day">${dt.day}</div>
+                  </div>
+                  <div class="event-details">
+                    <h3 class="event-title">${event.title}</h3>
+                    <p class="event-description">${event.description}</p>
+                    <p class="event-time"><i class="fa-solid fa-clock"></i> ${event.event_time}</p>
+                    <p class="event-location"><i class="fa-solid fa-location-dot"></i> ${event.location}</p>
+                    <div class="event-attendance">
+                      <span class="attendance-count">${event.attendance_count || 0} attending</span>
+                      <button class="attend-btn ${event.is_user_attending ? 'attending' : ''}" data-event-id="${event.id}">
+                        ${event.is_user_attending ? 'Attending' : 'Attend'}
+                      </button>
+                      <button class="edit-event-btn" data-event-id="${event.id}">Edit</button>
+                      <button class="delete-event-btn" data-event-id="${event.id}">Delete</button>
+                    </div>
+                    <div class="attendees-list">
+                      ${attendees.length > 0 ?
+                        attendees.map(a => `<span class="attendee">${a}</span>`).join(' ')
+                        : "<span>No attendees yet.</span>"}
+                    </div>
+                  </div>
+                </div>
+              `;
+            });
+          }
+  
+          // Render past events 
+          if (past.length === 0) {
+            pastContainer.innerHTML = "<p>No past events.</p>";
+          } else {
+            past.forEach(event => {
+              const dt = formatDate(event.event_date);
+              const attendees = event.attendees || [];
+              pastContainer.innerHTML += `
+                <div class="event-card past-event" data-event-id="${event.id}">
+                  <div class="event-date">
+                    <div class="event-month">${dt.month}</div>
+                    <div class="event-day">${dt.day}</div>
+                  </div>
+                  <div class="event-details">
+                    <h3 class="event-title">${event.title}</h3>
+                    <p class="event-description">${event.description}</p>
+                    <p class="event-time"><i class="fa-solid fa-clock"></i> ${event.event_time}</p>
+                    <p class="event-location"><i class="fa-solid fa-location-dot"></i> ${event.location}</p>
+                    <div class="event-attendance">
+                      <span class="attendance-count">${event.attendance_count || 0} attended</span>
+                      <button class="edit-event-btn" data-event-id="${event.id}">Edit</button>
+                      <button class="delete-event-btn" data-event-id="${event.id}">Delete</button>
+                    </div>
+                    <div class="attendees-list">
+                      ${attendees.length > 0 ?
+                        attendees.map(a => `<span class="attendee">${a}</span>`).join(' ')
+                        : "<span>No attendees.</span>"}
+                    </div>
+                  </div>
+                </div>
+              `;
+            });
+          }
+          
+          attachAttendanceHandlers();
+          attachDeleteHandlers();
+          attachEditHandlers();
+        
+        }
+        // Update sidebar statistics
+        function updateStats(total, upcomingCount, pastCount, totalAttendance) {
+          document.getElementById('statsUpcoming').textContent = upcomingCount;
+          document.getElementById('statsPast').textContent = pastCount;
+          document.getElementById('statsTotal').textContent = total;
+          document.getElementById('statsAvg').textContent = total ? Math.round(totalAttendance / total) : 0;
+        }
+  
+        // Attach handlers for Attend buttons
+        function attachAttendanceHandlers() {
+          const attendBtns = document.querySelectorAll('.attend-btn');
+          attendBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+              const eventId = btn.getAttribute('data-event-id');
+              const newStatus = btn.classList.contains('attending') ? 'no' : 'yes';
+              fetch(`/api/community/events/${eventId}/attendance/`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'X-CSRFToken': csrftoken
+                },
+                body: JSON.stringify({ status: newStatus })
+              })
+              .then(response => response.json())
+              .then(data => {
+                const attendanceCountEl = btn.parentElement.querySelector('.attendance-count');
+                let count = parseInt(attendanceCountEl.textContent);
+                const attendeesListEl = btn.closest('.event-details').querySelector('.attendees-list');
+                const currentUsername = "{{ user.username }}";
+                if (newStatus === 'yes') {
+                  btn.textContent = 'Attending';
+                  btn.classList.add('attending');
+                  count++;
+                  if (!Array.from(attendeesListEl.children).some(span => span.textContent === currentUsername)) {
+                    const span = document.createElement('span');
+                    span.className = 'attendee';
+                    span.textContent = currentUsername;
+                    attendeesListEl.appendChild(span);
+                  }
+                } else {
+                  btn.textContent = 'Attend';
+                  btn.classList.remove('attending');
+                  count--;
+                  Array.from(attendeesListEl.children).forEach(span => {
+                    if (span.textContent === currentUsername) {
+                      span.remove();
+                    }
+                  });
+                }
+                attendanceCountEl.textContent = count + ' attending';
+              })
+              .catch(error => console.error("Error updating attendance:", error));
+            });
+          });
+        }
+
+        function attachEditHandlers() {
+            const editBtns = document.querySelectorAll('.edit-event-btn');
+            editBtns.forEach(btn => {
+              btn.addEventListener('click', function() {
+                const eventId = btn.getAttribute('data-event-id');
+                // Redirect to the event edit page
+                window.location.href = `/community/event/${eventId}/edit/`;
+              });
+            });
+          }
+  
+        // Attach handlers for Delete buttons
+        function attachDeleteHandlers() {
+          const deleteBtns = document.querySelectorAll('.delete-event-btn');
+          deleteBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+              const eventId = btn.getAttribute('data-event-id');
+              if (confirm("Are you sure you want to delete this event?")) {
+                fetch(`/api/community/events/${eventId}/delete/`, {
+                  method: 'DELETE',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken
+                  }
+                })
+                .then(response => {
+                  if (response.ok) {
+                    // Remove event card from the UI
+                    const eventCard = btn.closest('.event-card');
+                    eventCard.remove();
+                    loadEvents(); // Refresh events list and stats
+                  } else {
+                    alert("Error deleting event.");
+                  }
+                })
+                .catch(error => {
+                  console.error("Error deleting event:", error);
+                });
+              }
+            });
+          });
+        }
+
+  
+        // Create Event Modal functionality
+        const createEventBtn = document.getElementById('createEventBtn');
+        const createEventModal = document.getElementById('createEventModal');
+        const closeCreateModal = document.querySelector('.close-create-modal');
+        const createEventForm = document.getElementById('createEventForm');
+  
+        createEventBtn.addEventListener('click', function() {
+          createEventModal.style.display = 'block';
+        });
+        closeCreateModal.addEventListener('click', function() {
+          createEventModal.style.display = 'none';
+        });
+        createEventForm.addEventListener('submit', function(e) {
+          e.preventDefault();
+          const payload = {
+            title: document.getElementById('eventTitle').value,
+            description: document.getElementById('eventDescription').value,
+            event_date: document.getElementById('eventDate').value,
+            event_time: document.getElementById('eventTime').value,
+            location: document.getElementById('eventLocation').value
+          };
+          fetch(`/api/community/community/${communityId}/events/create/`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRFToken': csrftoken
+            },
+            body: JSON.stringify(payload)
+          })
+          .then(response => response.json())
+          .then(data => {
+            if (data.id) {
+              alert("Event created successfully!");
+              createEventModal.style.display = 'none';
+              loadEvents();
+            } else {
+              alert("Error creating event: " + JSON.stringify(data));
+            }
+          })
+          .catch(error => {
+            console.error("Error creating event:", error);
+            alert("An error occurred while creating the event.");
+          });
+        });
+  
+        // Initial load of events
+        loadEvents();
+      });
+    
 </script> 
 
+    <!-- Notification Container -->
+<div id="deleteNotification" class="notification" style="display: none;">
+    <span class="message"></span>
+    <button class="close-btn">&times;</button>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const deleteBtn = document.getElementById('deleteCommunityBtn');
+        if (deleteBtn) {
+            deleteBtn.addEventListener('click', async function() {
+                const confirmDelete = confirm("Are you sure you want to delete this community?");
+                if (!confirmDelete) return;
+    
+                const communityId = "{{ community.id }}";
+                const url = `/api/community/community/${communityId}/delete/`;
+    
+                try {
+                    const response = await fetch(url, {
+                        method: "DELETE",
+                        headers: {
+                            "X-CSRFToken": getCSRFToken(),
+                            "X-Requested-With": "XMLHttpRequest"
+                        },
+                        credentials: "include"
+                    });
+    
+                    if (response.ok) {
+                        // Store message and redirect immediately
+                        sessionStorage.setItem("deleteSuccess", 
+                            `Community '{{ community.name }}' deleted successfully`
+                        );
+                        window.location.href = "{% url 'index_page' %}";
+                    } else {
+                        alert("Failed to delete community.");
+                    }
+                } catch (error) {
+                    console.error(error);
+                    alert("An error occurred while deleting the community.");
+                }
+            });
+        }
+    });
+
+        function getCSRFToken() {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== "") {
+                const cookies = document.cookie.split(";");
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.startsWith("csrftoken=")) {
+                        cookieValue = cookie.substring("csrftoken=".length, cookie.length);
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+</script>
+        
+
+  <!-- Post Modal -->
+  <div id="postModal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <span class="close-modal">&times;</span>
+      <div class="modal-post-compose d-flex align-items-start">
+        <div class="compose-profile-img me-2">
+          <img src="{% static 'bingus.jpg' %}" alt="Profile Photo" width="50" height="50">
+        </div>
+        <div class="compose-input-container flex-grow-1">
+          <input type="text" class="compose-title-input form-control mb-2" placeholder="Title...">
+          <textarea class="compose-input form-control" placeholder="What's happening?"></textarea>
+          <!-- Tags input -->
+          <input type="text" class="compose-tags-input form-control mb-2" placeholder="Hashtags (e.g., #study, #events)" style="border:none; margin-top: 10px;">
+          
+          <!-- Image Preview Container (initially hidden) -->
+          <div class="image-preview-container" style="display: none; margin-top: 10px; margin-bottom: 10px;">
+            <div class="position-relative">
+              <img id="image-preview" src="#" alt="Preview" class="img-fluid rounded" style="max-height: 200px;">
+              <button type="button" class="btn-close position-absolute top-0 end-0 bg-white rounded-circle m-1" id="remove-image" aria-label="Remove image"></button>
+            </div>
+          </div>
+          
+          <div class="compose-actions d-flex justify-content-between align-items-center mt-2">
+            <div class="compose-tools">
+              <div class="form-group mt-2">
+                <label class="img-upload" for="modal-img-upload">
+                  <i class="fa-solid fa-camera"></i>
+                </label>
+                <input type="file" class="image-upload" id="modal-img-upload" style="display: none;" accept="image/*">
+              </div>
+            </div>
+            <button class="compose-submit btn btn-success">Post</button>
+          </div>
+        </div>
+      </div>
+    </div>
+</body>
+</body>
 </html>

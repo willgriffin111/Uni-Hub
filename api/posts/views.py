@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from .models import Like, Post, Comment
 from django.contrib.auth import get_user_model
 from django.db.models import Q
-from api.community.models import Community
+from api.community.models import Community, CommunityRole
 
 User = get_user_model()
 
@@ -17,8 +17,24 @@ class PostListCreateViewAPI(generics.ListCreateAPIView):
     serializer_class = PostSerializer
 
     def perform_create(self, serializer):
+        """Ensure the user is a member of the community before allowing post creation."""
         image = self.request.FILES.get("image")  # Get uploaded image file
-        serializer.save(user=self.request.user, image=image)
+        community = self.request.data.get("community")  # Get the community ID from request data
+
+        if community:
+            # Ensure the community exists
+            community_obj = get_object_or_404(Community, id=community)
+
+            # Check if the user is a member of the community
+            is_member = CommunityRole.objects.filter(
+                user=self.request.user, community=community_obj
+            ).exists()
+
+            if not is_member:
+                raise serializer.ValidationError({"detail": "You must be a member of this community to post."})
+
+        # Save post with user and optional community
+        serializer.save(user=self.request.user, image=image, community=community_obj if community else None)
 
     def get_serializer_context(self):
         """Ensures that the serializer gets the request context."""
@@ -94,6 +110,7 @@ class CommentPostAPI(APIView):
             serializer.save(user=request.user, post=post, parent=parent_comment)  # Save as reply if parent exists
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
 class CommentDeleteAPI(APIView):
     permission_classes = [permissions.IsAuthenticated]
 

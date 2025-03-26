@@ -289,35 +289,35 @@
             </div>
         </a>
           {% endfor %}
-          <a href="#" class="see-more">Show more</a>
+          {% comment %} <a href="#" class="see-more">Show more</a> {% endcomment %}
         </div>
         
-        <!-- Upcoming Events -->
+        <!-- Sidebar Card: Upcoming Events -->
         <div class="sidebar-card mb-4">
           <h3 class="sidebar-title">Upcoming Events</h3>
-          <div class="event-item d-flex mb-3">
-            <div class="event-date text-center me-3">
-              <span class="day d-block">15</span>
-              <span class="month d-block">MAR</span>
+          {% for event in events %}
+            <div class="event-item d-flex mb-3">
+              <div class="event-date text-center me-3">
+                <span class="day d-block">{{ event.event_date|date:"d" }}</span>
+                <span class="month d-block">{{ event.event_date|date:"M" }}</span>
+              </div>
+              <div class="event-info">
+                <h4 class="event-title">{{ event.title }}</h4>
+                <p class="event-location">
+                  <i class="fa-solid fa-location-dot"></i> {{ event.location }}
+                </p>
+                <p class="event-time">
+                  <i class="fa-solid fa-clock"></i> {{ event.event_time|time:"g:i A" }}
+                </p>
+                <p class="event-time">
+                  <i class="fa-solid fa-user"></i> {{ event.attendance_count|default:"0" }} attending
+                </p>
             </div>
-            <div class="event-info">
-              <h4 class="event-title">Spring Festival</h4>
-              <p class="event-location"><i class="fa-solid fa-location-dot"></i> Main Campus Quad</p>
-              <p class="event-time"><i class="fa-solid fa-clock"></i> 12:00 PM</p>
-            </div>
-          </div>
-          <div class="event-item d-flex mb-3">
-            <div class="event-date text-center me-3">
-              <span class="day d-block">18</span>
-              <span class="month d-block">MAR</span>
-            </div>
-            <div class="event-info">
-              <h4 class="event-title">Tech Careers Fair</h4>
-              <p class="event-location"><i class="fa-solid fa-location-dot"></i> Engineering Building</p>
-              <p class="event-time"><i class="fa-solid fa-clock"></i> 10:00 AM</p>
-            </div>
-          </div>
-          <a href="#" class="see-more">View all events</a>
+          {% empty %}
+            <p>No upcoming events.</p>
+          {% endfor %}
+
+        </div>
         </div>
         
         <!-- Friend Suggestions -->
@@ -347,7 +347,7 @@
             </div>
             <button class="add-person-btn btn btn-primary">Add</button>
           </div>
-          <a href="#" class="see-more">Show more</a>
+          {% comment %} <a href="#" class="see-more">Show more</a> {% endcomment %}
         </div>
       </div>
     </div>
@@ -691,13 +691,55 @@ function closeModal() {
         </div>
       </div>
     </div>
+  </script>
 
+<div id="deleteSuccessPopup" class="notification" style="display: none;">
+  <span class="message"></span>
+  <button class="close-btn">&times;</button>
+</div>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const notification = document.getElementById('globalNotification');
+  const message = sessionStorage.getItem('deleteSuccess');
+  
+  if (message) {
+      notification.querySelector('.notification-message').textContent = message;
+      notification.style.display = 'flex';
+      
+      // Close button handler
+      notification.querySelector('.notification-close-btn').onclick = () => {
+          notification.style.display = 'none';
+      };
+      
+      // Auto-hide after 5 seconds
+      setTimeout(() => {
+        notification.classList.add('fade-out');
+        setTimeout(() => {
+            notification.style.display = 'none';
+            notification.classList.remove('fade-out');
+        }, 500);
+    }, 5000);
+      
+      // Clear storage
+      sessionStorage.removeItem('deleteSuccess');
+  }
+});
+</script>
+
+      
 </div>
 <div id="imageModal" class="modal image-enlage">
   <div class="modal-content-wrapper image-enlage">
     <span class="close image-enlage" onclick="closeModal()">&times;</span>
     <img class="modal-content image-enlage" id="fullImage">
   </div>
+</div>
+
+<div id="globalNotification" class="global-notification" style="display: none;">
+  <span class="notification-message"></span>
+  <button class="notification-close-btn">&times;</button>
 </div>
 </body>
 </html>

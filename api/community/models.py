@@ -38,65 +38,65 @@ class Community(models.Model):
     def __str__(self):
         return self.name
 
+ROLE_HIERARCHY = {
+    'member': 1,
+    'event_leader': 2,
+    'community_leader': 3,
+    'admin': 4
+}
 
 class CommunityRole(models.Model):
-    """
-    Defines the role of a user in a community.
-    
-    Role choices:
-      - admin: Full control, can manage the community and sessions.
-      - moderator: Can help moderate posts and events.
-      - member: Standard member.
-    
-    Ensures a user can have only one role per community.
-    """
     ROLE_CHOICES = [
-        ('admin', 'Admin'),
-        ('moderator', 'Moderator'),
         ('member', 'Member'),
+        ('event_leader', 'Event Leader'),
+        ('community_leader', 'Community Leader'),
+        ('admin', 'Admin'),
     ]
+
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     community = models.ForeignKey(Community, on_delete=models.CASCADE, related_name="roles")
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='member')
 
     class Meta:
         unique_together = ('user', 'community')
-        verbose_name = "Community Role"
-        verbose_name_plural = "Community Roles"
 
     def __str__(self):
         return f"{self.user.username} - {self.get_role_display()} in {self.community.name}"
 
+    def has_permission(self, required_role):
+        """Checks if the user has the required permission level or higher."""
+        return ROLE_HIERARCHY[self.role] >= ROLE_HIERARCHY[required_role]
 
-class VirtualSession(models.Model):
-    """
-    Represents a virtual or interactive session scheduled by community leaders.
+# ARE WE STILL GOING TO DO THIS? - WILL
+# class VirtualSession(models.Model):
+#     """
+#     Represents a virtual or interactive session scheduled by community leaders.
     
-    Fields:
-      - community: The community hosting the session.
-      - title: Session title.
-      - description: Detailed info about the session.
-      - scheduled_at: DateTime when the session will start.
-      - duration_minutes: How long the session lasts (in minutes).
-      - session_link: URL for accessing the virtual session.
-      - created_at: Timestamp when the session was created.
-      - updated_at: Timestamp for last update.
-    """
-    community = models.ForeignKey(
-        Community, 
-        on_delete=models.CASCADE, 
-        related_name="virtual_sessions"
-    )
-    title = models.CharField(max_length=255)
-    description = models.TextField(blank=True)
-    scheduled_at = models.DateTimeField()
-    duration_minutes = models.PositiveIntegerField(default=60)
-    session_link = models.URLField(blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+#     Fields:
+#       - community: The community hosting the session.
+#       - title: Session title.
+#       - description: Detailed info about the session.
+#       - scheduled_at: DateTime when the session will start.
+#       - duration_minutes: How long the session lasts (in minutes).
+#       - session_link: URL for accessing the virtual session.
+#       - created_at: Timestamp when the session was created.
+#       - updated_at: Timestamp for last update.
+#     """
+#     community = models.ForeignKey(
+#         Community, 
+#         on_delete=models.CASCADE, 
+#         related_name="virtual_sessions"
+#     )
+#     title = models.CharField(max_length=255)
+#     description = models.TextField(blank=True)
+#     scheduled_at = models.DateTimeField()
+#     duration_minutes = models.PositiveIntegerField(default=60)
+#     session_link = models.URLField(blank=True, null=True)
+#     created_at = models.DateTimeField(auto_now_add=True)
+#     updated_at = models.DateTimeField(auto_now=True)
 
-    def __str__(self):
-        return f"{self.title} ({self.community.name})"
+#     def __str__(self):
+#         return f"{self.title} ({self.community.name})"
 
 
 class CommunityEvent(models.Model):
@@ -128,3 +128,20 @@ class CommunityEvent(models.Model):
 
     def __str__(self):
         return f"{self.title} - {self.event_date} ({self.community.name})"
+    
+    
+class CommunityEventAttendance(models.Model):
+    ATTENDANCE_CHOICES = [
+        ('yes', 'Attending'),
+        ('no', 'Not Attending'),
+    ]
+
+    event = models.ForeignKey(CommunityEvent, on_delete=models.CASCADE, related_name='attendances')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    status = models.CharField(max_length=3, choices=ATTENDANCE_CHOICES)
+
+    class Meta:
+        unique_together = ('event', 'user')
+
+    def __str__(self):
+        return f"{self.user.username} - {self.status} for {self.event.title}"
