@@ -18,14 +18,10 @@ class CommunityEditAPI(APIView):
     permission_classes = [IsAuthenticated]
 
     def put(self, request):
-        """
-        Edit an existing community's details (name, image, description, etc).
-        """
-        # Get the community by ID
         community = get_object_or_404(Community, id=request.data.get('community_id'))
+        user_role = CommunityRole.objects.filter(user=request.user, community=community).first()
 
-        # Ensure the user is the creator of the community
-        if community.created_by != request.user:
+        if not user_role or not user_role.has_permission('community_leader'):
             return Response({"detail": "You do not have permission to edit this community."}, status=status.HTTP_403_FORBIDDEN)
 
         # Check if a new image is provided in the request
@@ -53,42 +49,6 @@ class CommunityEditAPI(APIView):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
-
-class CommunityViewAPI(APIView):
-    def get(self, request):
-        # Create a dummy user to associate with the community
-        User = get_user_model()
-        dummy_user = User.objects.first()  # Get the first user, assuming at least one user exists
-        
-        if not dummy_user:
-            return JsonResponse({"error": "No user found to create community."}, status=400)
-
-        # Set the default image path
-        default_image_path = os.path.join(os.path.dirname(__file__), "default.png")
-        
-        # Create a dummy community with default image
-        with open(default_image_path, "rb") as img_file:
-            community = Community.objects.create(
-                name="Dummy Community",
-                description="This is a dummy community created for testing.",
-                created_by=dummy_user,
-                contact_email="dummy@community.com",
-                community_image=File(img_file, name="default.png")
-            )
-        
-        # Add the dummy user to the members list
-        community.members.add(dummy_user)
-
-        # Return a success response with the community details
-        return JsonResponse({
-            "name": community.name,
-            "description": community.description,
-            "created_by": community.created_by.username,
-            "contact_email": community.contact_email,
-            "created_at": community.created_at,
-            "community_image": community.community_image.url if community.community_image else None,
-            "members": [user.username for user in community.members.all()],
-        })
 
 class CommunityJoinAPI(APIView):
     """
@@ -141,31 +101,21 @@ class CreateCommunityView(generics.CreateAPIView):
         community = serializer.save(created_by=request.user)
         # Add creator as a member and assign the admin role.
         community.members.add(request.user)
-        CommunityRole.objects.create(user=request.user, community=community, role='admin')
+        CommunityRole.objects.create(user=request.user, community=community, role='community_leader')
         # Construct the redirect URL (adjust as needed: here we use community name)
         redirect_url = f"/community/{community.name}/"
         return Response({"redirect_url": redirect_url}, status=status.HTTP_201_CREATED)
 
 class DeleteCommunityView(APIView):
-    permission_classes = [IsAuthenticated]  # Require the user to be logged in
+    permission_classes = [IsAuthenticated]
 
-    def delete(self, request, community_id, *args, **kwargs):
-        # 1) Get the community or 404
+    def delete(self, request, community_id):
         community = get_object_or_404(Community, id=community_id)
+        user_role = CommunityRole.objects.filter(user=request.user, community=community).first()
 
-        # 2) Check if the user is the creator or has an 'admin' role
-        if community.created_by != request.user:
-            # Not the creator, so check if user is an admin in this community
-            try:
-                role = CommunityRole.objects.get(user=request.user, community=community)
-                if role.role != 'admin':
-                    return Response({"detail": "You do not have permission to delete this community."},
-                                    status=status.HTTP_403_FORBIDDEN)
-            except CommunityRole.DoesNotExist:
-                return Response({"detail": "You do not have permission to delete this community."},
-                                status=status.HTTP_403_FORBIDDEN)
+        if not user_role or not user_role.has_permission('community_leader'):
+            return Response({"detail": "You do not have permission to delete this community."}, status=status.HTTP_403_FORBIDDEN)
 
-        # 3) If checks pass, delete the community
         community.delete()
         return Response({"detail": "Community deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
 
@@ -177,6 +127,11 @@ class CommunityEventCreateAPI(APIView):
 
     def post(self, request, community_id):
         community = get_object_or_404(Community, id=community_id)
+        user_role = CommunityRole.objects.filter(user=request.user, community=community).first()
+
+        if not user_role or not user_role.has_permission('event_leader'):
+            return Response({"detail": "You do not have permission to create events."}, status=status.HTTP_403_FORBIDDEN)
+
         serializer = CommunityEventSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(community=community)
@@ -207,6 +162,12 @@ class MarkAttendanceAPI(APIView):
 
     def post(self, request, event_id):
         event = get_object_or_404(CommunityEvent, id=event_id)
+        community = event.community
+        user_role = CommunityRole.objects.filter(user=request.user, community=community).first()
+
+        if not user_role or not user_role.has_permission('member'):
+            return Response({"detail": "You must be apart of this community to attend."}, status=status.HTTP_403_FORBIDDEN)
+        
         status_choice = request.data.get('status')
 
         if status_choice not in ['yes', 'no']:
@@ -236,6 +197,12 @@ class CommunityEventDeleteAPI(APIView):
 
     def delete(self, request, event_id):
         event = get_object_or_404(CommunityEvent, id=event_id)
+        community = event.community
+        user_role = CommunityRole.objects.filter(user=request.user, community=community).first()
+
+        if not user_role or not user_role.has_permission('event_leader'):
+            return Response({"detail": "You do not have permission to delete events."}, status=status.HTTP_403_FORBIDDEN)
+        
         event.delete()
         return Response({"detail": "Event deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
     
@@ -244,13 +211,16 @@ class CommunityEventEditAPI(APIView):
 
     def put(self, request, event_id):
         event = get_object_or_404(CommunityEvent, id=event_id)
-        serializer = CommunityEventSerializer(
-            event,
-            data=request.data,
-            partial=True,
-            context={'request': request}
-        )
+        community = event.community
+        user_role = CommunityRole.objects.filter(user=request.user, community=community).first()
+
+        if not user_role or not user_role.has_permission('event_leader'):
+            return Response({"detail": "You do not have permission to edit events."}, status=status.HTTP_403_FORBIDDEN)
+
+        serializer = CommunityEventSerializer(event, data=request.data, partial=True, context={'request': request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    

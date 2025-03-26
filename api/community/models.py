@@ -38,35 +38,34 @@ class Community(models.Model):
     def __str__(self):
         return self.name
 
+ROLE_HIERARCHY = {
+    'member': 1,
+    'event_leader': 2,
+    'community_leader': 3,
+    'admin': 4
+}
 
 class CommunityRole(models.Model):
-    """
-    Defines the role of a user in a community.
-    
-    Role choices:
-      - admin: Full control, can manage the community and sessions.
-      - moderator: Can help moderate posts and events.
-      - member: Standard member.
-    
-    Ensures a user can have only one role per community.
-    """
     ROLE_CHOICES = [
-        ('admin', 'Admin'),
-        ('moderator', 'Moderator'),
         ('member', 'Member'),
+        ('event_leader', 'Event Leader'),
+        ('community_leader', 'Community Leader'),
+        ('admin', 'Admin'),
     ]
+
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     community = models.ForeignKey(Community, on_delete=models.CASCADE, related_name="roles")
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='member')
 
     class Meta:
         unique_together = ('user', 'community')
-        verbose_name = "Community Role"
-        verbose_name_plural = "Community Roles"
 
     def __str__(self):
         return f"{self.user.username} - {self.get_role_display()} in {self.community.name}"
 
+    def has_permission(self, required_role):
+        """Checks if the user has the required permission level or higher."""
+        return ROLE_HIERARCHY[self.role] >= ROLE_HIERARCHY[required_role]
 
 # ARE WE STILL GOING TO DO THIS? - WILL
 # class VirtualSession(models.Model):
