@@ -2,7 +2,7 @@
 
 This project uses Django’s ORM (Object–relational mapping) to manage the database. Rather than writing SQL (what we did before), we define our schema using Django models. Django automatically creates the tables and handles join tables for many-to-many relationships. 
 
-At the bottom is the sql code too as beause i thought it was easier to write the sql code and get gpt to clean it up and then write the django code
+At the bottom is the sql code too as beause i thought it was easier to write the sql and turn it into django code
 
 Below is an overview of the main models for Uni Hub.
 
@@ -215,5 +215,3 @@ CREATE TABLE notifications (
 
 ```
 
-
-(thanks gpt)
