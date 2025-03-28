@@ -21,6 +21,18 @@ MYSQL_ROOT_PASSWORD: rootPassword
 ---
 
 ## How to run
+
+IF YOU ARE RUNNING FOR THE FIRST TIME
+
+- go to each `migrations` folder, and delete all `.py` files except for `__init__.py`
+- then run `docker compose up -d --build`
+
+If you don't do this, your migrations folder will be out of sync with your database because you pulled somebody elses migrations folder
+
+It'll save you hours of headaches - `Shahbaz`
+<br>
+<br>
+
 To start in background (detached):
 ```bash
 docker-compose up -d 

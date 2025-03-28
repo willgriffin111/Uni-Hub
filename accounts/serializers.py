@@ -22,7 +22,10 @@ class RegisterSerializer(serializers.ModelSerializer):
         model = User
         fields = [
             'username', 'email', 'password', 'first_name',
-            'last_name', 'dob', 'university', 'student_id', 'user_type'
+            'last_name', 'dob', 'university', 'student_id', 'user_type',
+            'profile_picture',
+            'bio',
+            'gender',
         ]
 
     def create(self, validated_data):

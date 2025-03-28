@@ -1,0 +1,1031 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UNI-HUB - Web Development Group</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- FontAwesome -->
+    <script src="https://kit.fontawesome.com/c43d240003.js" crossorigin="anonymous"></script>
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="{% static 'community_view.css' %}">
+    <link rel="stylesheet" href="{% static 'nav_footer.css' %}">
+    <link rel="stylesheet" href="{% static 'post_content.css' %}">
+    <link rel="stylesheet" href="{% static 'post_content.css' %}">
+</head>
+<body>
+
+    {% include '../includes/header.html' %}
+    
+    <!-- Community Page Content -->
+    <div class="container community-container">
+        <!-- Community Header -->
+        <div class="community-header">
+            <div class="community-cover-photo">
+                <div class="community-avatar">
+                    <img src="{{ community.community_image.url }}" alt="Web Development Group">
+                </div>
+            </div>
+            
+            <div class="community-header-content">
+                <div class="community-title-area">
+                    <h1 class="community-name">{{ community.name }}</h1>
+                    <span class="community-category">Study Group</span>
+                    <span class="community-members">{{ members_count }} members</span>
+                </div>
+                
+                <div class="community-actions">
+                    {% if user_role_level <= 1 %}
+                        <button id="joinLeaveBtn" class="btn-join-leave">Join Community</button>
+                    {% endif %}
+                    <button class="btn-contact"><i class="fa-solid fa-envelope"></i> Contact</button>
+                    <button class="btn-share"><i class="fa-solid fa-share-nodes"></i> Share</button>
+                    {% if user_role_level >= 3 %}
+                        <button class="btn-delete" id="deleteCommunityBtn"><i class="fa-solid fa-trash"></i> Delete</button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Community Navigation -->
+        <div class="community-navigation">
+            <ul class="cnav-tabs" id="communityTabs" role="tablist">
+                <li class="cnav-item" role="presentation">
+                    <button class="cnav-link active" id="main-tab" data-bs-toggle="tab" data-bs-target="#main" type="button" role="tab" aria-controls="main" aria-selected="true">Main</button>
+                </li>
+                <li class="cnav-item" role="presentation">
+                    <button class="cnav-link" id="members-tab" data-bs-toggle="tab" data-bs-target="#members" type="button" role="tab" aria-controls="members" aria-selected="false">Members</button>
+                </li>
+                <li class="cnav-item" role="presentation">
+                    <button class="cnav-link" id="events-tab" data-bs-toggle="tab" data-bs-target="#events" type="button" role="tab" aria-controls="events" aria-selected="false">Events</button>
+                </li>
+                {% if user_role_level >= 3 %}
+                <li class="cnav-item" role="presentation">
+                    <button class="cnav-link" id="Moderator" data-bs-toggle="tab" data-bs-target="#moderator" type="button" role="tab" aria-controls="events" aria-selected="false">Admin</button>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+        
+        <!-- Community Content Tabs -->
+        <div class="tab-content">
+            <!-- Main Tab -->
+            <div class="tab-pane fade show active" id="main">
+                <div class="content-grid">
+                    <div class="main-content">
+                        <!-- Community Posts -->
+                        <div class="content-card">
+                            <h2 class="card-title">Community Posts</h2>
+                            <!-- Create Post Area -->
+                              {% if user_role_level >= 1 %}
+                                <div class="create-post content-card">
+                                    <div class="d-flex align-items-center">
+                                    <div class="post-avatar">
+                                        <div class="compose-profile-img me-2">
+                                            {% if user.profile_picture %}
+                                                <img src="{{ user.profile_picture.url }}" alt="Profile Photo" width="50" height="50" class="rounded-circle object-fit-cover">
+                                            {% else %}
+                                                <img src="{% static 'user-image.png' %}" alt="Profile Photo" width="50" height="50" class="rounded-circle object-fit-cover">
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <button class="post-btn ms-2" id="openPostModal">
+                                        <i class="fas fa-edit me-1"></i> Create Post
+                                    </button>
+                                    </div>
+                                </div>
+                              {% endif %}
+                            
+                            <div class="posts-list">
+                                <!-- Posts content goes here -->
+                                {% include '../includes/post_content.html' %} 
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="sidebar">
+                        <!-- About Us Card -->
+                        <div class="content-card">
+                            <h2 class="card-title">About Us</h2>
+                            <div class="about-content">
+                                <p>{{ community.description }}</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Leadership/Roles Card -->
+                        <div class="content-card">
+                            <h2 class="card-title">Leadership</h2>
+                            <div class="leadership-list">
+                                <div class="leadership-item">
+                                    <div class="leader-avatar">
+                                        <img src="/images/bingus.jpg">
+                                    </div>
+                                    <div class="leader-info">
+                                        <h4 class="leader-name">Alex Rogers</h4>
+                                        <p class="leader-role">Group Admin</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="leadership-item">
+                                    <div class="leader-avatar">
+                                        <img src="/images/y2ht5fgx63g61.webp" alt="Michael Chen">
+                                    </div>
+                                    <div class="leader-info">
+                                        <h4 class="leader-name">Michael Chen</h4>
+                                        <p class="leader-role">Moderator</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="leadership-item">
+                                    <div class="leader-avatar">
+                                        <img src="/images/xqaxoy5y2hi61.webp" alt="Sarah Johnson">
+                                    </div>
+                                    <div class="leader-info">
+                                        <h4 class="leader-name">Sarah Johnson</h4>
+                                        <p class="leader-role">Events Coordinator</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Contact Info Card -->
+                        <div class="content-card">
+                            <h2 class="card-title">Contact Information</h2>
+                            <div class="contact-list">
+                                <div class="contact-item">
+                                    <i class="fa-solid fa-envelope"></i>
+                                    <span>webdev@unihub.edu</span>
+                                </div>
+                                <div class="contact-item">
+                                    <i class="fa-brands fa-discord"></i>
+                                    <span>Discord: UNI-HUB WebDev</span>
+                                </div>
+                                <div class="contact-item">
+                                    <i class="fa-solid fa-location-dot"></i>
+                                    <span>Tech Lab, Room 302, Engineering Building</span>
+                                </div>
+                                <div class="contact-item">
+                                    <i class="fa-solid fa-clock"></i>
+                                    <span>Weekly Meetings: Tuesdays, 5:30 PM - 7:30 PM</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Community Details Card -->
+                        <div class="content-card">
+                            <h2 class="card-title">Community Details</h2>
+                            <div class="details-list">
+                                <div class="detail-item">
+                                    <div class="detail-label">Created</div>
+                                    <div class="detail-value">September 10, 2024</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Category</div>
+                                    <div class="detail-value">Study Group</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Department</div>
+                                    <div class="detail-value">Computer Science</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Visibility</div>
+                                    <div class="detail-value">Public</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Members Tab -->
+            <div class="tab-pane fade" id="members">
+                <div class="content-card">
+                    <div class="members-header">
+                        <h2 class="card-title">Community Members ({{ members_count }})</h2>
+                        <div class="members-search">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" placeholder="Search members..." class="members-search-input">
+                        </div>
+                    </div>
+                    
+                    <div class="members-list">
+                        <!-- Leadership Section -->
+                        <div class="members-section">
+                            <h3 class="section-title">Leadership Team</h3>
+                            <div class="members-grid">
+                                <!-- Leader 1 -->
+                                <div class="member-card">
+                                    <div class="member-avatar">
+                                        <img src="/images/bingus.jpg" alt="Alex Rogers">
+                                    </div>
+                                    <div class="member-info">
+                                        <h4 class="member-name">Alex Rogers</h4>
+                                        <p class="member-role">Group Admin</p>
+                                        <p class="member-details">Computer Science • Year 2</p>
+                                    </div>
+                                    <button class="member-action-btn"><i class="fa-solid fa-envelope"></i></button>
+                                </div>
+                                
+                                <!-- Leader 2 -->
+                                <div class="member-card">
+                                    <div class="member-avatar">
+                                        <img src="" alt="Michael Chen">
+                                    </div>
+                                    <div class="member-info">
+                                        <h4 class="member-name">Michael Chen</h4>
+                                        <p class="member-role">Moderator</p>
+                                        <p class="member-details">Electrical Engineering • Year 3</p>
+                                    </div>
+                                    <button class="member-action-btn"><i class="fa-solid fa-envelope"></i></button>
+                                </div>
+                                
+                                <!-- Leader 3 -->
+                                <div class="member-card">
+                                    <div class="member-avatar">
+                                        <img src="" alt="Sarah Johnson">
+                                    </div>
+                                    <div class="member-info">
+                                        <h4 class="member-name">Sarah Johnson</h4>
+                                        <p class="member-role">Events Coordinator</p>
+                                        <p class="member-details">Computer Science • Year 2</p>
+                                    </div>
+                                    <button class="member-action-btn"><i class="fa-solid fa-envelope"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Regular Members Section -->
+                        <div class="members-section">
+                            <h3 class="section-title">Members</h3>
+                            <div class="members-grid">
+                                <!-- Render more members here, usually with a loop in the actual template -->
+                                {%for member in members %}
+                                <div class="member-card">
+                                    <div class="member-avatar">
+                                        <img src="{{member.profile_picture.url}}" alt="{{member.username}}">
+                                    </div>
+                                    <div class="member-info">
+                                        <h4 class="member-name">{{member.username}}</h4>
+                                        <p class="member-details">Computer Science • Year 3</p>
+                                    </div>
+                                    <button class="member-action-btn"><i class="fa-solid fa-envelope"></i></button>
+                                </div>
+                                {%endfor%}
+                            </div>
+                            
+                            <!-- Pagination -->
+                            <div class="pagination-container">
+                                <button class="pagination-btn prev-btn" disabled><i class="fa-solid fa-chevron-left"></i></button>
+                                {% comment %} <span class="pagination-text">Page 1 of 10</span> {% endcomment %}
+                                <button class="pagination-btn next-btn"><i class="fa-solid fa-chevron-right"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Events Tab -->
+            <div class="tab-pane fade" id="events">
+                <div class="content-grid">
+                <!-- Main Events Content -->
+                <div class="main-content">
+                    <!-- Upcoming Events Section -->
+                    <div class="content-card">
+                    <div class="events-header d-flex justify-content-between align-items-center">
+                        <h2 class="card-title">Upcoming Events</h2>
+                        <!-- Button to open create event modal -->
+                        {% if user_role_level >= 2 %}
+                        <button id="createEventBtn" class="btn btn-primary">Create Event</button>
+                        {% endif %}
+                    </div>
+                    <div id="upcomingEventsList" class="events-list">
+                        <!-- Upcoming events will be injected here via JS -->
+                        <p>Loading upcoming events...</p>
+                    </div>
+                    </div>
+
+                    <!-- Past Events Section -->
+                    <div class="content-card">
+                    <h2 class="card-title">Past Events</h2>
+                    <div id="pastEventsList" class="events-list">
+                        <!-- Past events will be injected here via JS -->
+                        <p>Loading past events...</p>
+                    </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar: Event Statistics -->
+                <div class="sidebar">
+                    <div class="content-card">
+                    <h2 class="card-title">Event Statistics</h2>
+                    <div id="eventStats" class="stats-list">
+                        <!-- Event stats (calculated client-side) -->
+                        <div class="stat-item">
+                        <div class="stat-label">Upcoming Events</div>
+                        <div class="stat-value" id="statsUpcoming">0</div>
+                        </div>
+                        <div class="stat-item">
+                        <div class="stat-label">Past Events</div>
+                        <div class="stat-value" id="statsPast">0</div>
+                        </div>
+                        <div class="stat-item">
+                        <div class="stat-label">Total Events</div>
+                        <div class="stat-value" id="statsTotal">0</div>
+                        </div>
+                        <div class="stat-item">
+                        <div class="stat-label">Avg. Attendance</div>
+                        <div class="stat-value" id="statsAvg">0</div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+            <!-- Create Event Modal (only visible when triggered) -->
+            {% if user_role_level >= 2 %}
+            <div id="createEventModal" class="modal" style="display:none;">
+                <div class="modal-content">
+                    <span class="close-create-modal" style="cursor:pointer;">&times;</span>
+                    <h2>Create Event</h2>
+                    <form id="createEventForm">
+                        <div class="form-group">
+                            <label for="eventTitle">Title:</label>
+                            <input type="text" id="eventTitle" name="title" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="eventDescription">Description:</label>
+                            <textarea id="eventDescription" name="description" class="form-control" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="eventDate">Date:</label>
+                            <input type="date" id="eventDate" name="event_date" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="eventTime">Time:</label>
+                            <input type="time" id="eventTime" name="event_time" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="eventLocation">Location:</label>
+                            <input type="text" id="eventLocation" name="location" class="form-control" required>
+                        </div>
+                        <button type="submit" class="btn btn-success">Create Event</button>
+                    </form>
+                </div>
+            </div>
+            {% endif %}
+            
+            <!-- Moderator Tab -->
+{% if user_role_level >= 3 %}
+<div class="tab-pane fade" id="moderator">
+    <div class="content-card">
+        <h2 class="card-title">Moderator Dashboard</h2>
+        <p class="moderator-intro">Welcome to the moderator dashboard. Here you can manage the community settings, events, and content.</p>
+        
+        <!-- Moderator Grid -->
+        <div class="moderator-grid">
+            <!-- Event Settings Card -->
+            <div class="mod-card">
+                <div class="mod-card-icon">
+                    <i class="fa-solid fa-calendar-days"></i>
+                </div>
+                <h3 class="mod-card-title">Event Settings</h3>
+                <p class="mod-card-description">Manage community events, approvals, and event visibility settings.</p>
+                <div class="mod-card-actions">
+                    <button class="mod-card-btn">Manage</button>
+                </div>
+            </div>
+            
+            <!-- User Settings Card -->
+            <div class="mod-card">
+                <div class="mod-card-icon">
+                    <i class="fa-solid fa-users"></i>
+                </div>
+                <h3 class="mod-card-title">User Settings</h3>
+                <p class="mod-card-description">Manage community members, roles, and permissions.</p>
+                <div class="mod-card-actions">
+                    <button class="mod-card-btn">Manage</button>
+                </div>
+            </div>
+            
+            <!-- Session Settings Card -->
+            <div class="mod-card">
+                <div class="mod-card-icon">
+                    <i class="fa-solid fa-clock"></i>
+                </div>
+                <h3 class="mod-card-title">Session Settings</h3>
+                <p class="mod-card-description">Configure meeting times, session durations, and recurring events.</p>
+                <div class="mod-card-actions">
+                    <button class="mod-card-btn">Manage</button>
+                </div>
+            </div>
+            
+            <!-- General Settings Card -->
+            <div class="mod-card">
+                <div class="mod-card-icon">
+                    <i class="fa-solid fa-gear"></i>
+                </div>
+                <h3 class="mod-card-title">General Settings</h3>
+                <p class="mod-card-description">Control community details, visibility, and content guidelines.</p>
+                <div class="mod-card-actions">
+                    <a href="{% url 'community_edit_page' community_name=community.name %}">
+                    <button class="mod-card-btn">Manage</button>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+    
+     
+      
+
+  <!-- Post Modal -->
+  {% if user_role_level >= 1 %}
+  <div id="postModal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <span class="close-modal">&times;</span>
+      <div class="modal-post-compose d-flex align-items-start">
+        <div class="compose-profile-img me-2">
+            {% if user.profile_picture %}
+            <img src="{{ user.profile_picture.url }}" alt="Profile Photo" width="50" height="50" class="rounded-circle object-fit-cover">
+        {% else %}
+            <img src="{% static 'user-image.png' %}" alt="Profile Photo" width="50" height="50" class="rounded-circle object-fit-cover">
+        {% endif %}
+        </div>
+        <div class="compose-input-container flex-grow-1">
+          <input type="text" class="compose-title-input form-control mb-2" placeholder="Title...">
+          <textarea class="compose-input form-control" placeholder="What's happening?"></textarea>
+          <!-- Tags input -->
+          <input type="text" class="compose-tags-input form-control mb-2" placeholder="Hashtags (e.g., #study, #events)" style="border:none; margin-top: 10px;">
+          
+          <!-- Image Preview Container (initially hidden) -->
+          <div class="image-preview-container" style="display: none; margin-top: 10px; margin-bottom: 10px;">
+            <div class="position-relative">
+              <img id="image-preview" src="#" alt="Preview" class="img-fluid rounded" style="max-height: 200px;">
+              <button type="button" class="btn-close position-absolute top-0 end-0 bg-white rounded-circle m-1" id="remove-image" aria-label="Remove image"></button>
+            </div>
+          </div>
+          
+          <div class="compose-actions d-flex justify-content-between align-items-center mt-2">
+            <div class="compose-tools">
+              <div class="form-group mt-2">
+                <label class="img-upload" for="modal-img-upload">
+                  <i class="fa-solid fa-camera"></i>
+                </label>
+                <input type="file" class="image-upload" id="modal-img-upload" style="display: none;" accept="image/*">
+              </div>
+            </div>
+            <button class="compose-submit btn btn-success">Post</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+</body>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get the button
+        const joinLeaveBtn = document.getElementById('joinLeaveBtn');
+        if (!joinLeaveBtn) return;
+    
+        // Convert Django boolean value to JavaScript boolean
+        let isMember = "{{ is_member }}".toLowerCase() === "true";
+        const communityId = "{{ community.id }}"; // Django renders this as a string
+        const csrftoken = "{{ csrf_token }}"; // CSRF token from Django
+    
+        // Set initial button text based on membership
+        joinLeaveBtn.textContent = isMember ? 'Leave Community' : 'Join Community';
+        joinLeaveBtn.classList.toggle('is-member', isMember);
+    
+        joinLeaveBtn.addEventListener('click', function() {
+            // Toggle membership status
+            isMember = !isMember;
+            
+            // Update button text
+            joinLeaveBtn.textContent = isMember ? 'Leave Community' : 'Join Community';
+            joinLeaveBtn.classList.toggle('is-member', isMember);
+    
+            // Send the request to the server
+            fetch('{% url "api-communityjoin" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken, // CSRF token for security
+                },
+                body: JSON.stringify({
+                    community_id: communityId
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+              if (data.detail) {
+                  location.reload(); // Reload the page on success
+              } else {
+                  alert("Something went wrong.");
+              }
+            })
+            .catch(error => console.error('Error joining/leaving community:', error));
+        });
+    });
+        
+        // Attend event functionality
+        const attendBtns = document.querySelectorAll('.attend-btn');
+        
+        attendBtns.forEach(btn => {
+            if (!btn.classList.contains('attending')) {
+                btn.addEventListener('click', function() {
+                    const isAttending = btn.classList.contains('attending');
+                    const attendanceCountEl = btn.previousElementSibling;
+                    let count = parseInt(attendanceCountEl.textContent);
+                    
+                    if (isAttending) {
+                        // User is no longer attending
+                        btn.textContent = 'Attend';
+                        btn.classList.remove('attending');
+                        count--;
+                        attendanceCountEl.textContent = count + ' attending';
+                    } else {
+                        // User is now attending
+                        btn.textContent = 'Attending';
+                        btn.classList.add('attending');
+                        count++;
+                        attendanceCountEl.textContent = count + ' attending';
+                    }
+                });
+            }
+        });
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Post Modal Functionality
+    var modal = document.getElementById("postModal");
+    var postBtn = document.getElementById("openPostModal"); // Updated selector to target the specific button
+    var closeModal = document.getElementsByClassName("close-modal")[0];
+    var readonlyInput = document.querySelector(".create-post input[readonly]");
+    
+    // When the user clicks on the create post button or the readonly input
+    if (postBtn) {
+        postBtn.onclick = function() {
+        modal.style.display = "block";
+        document.querySelector(".modal-post-compose .compose-input").focus();
+        }
+    }
+    
+    // Also allow clicking on the readonly input to open the modal
+    if (readonlyInput) {
+        readonlyInput.onclick = function() {
+        modal.style.display = "block";
+        document.querySelector(".modal-post-compose .compose-input").focus();
+        }
+    }
+    
+    // When the user clicks on the close button
+    if (closeModal) {
+        closeModal.onclick = function() {
+        modal.style.display = "none";
+        }
+    }
+    
+    // When the user clicks anywhere outside of the modal
+    window.onclick = function(event) {
+        if (event.target == modal) {
+        modal.style.display = "none";
+        }
+    }
+    
+    // Image upload preview functionality
+    const imageUpload = document.getElementById('modal-img-upload');
+    const imagePreview = document.getElementById('image-preview');
+    const imagePreviewContainer = document.querySelector('.image-preview-container');
+    const removeImageBtn = document.getElementById('remove-image');
+    
+    if (imageUpload) {
+        imageUpload.addEventListener('change', function() {
+        if (this.files && this.files[0]) {
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+            imagePreview.src = e.target.result;
+            imagePreviewContainer.style.display = 'block';
+            }
+            
+            reader.readAsDataURL(this.files[0]);
+        }
+        });
+    }
+    
+    if (removeImageBtn) {
+        removeImageBtn.addEventListener('click', function() {
+        imagePreview.src = '#';
+        imagePreviewContainer.style.display = 'none';
+        imageUpload.value = '';
+        });
+    }
+    
+    // Post submission logic
+    const submitBtn = document.querySelector('.compose-submit');
+    if (submitBtn) {
+        submitBtn.addEventListener('click', function() {
+        // Get post data
+        const title = document.querySelector('.compose-title-input').value;
+        const content = document.querySelector('.compose-input').value;
+        const tags = document.querySelector('.compose-tags-input').value;
+        
+        // Basic validation
+        if (!content.trim()) {
+            alert('Please enter some content for your post.');
+            return;
+        }
+        
+        // Here you would typically send the data to your server
+        console.log('Submitting post:', { title, content, tags });
+        
+        // Close the modal and reset form
+        modal.style.display = 'none';
+        document.querySelector('.compose-title-input').value = '';
+        document.querySelector('.compose-input').value = '';
+        document.querySelector('.compose-tags-input').value = '';
+        imagePreviewContainer.style.display = 'none';
+        imageUpload.value = '';
+        });
+    }
+    });
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const csrftoken = "{{ csrf_token }}";
+        const communityId = "{{ community.id }}";
+
+        const eventsListUrl = `/api/community/community/${communityId}/events/`;
+        function formatDate(isoDate) {
+          const d = new Date(isoDate);
+          return {
+            month: d.toLocaleString('default', { month: 'short' }),
+            day: d.getDate()
+          };
+        }
+  
+        // Load events from API endpoint
+        function loadEvents() {
+          fetch(eventsListUrl, { credentials: 'include' })
+            .then(response => response.json())
+            .then(events => {
+              const now = new Date();
+              const upcomingEvents = [];
+              const pastEvents = [];
+              let totalAttendance = 0;
+              events.forEach(event => {
+                const eventDateTime = new Date(event.event_date + 'T' + event.event_time);
+                totalAttendance += event.attendance_count || 0;
+                if (eventDateTime >= now) {
+                  upcomingEvents.push(event);
+                } else {
+                  pastEvents.push(event);
+                }
+              });
+              renderEvents(upcomingEvents, pastEvents);
+              updateStats(events.length, upcomingEvents.length, pastEvents.length, totalAttendance);
+            })
+            .catch(error => console.error("Error fetching events:", error));
+        }
+  
+        // Render events into Upcoming and Past containers
+        function renderEvents(upcoming, past) {
+          const upcomingContainer = document.getElementById('upcomingEventsList');
+          const pastContainer = document.getElementById('pastEventsList');
+          upcomingContainer.innerHTML = "";
+          pastContainer.innerHTML = "";
+  
+          // Render upcoming events
+          if (upcoming.length === 0) {
+            upcomingContainer.innerHTML = "<p>No upcoming events.</p>";
+          } else {
+            upcoming.forEach(event => {
+              const dt = formatDate(event.event_date);
+              const attendees = event.attendees || [];
+              upcomingContainer.innerHTML += `
+                <div class="event-card" data-event-id="${event.id}">
+                  <div class="event-date">
+                    <div class="event-month">${dt.month}</div>
+                    <div class="event-day">${dt.day}</div>
+                  </div>
+                  <div class="event-details">
+                    <h3 class="event-title">${event.title}</h3>
+                    <p class="event-description">${event.description}</p>
+                    <p class="event-time"><i class="fa-solid fa-clock"></i> ${event.event_time}</p>
+                    <p class="event-location"><i class="fa-solid fa-location-dot"></i> ${event.location}</p>
+                    <div class="event-attendance">
+                      <span class="attendance-count">${event.attendance_count || 0} attending</span>
+                      <button class="attend-btn ${event.is_user_attending ? 'attending' : ''}" data-event-id="${event.id}">
+                        ${event.is_user_attending ? 'Attending' : 'Attend'}
+                      </button>
+                      <button class="edit-event-btn" data-event-id="${event.id}">Edit</button>
+                      <button class="delete-event-btn" data-event-id="${event.id}">Delete</button>
+                    </div>
+                    <div class="attendees-list">
+                      ${attendees.length > 0 ?
+                        attendees.map(a => `<span class="attendee">${a}</span>`).join(' ')
+                        : "<span>No attendees yet.</span>"}
+                    </div>
+                  </div>
+                </div>
+              `;
+            });
+          }
+  
+          // Render past events 
+          if (past.length === 0) {
+            pastContainer.innerHTML = "<p>No past events.</p>";
+          } else {
+            past.forEach(event => {
+              const dt = formatDate(event.event_date);
+              const attendees = event.attendees || [];
+              pastContainer.innerHTML += `
+                <div class="event-card past-event" data-event-id="${event.id}">
+                  <div class="event-date">
+                    <div class="event-month">${dt.month}</div>
+                    <div class="event-day">${dt.day}</div>
+                  </div>
+                  <div class="event-details">
+                    <h3 class="event-title">${event.title}</h3>
+                    <p class="event-description">${event.description}</p>
+                    <p class="event-time"><i class="fa-solid fa-clock"></i> ${event.event_time}</p>
+                    <p class="event-location"><i class="fa-solid fa-location-dot"></i> ${event.location}</p>
+                    <div class="event-attendance">
+                      <span class="attendance-count">${event.attendance_count || 0} attended</span>
+                      <button class="edit-event-btn" data-event-id="${event.id}">Edit</button>
+                      <button class="delete-event-btn" data-event-id="${event.id}">Delete</button>
+                    </div>
+                    <div class="attendees-list">
+                      ${attendees.length > 0 ?
+                        attendees.map(a => `<span class="attendee">${a}</span>`).join(' ')
+                        : "<span>No attendees.</span>"}
+                    </div>
+                  </div>
+                </div>
+              `;
+            });
+          }
+          
+          attachAttendanceHandlers();
+          attachDeleteHandlers();
+          attachEditHandlers();
+        
+        }
+        // Update sidebar statistics
+        function updateStats(total, upcomingCount, pastCount, totalAttendance) {
+          document.getElementById('statsUpcoming').textContent = upcomingCount;
+          document.getElementById('statsPast').textContent = pastCount;
+          document.getElementById('statsTotal').textContent = total;
+          document.getElementById('statsAvg').textContent = total ? Math.round(totalAttendance / total) : 0;
+        }
+  
+        // Attach handlers for Attend buttons
+        function attachAttendanceHandlers() {
+          const attendBtns = document.querySelectorAll('.attend-btn');
+          attendBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+              const eventId = btn.getAttribute('data-event-id');
+              const newStatus = btn.classList.contains('attending') ? 'no' : 'yes';
+              fetch(`/api/community/events/${eventId}/attendance/`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'X-CSRFToken': csrftoken
+                },
+                body: JSON.stringify({ status: newStatus })
+              })
+              .then(response => response.json())
+              .then(data => {
+                const attendanceCountEl = btn.parentElement.querySelector('.attendance-count');
+                let count = parseInt(attendanceCountEl.textContent);
+                const attendeesListEl = btn.closest('.event-details').querySelector('.attendees-list');
+                const currentUsername = "{{ user.username }}";
+                if (newStatus === 'yes') {
+                  btn.textContent = 'Attending';
+                  btn.classList.add('attending');
+                  count++;
+                  if (!Array.from(attendeesListEl.children).some(span => span.textContent === currentUsername)) {
+                    const span = document.createElement('span');
+                    span.className = 'attendee';
+                    span.textContent = currentUsername;
+                    attendeesListEl.appendChild(span);
+                  }
+                } else {
+                  btn.textContent = 'Attend';
+                  btn.classList.remove('attending');
+                  count--;
+                  Array.from(attendeesListEl.children).forEach(span => {
+                    if (span.textContent === currentUsername) {
+                      span.remove();
+                    }
+                  });
+                }
+                attendanceCountEl.textContent = count + ' attending';
+              })
+              .catch(error => console.error("Error updating attendance:", error));
+            });
+          });
+        }
+
+        function attachEditHandlers() {
+            const editBtns = document.querySelectorAll('.edit-event-btn');
+            editBtns.forEach(btn => {
+              btn.addEventListener('click', function() {
+                const eventId = btn.getAttribute('data-event-id');
+                // Redirect to the event edit page
+                window.location.href = `/community/event/${eventId}/edit/`;
+              });
+            });
+          }
+  
+        // Attach handlers for Delete buttons
+        function attachDeleteHandlers() {
+          const deleteBtns = document.querySelectorAll('.delete-event-btn');
+          deleteBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+              const eventId = btn.getAttribute('data-event-id');
+              if (confirm("Are you sure you want to delete this event?")) {
+                fetch(`/api/community/events/${eventId}/delete/`, {
+                  method: 'DELETE',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken
+                  }
+                })
+                .then(response => {
+                  if (response.ok) {
+                    // Remove event card from the UI
+                    const eventCard = btn.closest('.event-card');
+                    eventCard.remove();
+                    loadEvents(); // Refresh events list and stats
+                  } else {
+                    alert("Error deleting event.");
+                  }
+                })
+                .catch(error => {
+                  console.error("Error deleting event:", error);
+                });
+              }
+            });
+          });
+        }
+
+  
+        // Create Event Modal functionality
+        const createEventBtn = document.getElementById('createEventBtn');
+        const createEventModal = document.getElementById('createEventModal');
+        const closeCreateModal = document.querySelector('.close-create-modal');
+        const createEventForm = document.getElementById('createEventForm');
+  
+        createEventBtn.addEventListener('click', function() {
+          createEventModal.style.display = 'block';
+        });
+        closeCreateModal.addEventListener('click', function() {
+          createEventModal.style.display = 'none';
+        });
+        createEventForm.addEventListener('submit', function(e) {
+          e.preventDefault();
+          const payload = {
+            title: document.getElementById('eventTitle').value,
+            description: document.getElementById('eventDescription').value,
+            event_date: document.getElementById('eventDate').value,
+            event_time: document.getElementById('eventTime').value,
+            location: document.getElementById('eventLocation').value
+          };
+          fetch(`/api/community/community/${communityId}/events/create/`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRFToken': csrftoken
+            },
+            body: JSON.stringify(payload)
+          })
+          .then(response => response.json())
+          .then(data => {
+            if (data.id) {
+              alert("Event created successfully!");
+              createEventModal.style.display = 'none';
+              loadEvents();
+            } else {
+              alert("Error creating event: " + JSON.stringify(data));
+            }
+          })
+          .catch(error => {
+            console.error("Error creating event:", error);
+            alert("An error occurred while creating the event.");
+          });
+        });
+  
+        // Initial load of events
+        loadEvents();
+      });
+    
+</script> 
+
+    <!-- Notification Container -->
+<div id="deleteNotification" class="notification" style="display: none;">
+    <span class="message"></span>
+    <button class="close-btn">&times;</button>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const deleteBtn = document.getElementById('deleteCommunityBtn');
+        if (deleteBtn) {
+            deleteBtn.addEventListener('click', async function() {
+                const confirmDelete = confirm("Are you sure you want to delete this community?");
+                if (!confirmDelete) return;
+    
+                const communityId = "{{ community.id }}";
+                const url = `/api/community/community/${communityId}/delete/`;
+    
+                try {
+                    const response = await fetch(url, {
+                        method: "DELETE",
+                        headers: {
+                            "X-CSRFToken": getCSRFToken(),
+                            "X-Requested-With": "XMLHttpRequest"
+                        },
+                        credentials: "include"
+                    });
+    
+                    if (response.ok) {
+                        // Store message and redirect immediately
+                        sessionStorage.setItem("deleteSuccess", 
+                            `Community '{{ community.name }}' deleted successfully`
+                        );
+                        window.location.href = "{% url 'index_page' %}";
+                    } else {
+                        alert("Failed to delete community.");
+                    }
+                } catch (error) {
+                    console.error(error);
+                    alert("An error occurred while deleting the community.");
+                }
+            });
+        }
+    });
+
+        function getCSRFToken() {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== "") {
+                const cookies = document.cookie.split(";");
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.startsWith("csrftoken=")) {
+                        cookieValue = cookie.substring("csrftoken=".length, cookie.length);
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+</script>
+        
+
+  <!-- Post Modal -->
+  <div id="postModal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <span class="close-modal">&times;</span>
+      <div class="modal-post-compose d-flex align-items-start">
+        <div class="compose-profile-img me-2">
+          <img src="{% static 'bingus.jpg' %}" alt="Profile Photo" width="50" height="50">
+        </div>
+        <div class="compose-input-container flex-grow-1">
+          <input type="text" class="compose-title-input form-control mb-2" placeholder="Title...">
+          <textarea class="compose-input form-control" placeholder="What's happening?"></textarea>
+          <!-- Tags input -->
+          <input type="text" class="compose-tags-input form-control mb-2" placeholder="Hashtags (e.g., #study, #events)" style="border:none; margin-top: 10px;">
+          
+          <!-- Image Preview Container (initially hidden) -->
+          <div class="image-preview-container" style="display: none; margin-top: 10px; margin-bottom: 10px;">
+            <div class="position-relative">
+              <img id="image-preview" src="#" alt="Preview" class="img-fluid rounded" style="max-height: 200px;">
+              <button type="button" class="btn-close position-absolute top-0 end-0 bg-white rounded-circle m-1" id="remove-image" aria-label="Remove image"></button>
+            </div>
+          </div>
+          
+          <div class="compose-actions d-flex justify-content-between align-items-center mt-2">
+            <div class="compose-tools">
+              <div class="form-group mt-2">
+                <label class="img-upload" for="modal-img-upload">
+                  <i class="fa-solid fa-camera"></i>
+                </label>
+                <input type="file" class="image-upload" id="modal-img-upload" style="display: none;" accept="image/*">
+              </div>
+            </div>
+            <button class="compose-submit btn btn-success">Post</button>
+          </div>
+        </div>
+      </div>
+    </div>
+</body>
+</body>
+</html>

@@ -8,6 +8,7 @@ class CustomUser(AbstractUser):
     university = models.CharField(max_length=255, null=True, blank=True)
     student_id = models.CharField(max_length=50, null=True, blank=True)
     email_verified = models.BooleanField(default=False)
+    friends = models.ManyToManyField('self', blank=True, symmetrical=True)
     #all possible user types accepted
     USER_TYPES = [
         ('student', 'Student'),
@@ -16,6 +17,15 @@ class CustomUser(AbstractUser):
         ('admin', 'Admin'),
     ]
     user_type = models.CharField(max_length=20, choices=USER_TYPES, default='student')
+    
+    profile_picture = models.ImageField(upload_to="profile_pics/", default='profile_pics/user-image.png',null=False, blank=False)
+    bio = models.TextField(null=True, blank=True)
+    gender = models.CharField(
+        max_length=10, 
+        choices=[("male", "Male"), ("female", "Female"), ("other", "Other")], 
+        null=True, 
+        blank=True
+    )
 
     def __str__(self):
         return self.username

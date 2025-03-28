@@ -16,10 +16,15 @@ from rest_framework import status
 from .emailopt import send_email_password_reset 
 from django.utils.encoding import force_bytes
 from django.conf import settings
+from rest_framework.parsers import MultiPartParser, FormParser
+import os
+from django.core.files.storage import default_storage
 
 
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+
+User = get_user_model()
 
 def get_user_by_username(request, username):
     try:
@@ -108,7 +113,7 @@ class VerifyAPI(APIView):
             return JsonResponse({"message": "OTP has expired"}, status=400)
 
         # Get user and verify OTP
-        user = get_user_by_username(request, request.session['username'])
+        user = request.user
         
         if otp_code == otp_code_from_session:
             # Set the email_verified field to True
@@ -124,19 +129,14 @@ class LogoutAPI(APIView):
     """
     API to handle user logout. Only accessible to authenticated users.
     """
-    # THIS ISNT WORKING. ONLY LOGGED IN USERS CAN LOG OUT. I THINK IT JWT RELATED BUT IM NOT SURE. 
-    # JWT SETTING IN SETTINGS.PY FILE. 
-    # mayb we dont use jwt idk?
-    # permission_classes = [IsAuthenticated]   
+    #Now works for only authenticated users -Alex
     
-    # THIS WORKS but its not correct.
-    permission_classes = [AllowAny]
-
+    permission_classes = [IsAuthenticated]
     def post(self, request):
         logout(request)
         return JsonResponse({"redirect": "/login/"}, status=200)
 
-User = get_user_model()
+
 
 class PasswordResetAPI(APIView):
     """
@@ -193,3 +193,143 @@ class PasswordResetConfirmAPI(APIView):
         user.save()
         
         return Response({"message": "Password successfully reset."}, status=status.HTTP_200_OK)
+
+class ProfileUpdateAPI(APIView):
+    permission_classes = [IsAuthenticated]
+    parser_classes = (MultiPartParser, FormParser)
+
+    def put(self, request):
+        user = request.user
+        data = request.data
+
+        if "profile_picture" in request.FILES:
+            if user.profile_picture and user.profile_picture.name != 'profile_pics/user-image.png':
+                user.profile_picture.delete(save=False)
+            user.profile_picture = request.FILES["profile_picture"]
+
+        user.first_name = data.get('first_name', user.first_name)
+        user.last_name = data.get('last_name', user.last_name)
+        user.username = data.get('username', user.username)
+        user.email = data.get('email', user.email)
+
+        # handles dob correctly
+        dob = data.get('dob')
+        if dob and dob.strip() != '':
+            user.dob = dob
+        else:
+            user.dob = None
+
+        user.university = data.get('university', user.university)
+        user.student_id = data.get('student_id', user.student_id)
+        user.bio = data.get('bio', user.bio)
+        user.gender = data.get('gender', user.gender)
+
+        try:
+            user.save()
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response({
+            "message": "Profile updated successfully",
+            "data": {
+                "profile_picture": user.profile_picture.url if user.profile_picture else None,
+                "first_name": user.first_name,
+                "last_name": user.last_name,
+                "username": user.username,
+                "email": user.email,
+                "dob": user.dob,
+                "university": user.university,
+                "student_id": user.student_id,
+                "bio": user.bio,
+                "gender": user.gender,
+            }
+        }, status=status.HTTP_200_OK)
+
+class DeleteAccountAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request):
+        user = request.user
+        try:
+            # Check if user has a profile picture
+            if user.profile_picture:
+                # Delete the profile picture file from the filesystem
+                if os.path.exists(user.profile_picture.path):
+                    os.remove(user.profile_picture.path)
+
+            # Delete user account
+            user.delete()
+
+            return Response({"message": "Account and profile picture deleted successfully."}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        
+class RemoveProfilePictureAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request):
+        user = request.user
+        default_pic = 'profile_pics/user-image.png'
+        
+        if user.profile_picture:
+            if user.profile_picture.name != default_pic:
+                if default_storage.exists(user.profile_picture.name):
+                    default_storage.delete(user.profile_picture.name)
+                    
+            # Reset the user's profile picture to the default.
+            user.profile_picture = default_pic
+            user.save()
+            return Response({"message": "Profile picture removed and reset to default."}, status=status.HTTP_200_OK)
+
+        return Response({"error": "No profile picture found."}, status=status.HTTP_400_BAD_REQUEST)
+
+class UserProfileAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        serializer = CustomUserSerializer(request.user)
+        return Response(serializer.data)
+
+class FriendAddAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        username = request.data.get('username')
+        if not username:
+            return Response({'success': False, 'message': 'No username provided.'}, status=status.HTTP_400_BAD_REQUEST)
+        if username == request.user.username:
+            return Response({'success': False, 'message': "You cannot add yourself as a friend."}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            friend = User.objects.get(username=username)
+        except User.DoesNotExist:
+            return Response({'success': False, 'message': 'User does not exist.'}, status=status.HTTP_404_NOT_FOUND)
+        
+   
+        if friend in request.user.friends.all():
+            return Response({'success': False, 'message': 'Already friends.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+
+        request.user.friends.add(friend)
+        return Response({'success': True, 'message': 'Friend added successfully.'})
+
+
+class FriendRemoveAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        username = request.data.get('username')
+        if not username:
+            return Response({'success': False, 'message': 'No username provided.'}, status=status.HTTP_400_BAD_REQUEST)
+        if username == request.user.username:
+            return Response({'success': False, 'message': "You cannot remove yourself."}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            friend = User.objects.get(username=username)
+        except User.DoesNotExist:
+            return Response({'success': False, 'message': 'User does not exist.'}, status=status.HTTP_404_NOT_FOUND)
+        
+        if friend not in request.user.friends.all():
+            return Response({'success': False, 'message': 'Not friends.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Remove friend
+        request.user.friends.remove(friend)
+        return Response({'success': True, 'message': 'Friend removed successfully.'})

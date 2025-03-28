@@ -356,14 +356,19 @@
     overflow: hidden;
 }
 
+
+
+/* Ensure images in posts are smaller and not cropped */
 .post-image {
-    width: 100%;
-    max-height: 400px;
-    object-fit: cover;
+    width: 100%; /* Makes sure it fits the post container */
+    max-height: 250px; /* Smaller images inside posts */
+    object-fit: cover; /* Ensures it doesn't stretch */
     border-radius: 8px;
-    transition: transform 0.3s ease;
+    cursor: pointer;
+    transition: transform 0.2s ease;
 }
 
 .post-image:hover {
-    transform: scale(1.01);
+    transform: scale(1.02);
 }
+

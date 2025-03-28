@@ -1,0 +1,105 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UNI-HUB - Edit Comment</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Fontawesome -->
+    <script src="https://kit.fontawesome.com/c43d240003.js" crossorigin="anonymous"></script>
+
+    <!-- Custom styles -->
+    <link rel="stylesheet" href="{% static 'nav_footer.css' %}">
+    <link rel="stylesheet" href="{% static 'create_post.css' %}">
+</head>
+<body>
+
+    {% include '../includes/header.html' %}
+    <div class="container post-container">
+        <div class="page-header">
+            <h1>Edit Comment</h1>
+            <p>Modify your comment and save changes.</p>
+        </div>
+
+        <div class="centered-form-container">
+            <div class="profile-card">
+                <div class="card-header">
+                    <h3>Comment Details</h3>
+                </div>
+                <div class="card-body">
+                    <form id="comment-form" class="post-form">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="comment-content">Comment</label>
+                            <textarea id="comment-content" name="content" class="form-textarea" rows="5">{{ comment.content }}</textarea>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="submit-btn">Update Comment</button>
+                        </div>
+                    </form>
+
+                    <p id="responseMessage"></p> <!-- Display success/error message -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("comment-form").addEventListener("submit", async function(event) {
+            event.preventDefault();
+    
+            const commentId = "{{ comment.id }}";  
+            const content = document.getElementById("comment-content").value.trim();
+            const csrfToken = getCSRFToken();
+    
+            if (!content) {
+                document.getElementById("responseMessage").innerText = "Error: Comment cannot be empty!";
+                return;
+            }
+    
+            try {
+                let response = await fetch(`/api/post/edit-comment/${commentId}/`, {  
+                    method: "PUT",
+                    credentials: "include",
+                    headers: {
+                        "X-CSRFToken": csrfToken,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ content: content })
+                });
+    
+                if (response.ok) {
+                    document.getElementById("responseMessage").innerText = "Comment updated successfully!";
+                    window.location.href = "{% url 'index_page' %}";  // Redirect to post list after successful edit
+                } else {
+                    let result = await response.json();
+                    document.getElementById("responseMessage").innerText = "Error: " + JSON.stringify(result);
+                }
+            } catch (error) {
+                document.getElementById("responseMessage").innerText = "Network error!";
+            }
+        });
+    
+        function getCSRFToken() {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== "") {
+                const cookies = document.cookie.split(";");
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.startsWith("csrftoken=")) {
+                        cookieValue = cookie.substring("csrftoken=".length, cookie.length);
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
+    
+
+</body>
+</html>

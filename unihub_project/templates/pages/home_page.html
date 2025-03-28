@@ -1,465 +1,808 @@
-<!DOCTYPE html>
+{% load static %}
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UNI-HUB</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Fontawesome CSS -->
-    <script src="https://kit.fontawesome.com/c43d240003.js" crossorigin="anonymous"></script>
-    <!-- style sheets CSS -->
-    <link rel="stylesheet" href="/unihub_project/static/nav_footer.css">
-    <link rel="stylesheet" href="/unihub_project/static/home_page.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UNI-HUB</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Fontawesome -->
+  <script src="https://kit.fontawesome.com/c43d240003.js" crossorigin="anonymous"></script>
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="{% static 'home_page.css' %}">
+  <link rel="stylesheet" href="{% static 'nav_footer.css' %}">
+  <style>
+    /* Your additional custom styles (if any) */
+  </style>
 </head>
 <body>
 
-    <!-- header -->
-    <nav class="navbar navbar-expand-lg">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">UNI-HUB</a>
-            
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#navbarNav" aria-controls="navbarNav" 
-                    aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            
-            <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="#">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Profile</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Activities</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Communities</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Accessibility</a>
-                    </li>
-                </ul>
+  {% include '../includes/header.html' %}
+
+  <!-- Main Content -->
+  <div class="content-wrapper">
+    <div class="main-layout">
+      <!-- Left Sidebar -->
+      <div class="sidebar left-sidebar">
+        <div class="sidebar-card">
+          <div class="profile-preview">
+            <div class="profile-preview-img">
+              {% if user.profile_picture %}
+                  <img src="{{ user.profile_picture.url }}" alt="Profile Photo" width="50" height="50">
+                  {% else %}
+                  <img src="{% static 'user-image.png' %}" alt="Profile Photo" width="50" height="50">
+              {% endif %}
+
             </div>
+            <div class="profile-preview-info">
+              <h3>{{ user.first_name }} {{ user.last_name }}</h3>
+              <p>{{ user.university }}</p>
+            </div>
+          </div>
+          <div class="sidebar-menu">
+
+            <a href="{% url 'search_page' %}" class="menu-item">
+              <i class="fa-solid fa-search"></i>
+              <span>Search</span>
+            </a>
+            <a href="#" class="menu-item">
+              <i class="fa-solid fa-bell"></i>
+              <span>Notifications</span>
+              <span class="notification-badge">3</span>
+            </a>
+            <a href="#" class="menu-item">
+              <i class="fa-solid fa-envelope"></i>
+              <span>Messages</span>
+            </a>
+            <a href="{% url 'profile_page' %}" class="menu-item">
+              <i class="fa-solid fa-user"></i>
+              <span>Profile</span>
+            </a>
+            <a href="{% url 'community_create' %}" class="menu-item">
+              <i class="fa-solid fa-user-group"></i>
+              <span>Communities</span>
+            </a>
+            <a href="#" class="menu-item">
+              <i class="fa-solid fa-calendar-days"></i>
+              <span>Events</span>
+            </a>
+          </div>
+          <button class="post-btn btn btn-primary mt-3">Post</button>
         </div>
-    </nav>
+      </div>
 
-    <!-- Main Content -->
-    <div class="content-wrapper">
-        <div class="main-layout">
-        <!-- Left Sidebar -->
-        <div class="sidebar left-sidebar">
-            <div class="sidebar-card">
-                <div class="profile-preview">
-                    <div class="profile-preview-img">
-                        <img src="/unihub_project/static/bingus.jpg" alt="Profile Photo">
-                    </div>
-                    <div class="profile-preview-info">
-                        <h3>Alex Rogers</h3>
-                        <p>Computer Science</p>
-                    </div>
-                </div>
-                
-                <div class="sidebar-menu">
-                    <a href="#" class="menu-item active">
-                        <i class="fa-solid fa-house"></i>
-                        <span>Home</span>
-                    </a>
-                    <a href="#" class="menu-item">
-                        <i class="fa-solid fa-bell"></i>
-                        <span>Notifications</span>
-                        <span class="notification-badge">3</span>
-                    </a>
-                    <a href="#" class="menu-item">
-                        <i class="fa-solid fa-envelope"></i>
-                        <span>Messages</span>
-                    </a>
-                    <a href="#" class="menu-item">
-                        <i class="fa-solid fa-user"></i>
-                        <span>Profile</span>
-                    </a>
-                    <a href="#" class="menu-item">
-                        <i class="fa-solid fa-user-group"></i>
-                        <span>Communities</span>
-                    </a>
-                    <a href="#" class="menu-item">
-                        <i class="fa-solid fa-calendar-days"></i>
-                        <span>Events</span>
-                    </a>
-                </div>
-                
-                <button class="post-btn">Post</button>
-            </div>
-        </div>
+      <!-- Main Feed -->
+      <div class="main-feed">
+        
+        <!-- Compose Post (Inline in Feed) -->
+        <div class="compose-post d-flex align-items-start mb-4">
+          <div class="compose-profile-img me-2">
+            <div class="compose-profile-img me-2">
+              {% if user.profile_picture %}
+                  <img src="{{ user.profile_picture.url }}" alt="Profile Photo" width="50" height="50" class="rounded-circle object-fit-cover">
+              {% else %}
+                  <img src="{% static 'user-image.png' %}" alt="Profile Photo" width="50" height="50" class="rounded-circle object-fit-cover">
+              {% endif %}
+          </div>
 
-        <!-- Main Feed -->
-        <div class="main-feed">
-            <div class="feed-header">
-                <div class="feed-tabs">
-                    <button class="tab-btn active">For You</button>
-                    <button class="tab-btn">Following</button>
-                    <button class="tab-btn">University</button>
-                </div>
-            </div>
+          </div>
+          <div class="compose-input-container flex-grow-1">
+            <input type="text" class="compose-title-input form-control mb-2" placeholder="Title...">
+            <textarea class="compose-input form-control" placeholder="What's happening?"></textarea>
+            <!-- Tags input -->
+            <input type="text" class="compose-tags-input form-control mb-2" placeholder="Hashtags (e.g., #study, #events)" style="border:none; margin-top: 10px;">
             
-            <div class="compose-post">
-                <div class="compose-profile-img">
-                    <img src="/unihub_project/static/bingus.jpg" alt="Profile Photo">
-                </div>
-                <div class="compose-input-container">
-                    <input type="text" class="compose-title-input" placeholder="Title...">
-                    <textarea class="compose-input" placeholder="What's happening?"></textarea>
-                    <div class="compose-actions">
-                        <div class="compose-tools">
-                            <button class="compose-tool">
-                                <i class="fa-solid fa-image"></i>
-                            </button>
-                            <button class="compose-tool">
-                                <i class="fa-solid fa-calendar-day"></i>
-                            </button>
-                        </div>
-                        <button class="compose-submit">Post</button>
-                    </div>
-                </div>
+            <!-- Image Preview Container (initially hidden) -->
+            <div class="image-preview-container" style="display: none; margin-top: 10px; margin-bottom: 10px;">
+              <div class="position-relative">
+                <img id="image-preview" src="#" alt="Preview" class="img-fluid rounded" style="max-height: 200px;" >
+                <button type="button" class="btn-close position-absolute top-0 end-0 bg-white rounded-circle m-1" id="remove-image" aria-label="Remove image"></button>
+              </div>
             </div>
-            
-            <!-- Recent Posts section -->
-            <div class="post-divider">
-                <span>Recent Posts</span>
-            </div>
-            
-            <!-- Post 1 -->
-            <div class="post">
-                <div class="post-avatar">
-                    <img src="/unihub_project/static/bingus.jpg" alt="Emma">
-                </div>
-                <div class="post-content">
-                    <div class="post-header">
-                        <div class="post-user-info">
-                            <h4 class="post-author">Alex Rogers</h4>
-                            <span class="post-time">· 2 days ago</span>
-                        </div>
-                        <div class="post-options">
-                            <button class="options-btn">
-                                <i class="fa-solid fa-ellipsis"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="post-text">
-                        <h4>New Pc set up</h4>
-                        <p>Yo what does everyone think of my new set up?</p>
-                    </div>
-                    <div class="post-media">
-                        <img src="/unihub_project/images/pcSetup.jpg" alt="PC Setup">
-                    </div>
-                    <div class="post-actions">
-                        <button class="post-action-btn like-btn">
-                            <i class="fa-solid fa-heart"></i>
-                            <span>12</span>
-                            <span class="likes-text">likes</span>
-                        </button>
-                        <button class="post-action-btn comment-btn">
-                            <i class="fa-solid fa-comment"></i>
-                            <span>5</span>
-                            <span class="comments-text">comments</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Post 2 -->
-            <div class="post">
-                <div class="post-avatar">
-                    <img src="/unihub_project/static/bingus.jpg" alt="pic">
-                </div>
-                <div class="post-content">
-                    <div class="post-header">
-                        <div class="post-user-info">
-                            <h4 class="post-author">Alex Rogers</h4>
-                            <span class="post-time">· 5 days ago</span>
-                        </div>
-                        <div class="post-options">
-                            <button class="options-btn">
-                                <i class="fa-solid fa-ellipsis"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="post-text">
-                        <h4>Motorcycle Meetup This Weekend?</h4>
-                        <p>Weather's looking good for Saturday. Any riders want to meet up for a group ride?</p>
-                    </div>
-                    <div class="post-actions">
-                        <button class="post-action-btn like-btn">
-                            <i class="fa-solid fa-heart"></i>
-                            <span>8</span>
-                            <span class="likes-text">likes</span>
-                        </button>
-                        <button class="post-action-btn comment-btn">
-                            <i class="fa-solid fa-comment"></i>
-                            <span>3</span>
-                            <span class="comments-text">comments</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Post 3 -->
-            <div class="post">
-                <div class="post-avatar">
-                    <img src="/unihub_project/static/bingus.jpg" alt="Alex">
-                </div>
-                <div class="post-content">
-                    <div class="post-header">
-                        <div class="post-user-info">
-                            <h4 class="post-author">Alex Rogers</h4>
-                            <span class="post-time">· 1 week ago</span>
-                        </div>
-                        <div class="post-options">
-                            <button class="options-btn">
-                                <i class="fa-solid fa-ellipsis"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="post-text">
-                        <h4>Database Project Partner Needed</h4>
-                        <p>Looking for a partner for the upcoming DB systems project. DM if interested!</p>
-                    </div>
-                    <div class="post-actions">
-                        <button class="post-action-btn like-btn">
-                            <i class="fa-solid fa-heart"></i>
-                            <span>15</span>
-                            <span class="likes-text">likes</span>
-                        </button>
-                        <button class="post-action-btn comment-btn">
-                            <i class="fa-solid fa-comment"></i>
-                            <span>7</span>
-                            <span class="comments-text">comments</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Load More Feature -->
-            <div class="load-more">
-                <button class="load-more-btn">Load more</button>
-            </div>
-        </div>
-
-        <div class="sidebar right-sidebar">
-            
-            <div class="sidebar-card">
-                <h3 class="sidebar-title">Active Communities</h3>
-                
-                <div class="community-item">
-                    <div class="community-info">
-                        <span class="community-category">Study Group</span>
-                        <h4 class="community-title">Web Development Group</h4>
-                        <span class="community-stats">45 members</span>
-                    </div>
-                    <div class="community-image">
-                        <img src="/unihub_project/images/webdev.webp" alt="Web Development">
-                    </div>
-                </div>
-                
-                <div class="community-item">
-                    <div class="community-info">
-                        <span class="community-category">Cultural</span>
-                        <h4 class="community-title">International Students Network</h4>
-                        <span class="community-stats">128 members</span>
-                    </div>
-                    <div class="community-image">
-                        <img src="/unihub_project/images/international.png" alt="International Students">
-                    </div>
-                </div>
-                
-                <div class="community-item">
-                    <div class="community-info">
-                        <span class="community-category">Sports</span>
-                        <h4 class="community-title">Motorcycle Club</h4>
-                        <span class="community-stats">78 members</span>
-                    </div>
-                    <div class="community-image">
-                        <img src="/unihub_project/images/motor.webp" alt="Motorcycle Club">
-                    </div>
-                </div>
-                
-                <a href="#" class="see-more">Show more</a>
-            </div>
-            
-            <!-- Upcoming Events -->
-            <div class="sidebar-card">
-                <h3 class="sidebar-title">Upcoming Events</h3>
-                
-                <div class="event-item">
-                    <div class="event-date">
-                        <span class="day">15</span>
-                        <span class="month">MAR</span>
-                    </div>
-                    <div class="event-info">
-                        <h4 class="event-title">Spring Festival</h4>
-                        <p class="event-location"><i class="fa-solid fa-location-dot"></i> Main Campus Quad</p>
-                        <p class="event-time"><i class="fa-solid fa-clock"></i> 12:00 PM</p>
-                    </div>
-                </div>
-                
-                <div class="event-item">
-                    <div class="event-date">
-                        <span class="day">18</span>
-                        <span class="month">MAR</span>
-                    </div>
-                    <div class="event-info">
-                        <h4 class="event-title">Tech Careers Fair</h4>
-                        <p class="event-location"><i class="fa-solid fa-location-dot"></i> Engineering Building</p>
-                        <p class="event-time"><i class="fa-solid fa-clock"></i> 10:00 AM</p>
-                    </div>
-                </div>
-                
-                <a href="#" class="see-more">View all events</a>
-            </div>
-            
-            <!-- Friend Suggestions section -->
-            <div class="sidebar-card">
-                <h3 class="sidebar-title">Friend Suggestions</h3>
-                
-                <div class="add-person-item">
-                    <div class="add-person-avatar">
-                        <img src="/unihub_project/images/kawaii-bingus.webp" alt="person">
-                    </div>
-                    <div class="add-person-info">
-                        <div class="add-person-user">
-                            <a href="#" class="add-person-name">Sarah Johnson</a>
-                        </div>
-                        <p class="add-person-bio">Computer Science</p>
-                    </div>
-                    <button class="add-person-btn">Add</button>
-                </div>
-                
-                <div class="add-person-item">
-                    <div class="add-person-avatar">
-                        <img src="/unihub_project/images/asian-bingus.webp" alt="person">
-                    </div>
-                    <div class="add-person-info">
-                        <div class="add-person-user">
-                            <a href="#" class="add-person-name">Michael Chen</a>
-                        </div>
-                        <p class="add-person-bio">Electrical Engineering</p>
-                    </div>
-                    <button class="add-person-btn">Add</button>
-                </div>
-                
-                <a href="#" class="see-more">Show more</a>
-            </div>
-        </div>
-        </div>
-    </div>
-
-    <!-- footer -->
-    <footer class="footer mt-auto">
-        <div class="container-fluid">
-            <div class="row">
-                <!-- About Column -->
-                <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
-                    <h5>About UNI-HUB</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="#">About Us</a></li>
-                        <li><a href="#">Terms of Service</a></li>
-                        <li><a href="#">Privacy Policy</a></li>
-                        <li><a href="#">Contact Us</a></li>
-                    </ul>
-                </div>
-
-                <!-- Student Resources -->
-                <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
-                    <h5>Student Resources</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="#">Academic Calendar</a></li>
-                        <li><a href="#">Library Services</a></li>
-                        <li><a href="#">Study Resources</a></li>
-                        <li><a href="#">Career Services</a></li>
-                    </ul>
-                </div>
-
-                <!-- Campus Life -->
-                <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
-                    <h5>Campus Life</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="#">Events Calendar</a></li>
-                        <li><a href="#">Clubs & Societies</a></li>
-                        <li><a href="#">Student Support</a></li>
-                        <li><a href="#">Housing</a></li>
-                    </ul>
-                </div>
-
-                <!-- Connect -->
-                <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
-                    <h5>Connect With Us</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="#">Social Media</a></li>
-                        <li><a href="#">News & Updates</a></li>
-                        <li><a href="#">Alumni Network</a></li>
-                        <li><a href="#">Help Center</a></li>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- Copyright -->
-            <div class="row mt-4">
-                <div class="col-12 text-center">
-                    <p class="copyright">© 2025 UNI-HUB. All rights reserved.</p>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    var modal = document.getElementById("postModal");
-    var btn = document.querySelector(".post-btn");
-    var span = document.getElementsByClassName("close-modal")[0];
-    btn.onclick = function() {
-      modal.style.display = "block";
-      document.querySelector(".modal-post-compose .compose-input").focus();
-    }
-    span.onclick = function() {
-      modal.style.display = "none";
-    }
-    window.onclick = function(event) {
-      if (event.target == modal) {
-        modal.style.display = "none";
-      }
-    }
-  });
-</script>
     
-    <!-- Post Modal -->
-    <div id="postModal" class="modal">
-        <div class="modal-content">
-          <span class="close-modal">&times;</span>
-          <div class="modal-post-compose">
-            <div class="compose-profile-img">
-              <img src="/unihub_project/static/create_post.css" alt="Profile Photo">
+    <div class="compose-actions d-flex justify-content-between align-items-center mt-2">
+      <div class="compose-tools">
+        <div class="form-group mt-2">
+          <label class="img-upload" for="img-upload" style="cursor: pointer;">
+            <i class="fa-solid fa-camera"></i>
+          </label>
+          <input type="file" class="image-upload" style="display: none;" id="img-upload" accept="image/*">
+        </div>
+      </div>
+      <button class="compose-submit btn btn-success">Post</button>
+    </div>
+  </div>
+</div>
+        
+        <!-- Recent Posts section -->
+        <div class="post-divider mb-3">
+          <span>Recent Posts</span>
+        </div>
+        
+        <!-- Posts Display -->
+        <div class="container">
+          {% comment %} <h1>All Posts</h1> {% endcomment %}
+          {% for post in posts %}
+          <div class="post">
+            <!-- Post Avatar -->
+            <div class="post-avatar">
+              {% if post.user.profile_picture %}
+              <img src="{{ post.user.profile_picture.url}}" alt="{{ post.user.username }}">
+              {% else %}
+              <img src="{% static 'user-image.png' %}" alt="{{ post.user.username }}" width="50" height="50">
+              {% endif %}
+
             </div>
-            <div class="compose-input-container">
-              <input type="text" class="compose-title-input" placeholder="Title...">
-              <textarea class="compose-input" placeholder="What's happening?"></textarea>
-              <div class="compose-actions">
-                <div class="compose-tools">
-                  <button class="compose-tool">
-                    <i class="fa-solid fa-image"></i>
-                  </button>
-                  <button class="compose-tool">
-                    <i class="fa-solid fa-calendar-day"></i>
-                  </button>
+            
+            <!-- Post Content -->
+            <div class="post-content">
+              <!-- Header -->
+              <div class="post-header">
+                <div class="post-user-info">
+                  <h4 class="post-author">{{ post.user.username }}</h4>
+                  <span class="post-time">· {{ post.created_at|timesince }} ago</span>
+                  {% if post.community.name %}
+                    <h4 class="post-author">
+                      <a href="{% url 'community_page' community_name=post.community.name %}">{{ post.community.name }}</a>
+                    </h4>
+                  {% endif %}
                 </div>
-                <button class="compose-submit">Post</button>
+                <div class="post-options">
+                  <div class="dropdown">
+                    <button class="options-btn" onclick="toggleOptionsMenu(event, {{ post.id }})">
+                      <i class="fa-solid fa-ellipsis" style="font-weight: bolder;"></i>
+                    </button>
+                    <div class="options-menu" id="options-menu-{{ post.id }}">
+                      {% if post.can_edit and post.user == user %}
+                      <form action="{% url 'edit_post' post.id %}" method="get" style="display:block; margin-bottom: 10px;">
+                        <button type="submit" class="edit-button btn btn-warning w-100">Edit Post</button>
+                      </form>
+                      {% endif %}
+                      {% if post.user == user %}
+                      <form action="{% url 'delete_post' post.id %}" method="post" style="display:block;" onsubmit="return confirmDelete()">
+                        {% csrf_token %}
+                        <button type="submit" class="delete-button btn btn-danger w-100">Delete Post</button>
+                      </form>
+                      {% endif %}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Text -->
+              <div class="post-text">
+                <h4>{{ post.title }}</h4>
+                <p>{{ post.content }}</p>
+              </div>
+              <!-- Tags -->
+              <div class="tags">Tags: {{ post.tags }}</div>
+              <!-- Media (if available) -->
+              {% if post.image %}
+              <div class="post-media">
+                <img src="{{ post.image.url }}" alt="Post Image" onclick="openModal('{{ post.image.url }}')">
+              </div>
+              {% endif %}
+              
+              <div class="post-actions">
+                {% if post.liked %}
+                <button onclick="toggleLike({{ post.id }})" id="like-button-{{ post.id }}" class="post-action-btn like-btn" data-liked="true">
+                  <i class="fa-solid fa-heart"></i>
+                  <span id="like-text-{{ post.id }}"></span>
+                  (<span id="like-count-{{ post.id }}">{{ post.likes_count }}</span>)
+                </button>
+                {% else %}
+                <button onclick="toggleLike({{ post.id }})" id="like-button-{{ post.id }}" class="post-action-btn like-btn" data-liked="false">
+                  <i class="fa-regular fa-heart"></i>
+                  <span id="like-text-{{ post.id }}"></span>
+                  <span id="like-count-{{ post.id }}">{{ post.likes_count }}</span>
+                </button>
+                {% endif %}
+                <div class="post-footer">
+                  {% if post.can_edit and post.user == user %}
+                  <form action="{% url 'edit_post' post.id %}" method="get" style="display:inline;">
+                  <!-- <button type="submit" class="edit-button btn btn-warning">Edit Post</button> -->
+                  </form>
+                  {% endif %}
+                  {% if post.user == user %}
+                  <form action="{% url 'delete_post' post.id %}" method="post" style="display:inline;" onsubmit="return confirmDelete()">
+                    {% csrf_token %}
+                    <!-- <button type="submit" class="delete-button btn btn-danger">Delete Post</button> -->
+                  </form>
+                  {% endif %}
+                </div>
+
+                <button class="post-action-btn comment-btn" onclick="toggleComments({{ post.id }})">
+                  <i class="fas fa-comment"></i>
+                  <span>{{ post.comments_count }}</span>
+                  <span class="comments-text"></span>
+                </button>
+              </div>
+              
+              <div class="comments" id="comments-section-{{ post.id }}" style="display:none;">
+                <h5>Comments ({{ post.comments_count }})</h5>
+                <!-- Hidden input to store parent comment ID when replying -->
+                <input type="hidden" id="reply-parent-{{ post.id }}" value="">
+                <!-- Div to display current reply target -->
+                <div id="replying-to-{{ post.id }}" class="replying-to" style="display:none;"></div>
+                
+                <!-- Main Comments List: Only top-level comments -->
+                <ul class="comments-list" id="comments-list-{{ post.id }}">
+                  {% for comment in post.comments.all %}
+                    {% if not comment.parent %}
+                    <li class="comment-item" id="comment-{{ comment.id }}">
+                      <b>{{ comment.user.username }}:</b>
+                      <span id="comment-content-{{ comment.id }}">{{ comment.content }}</span>
+                      {% if comment.user == request.user %}
+                        <a href="{% url 'edit_comment_page' comment.id %}" style="text-decoration:none;">
+                          <button class="edit-comment-button btn btn-link">✏️</button>
+                        </a>
+                        <button class="delete-comment-button btn btn-link" onclick="deleteComment({{ comment.id }}, {{ post.id }})">❌</button>
+                      {% endif %}
+                      <button class="reply-button btn btn-link" onclick="replyToComment({{ post.id }}, '{{ comment.id }}', '{{ comment.user.username }}')">Reply</button>
+                      <!-- Nested Replies -->
+                      <ul class="comments-list">
+                        {% for reply in comment.replies.all %}
+                        <li class="reply-item" id="comment-{{ reply.id }}">
+                          <b>{{ reply.user.username }}:</b>
+                          <span id="comment-content-{{ reply.id }}">{{ reply.content }}</span>
+                          {% if reply.user == request.user %}
+                            <a href="{% url 'edit_comment_page' reply.id %}" style="text-decoration:none;">
+                              <button class="edit-comment-button btn btn-link">✏️</button>
+                            </a>
+                            <button class="delete-comment-button btn btn-link" onclick="deleteComment({{ reply.id }}, {{ post.id }})">❌</button>
+                          {% endif %}
+                        </li>
+                        {% endfor %}
+                      </ul>
+                    </li>
+                    {% endif %}
+                  {% endfor %}
+                </ul>
+                <!-- Comment Input & Reply Controls -->
+                <div class="comment-input-area">
+                  <textarea id="comment-input-{{ post.id }}" placeholder="Write a comment..." style="width:100%;"></textarea>
+                  <button onclick="addComment({{ post.id }})" class="comment-button btn btn-primary">Comment</button>
+                  <button class="cancel-reply btn btn-link" id="cancel-reply-{{ post.id }}" style="display:none;" onclick="cancelReply({{ post.id }})">Cancel Reply</button>
+                </div>
               </div>
             </div>
           </div>
+          {% endfor %}
         </div>
       </div>
+
+      <!-- Right Sidebar -->
+      <div class="sidebar right-sidebar">
+        <!-- Active Communities Card -->
+        <div class="sidebar-card mb-4">
+          <h3 class="sidebar-title">Active Communities</h3>
+          {% for community in top_communities %}
+            <a href="{% url 'community_page' community.name %}" class="community-link">
+              <div class="community-item d-flex justify-content-between align-items-center mb-3">
+                <div class="community-info">
+                  <span class="community-category">Study Group</span>
+                  <h4 class="community-title">{{ community.name }}</h4>
+                  <span class="community-stats">{{ community.num_members }} members</span>
+                </div>
+                <div class="community-image">
+                  <img src="{{ community.community_image.url }}" alt="Web Development" width="50">
+                </div>
+              </div>
+            </a>
+          {% endfor %}
+        </div>
+        
+        <div class="sidebar-cards-container d-flex flex-column gap-4">
+          <!-- Upcoming Events Card -->
+          <div class="sidebar-card">
+            <h3 class="sidebar-title">Upcoming Events</h3>
+            {% for event in events %}
+              <div class="event-item d-flex flex-column mb-3 w-100">
+                <div class="event-date text-center me-3">
+                  <span class="day d-block">{{ event.event_date|date:"d" }}</span>
+                  <span class="month d-block">{{ event.event_date|date:"M" }}</span>
+                </div>
+                <div class="event-info">
+                  <h4 class="event-title">{{ event.title }}</h4>
+                  <p class="event-location">
+                    <i class="fa-solid fa-location-dot"></i> {{ event.location }}
+                  </p>
+                  <p class="event-time">
+                    <i class="fa-solid fa-clock"></i> {{ event.event_time|time:"g:i A" }}
+                  </p>
+                  <p class="event-time">
+                    <i class="fa-solid fa-user"></i> {{ event.attendance_count|default:"0" }} attending
+                  </p>
+                </div>
+              </div>
+            {% empty %}
+              <p>No upcoming events.</p>
+            {% endfor %}
+          </div>
+        
+          <!-- Friend Suggestions Card -->
+          <div class="sidebar-card">
+            <h3 class="sidebar-title">Friend Suggestions</h3>
+            {% if suggestions %}
+              {% for suggestion in suggestions %}
+                <div class="add-person-item d-flex align-items-center mb-3">
+                  <div class="add-person-avatar me-2">
+                    {% if suggestion.profile_picture %}
+                      <img src="{{ suggestion.profile_picture.url }}" alt="{{ suggestion.username }}" width="50">
+                    {% else %}
+                      <img src="{% static 'user-image.png' %}" alt="{{ suggestion.username }}" width="50">
+                    {% endif %}
+                  </div>
+                  <div class="add-person-info flex-grow-1">
+                    <div class="add-person-user">
+                      <a href="{% url 'user-profile-page' suggestion.username %}" class="add-person-name">
+                        {{ suggestion.first_name }} {{ suggestion.last_name }}
+                      </a>
+                    </div>
+                    <p class="add-person-bio">{{ suggestion.university }}</p>
+                  </div>
+                  <button class="friend-suggestion-btn btn btn-primary" data-username="{{ suggestion.username }}">
+                    Add
+                  </button>
+                </div>
+              {% endfor %}
+            {% else %}
+              <p>No suggestions available.</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+  <!-- footer -->
+  {% include '../includes/footer.html' %}
+
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+
+      
+       function createPost(event) {
+        event.preventDefault();
+        const button = event.target;
+        const container = button.closest('.compose-input-container');
+        const titleInput = container.querySelector('.compose-title-input');
+        const contentInput = container.querySelector('.compose-input');
+        const fileInput = container.querySelector('input[type="file"]');
+        const tagsInput = container.querySelector('.compose-tags-input');
+        const title = titleInput.value.trim();
+        const content = contentInput.value.trim();
+        const tags = tagsInput ? tagsInput.value.trim() : "";
+        if (!title || !content) {
+          alert("Please fill in both title and content.");
+          return;
+        }
+        let formData = new FormData();
+        formData.append("title", title);
+        formData.append("content", content);
+        formData.append("tags", tags);
+        if (fileInput && fileInput.files.length > 0) {
+          formData.append("image", fileInput.files[0]);
+        }
+        
+        fetch("/api/post/post/", {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "X-CSRFToken": getCSRFToken()
+          },
+          body: formData
+        })
+        .then(response => {
+          if (response.ok) return response.json();
+          else throw new Error("Failed to create post.");
+        })
+        .then(data => {
+          location.reload();
+        })
+        .catch(error => {
+          console.error(error);
+          alert("Error creating post. Please try again.");
+        });
+      }
+      
+      const composeSubmitButtons = document.querySelectorAll('.compose-submit');
+      composeSubmitButtons.forEach(button => {
+        button.addEventListener('click', createPost);
+      });
+
+
+      function toggleComments(postId) {
+        const commentsSection = document.getElementById('comments-section-' + postId);
+        if (commentsSection.style.display === 'none' || commentsSection.style.display === '') {
+          commentsSection.style.display = 'block';
+        } else {
+          commentsSection.style.display = 'none';
+        }
+      }
+      
+      async function toggleLike(postId) {
+        const likeButton = document.getElementById(`like-button-${postId}`);
+        const likeText = document.getElementById(`like-text-${postId}`);
+        const likeCount = document.getElementById(`like-count-${postId}`);
+        const likeIcon = likeButton.querySelector('i'); // Get the icon element
+        
+        const response = await fetch(`/api/post/like-post/${postId}/`, {
+          method: "POST",
+          credentials: "include",
+          headers: { "X-CSRFToken": getCSRFToken() }
+        });
+        
+        if (response.ok) {
+          let data = await response.json();
+          likeCount.textContent = data.like_count;
+          likeButton.setAttribute("data-liked", data.liked);
+          
+          // Toggle between fa-solid and fa-regular classes
+          if (data.liked) {
+            likeIcon.classList.remove('fa-regular');
+            likeIcon.classList.add('fa-solid');
+          } else {
+            likeIcon.classList.remove('fa-solid');
+            likeIcon.classList.add('fa-regular');
+          }
+        }
+      }
+      
+      async function addComment(postId) {
+        const commentInput = document.getElementById(`comment-input-${postId}`);
+        const content = commentInput.value.trim();
+        if (!content) return;
+        
+        const parentInput = document.getElementById(`reply-parent-${postId}`);
+        const parentId = parentInput.value || null;
+        
+        const response = await fetch(`/api/post/comment-post/${postId}/`, {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "X-CSRFToken": getCSRFToken(),
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ content: content, parent_id: parentId })
+        });
+        
+        if (response.ok) {
+          location.reload();
+        }
+      }
+      
+      async function deleteComment(commentId, postId) {
+        const response = await fetch(`/api/post/delete-comment/${commentId}/`, {
+          method: "DELETE",
+          credentials: "include",
+          headers: { "X-CSRFToken": getCSRFToken() }
+        });
+        if (response.ok) {
+          location.reload();
+        } else {
+          alert("Failed to delete comment. Please try again.");
+        }
+      }
+      
+      function replyToComment(postId, commentId, username) {
+        document.getElementById('reply-parent-' + postId).value = commentId;
+        document.getElementById('comment-input-' + postId).placeholder = 'Replying to ' + username + '...';
+        document.getElementById('replying-to-' + postId).style.display = 'inline';
+        document.getElementById('replying-to-' + postId).textContent = 'Replying to ' + username;
+        document.getElementById('cancel-reply-' + postId).style.display = 'inline';
+      }
+      
+      function cancelReply(postId) {
+        document.getElementById('reply-parent-' + postId).value = '';
+        document.getElementById('comment-input-' + postId).placeholder = 'Write a comment...';
+        document.getElementById('replying-to-' + postId).style.display = 'none';
+        document.getElementById('cancel-reply-' + postId).style.display = 'none';
+      }
+      
+      function confirmDelete() {
+        return confirm("Are you sure you want to delete this post?");
+      }
+      
+      function getCSRFToken() {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== "") {
+          const cookies = document.cookie.split(";");
+          for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.startsWith("csrftoken=")) {
+              cookieValue = cookie.substring("csrftoken=".length, cookie.length);
+              break;
+            }
+          }
+        }
+        return cookieValue;
+      }
+      
+      window.toggleLike = toggleLike;
+      window.addComment = addComment;
+      window.deleteComment = deleteComment;
+      window.replyToComment = replyToComment;
+      window.cancelReply = cancelReply;
+      window.toggleComments = toggleComments;
+      window.confirmDelete = confirmDelete;
+      window.getCSRFToken = getCSRFToken;
+      
+      // Post Modal Functionality (if using a modal for post creation)
+      var modal = document.getElementById("postModal");
+      var postBtn = document.querySelector(".post-btn");
+      var closeModal = document.getElementsByClassName("close-modal")[0];
+      if (postBtn) {
+        postBtn.onclick = function() {
+          modal.style.display = "block";
+          document.querySelector(".modal-post-compose .compose-input").focus();
+        }
+      }
+      if (closeModal) {
+        closeModal.onclick = function() {
+          modal.style.display = "none";
+        }
+      }
+      window.onclick = function(event) {
+        if (event.target == modal) {
+          modal.style.display = "none";
+        }
+      }
+      
+    });
+  </script>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('change', (e) => {
+if (e.target.classList.contains('image-upload') || e.target.id === 'img-upload') {
+const fileInput = e.target;
+
+const composeContainer = fileInput.closest('.compose-input-container');
+if (!composeContainer) return;
+
+const previewContainer = composeContainer.querySelector('.image-preview-container');
+const imagePreview = composeContainer.querySelector('#image-preview');
+
+if (!previewContainer || !imagePreview) return;
+
+if (fileInput.files && fileInput.files[0]) {
+const file = fileInput.files[0];
+
+if (!file.type.match('image.*')) {
+alert('Please select an image file.');
+fileInput.value = '';
+return;
+}
+
+// 10 MB limit
+if (file.size > 10 * 1024 * 1024) {
+alert('Image is too large. Please select an image under 5MB.');
+fileInput.value = '';
+return;
+}
+
+imagePreview.src = URL.createObjectURL(file);
+previewContainer.style.display = 'block';
+
+imagePreview.dataset.objectUrl = imagePreview.src;
+}
+}
+});
+document.addEventListener('click', (e) => {
+if (e.target.id === 'remove-image' || e.target.closest('#remove-image')) {
+e.preventDefault();
+
+const removeBtn = e.target.id === 'remove-image' ? e.target : e.target.closest('#remove-image');
+const previewContainer = removeBtn.closest('.image-preview-container');
+const composeContainer = removeBtn.closest('.compose-input-container');
+
+if (!previewContainer || !composeContainer) return;
+
+const fileInput = composeContainer.querySelector('input[type="file"]');
+const imagePreview = previewContainer.querySelector('#image-preview');
+
+if (fileInput) fileInput.value = '';
+
+// Revoke object URL to free memory
+if (imagePreview && imagePreview.dataset.objectUrl) {
+URL.revokeObjectURL(imagePreview.dataset.objectUrl);
+delete imagePreview.dataset.objectUrl;
+}
+
+previewContainer.style.display = 'none';
+}
+});
+});
+
+function toggleOptionsMenu(event, postId) {
+  event.stopPropagation(); // Prevent click from bubbling up
+  
+  const menu = document.getElementById(`options-menu-${postId}`);
+  menu.classList.toggle('show');
+  
+  // Close all other open menus
+  document.querySelectorAll('.options-menu.show').forEach(openMenu => {
+    if (openMenu.id !== `options-menu-${postId}`) {
+      openMenu.classList.remove('show');
+    }
+  });
+  
+  // Close when clicking elsewhere
+  document.addEventListener('click', function closeMenu(e) {
+    if (!e.target.closest(`.options-btn`) && !e.target.closest(`#options-menu-${postId}`)) {
+      menu.classList.remove('show');
+      document.removeEventListener('click', closeMenu);
+    }
+  });
+}
+
+function openModal(imageSrc) {
+  var modal = document.getElementById("imageModal");
+  var modalImg = document.getElementById("fullImage");
+  modal.style.display = "flex";  // Show modal
+  modalImg.src = imageSrc;
+}
+
+function closeModal() {
+  document.getElementById("imageModal").style.display = "none";
+}
+
+    // Friend System 
+    document.addEventListener("DOMContentLoaded", function() {
+      const suggestionButtons = document.querySelectorAll(".friend-suggestion-btn");
+      suggestionButtons.forEach(button => {
+        button.addEventListener("click", function() {
+          const btn = this;
+          const username = btn.getAttribute("data-username");
+          const csrfToken = getCSRFToken();
+          if (btn.textContent.trim() === "Add") {
+            // Add friend via API
+            fetch("{% url 'api-friend-add' %}", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": csrfToken
+              },
+              body: JSON.stringify({ username: username })
+            })
+            .then(response => response.json())
+            .then(data => {
+              if (data.success) {
+                btn.textContent = "Unfriend";
+                btn.classList.remove("btn-primary");
+                btn.classList.add("btn-danger");
+              } else {
+                alert("Error: " + data.message);
+              }
+            })
+            .catch(error => {
+              console.error("Error adding friend:", error);
+              alert("Error adding friend.");
+            });
+          } else {
+            // Remove friend via API
+            fetch("{% url 'api-friend-remove' %}", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": csrfToken
+              },
+              body: JSON.stringify({ username: username })
+            })
+            .then(response => response.json())
+            .then(data => {
+              if (data.success) {
+                btn.textContent = "Add";
+                btn.classList.remove("btn-danger");
+                btn.classList.add("btn-primary");
+              } else {
+                alert("Error: " + data.message);
+              }
+            })
+            .catch(error => {
+              console.error("Error removing friend:", error);
+              alert("Error removing friend.");
+            });
+          }
+        });
+      });
+    });
+</script>
+  <!-- Post Modal -->
+  <div id="postModal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <span class="close-modal">&times;</span>
+      <div class="modal-post-compose d-flex align-items-start">
+        <div class="compose-profile-img me-2">
+          <div class="compose-profile-img me-2">
+            {% if user.profile_picture %}
+                <img src="{{ user.profile_picture.url }}" alt="Profile Photo" width="50" height="50" class="rounded-circle object-fit-cover">
+            {% else %}
+                <img src="{% static 'user-image.png' %}" alt="Profile Photo" width="50" height="50" class="rounded-circle object-fit-cover">
+            {% endif %}
+        </div>
+      
+        </div>
+        <div class="compose-input-container flex-grow-1">
+          <input type="text" class="compose-title-input form-control mb-2" placeholder="Title...">
+          <textarea class="compose-input form-control" placeholder="What's happening?"></textarea>
+          <!-- Tags input -->
+          <input type="text" class="compose-tags-input form-control mb-2" placeholder="Hashtags (e.g., #study, #events)" style="border:none; margin-top: 10px;">
+          
+          <!-- Image Preview Container (initially hidden) -->
+          <div class="image-preview-container" style="display: none; margin-top: 10px; margin-bottom: 10px;">
+            <div class="position-relative">
+              <img id="image-preview" src="#" alt="Preview" class="img-fluid rounded" style="max-height: 200px;">
+              <button type="button" class="btn-close position-absolute top-0 end-0 bg-white rounded-circle m-1" id="remove-image" aria-label="Remove image"></button>
+            </div>
+          </div>
+          
+          <div class="compose-actions d-flex justify-content-between align-items-center mt-2">
+            <div class="compose-tools">
+              <div class="form-group mt-2">
+                <label class="img-upload" for="modal-img-upload">
+                  <i class="fa-solid fa-camera"></i>
+                </label>
+                <input type="file" class="image-upload" id="modal-img-upload" style="display: none;" accept="image/*">
+              </div>
+            </div>
+            <button class="compose-submit btn btn-success">Post</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </script>
+
+<div id="deleteSuccessPopup" class="notification" style="display: none;">
+  <span class="message"></span>
+  <button class="close-btn">&times;</button>
+</div>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const notification = document.getElementById('globalNotification');
+  const message = sessionStorage.getItem('deleteSuccess');
+  
+  if (message) {
+      notification.querySelector('.notification-message').textContent = message;
+      notification.style.display = 'flex';
+      
+      // Close button handler
+      notification.querySelector('.notification-close-btn').onclick = () => {
+          notification.style.display = 'none';
+      };
+      
+      // Auto-hide after 5 seconds
+      setTimeout(() => {
+        notification.classList.add('fade-out');
+        setTimeout(() => {
+            notification.style.display = 'none';
+            notification.classList.remove('fade-out');
+        }, 500);
+    }, 5000);
+      
+      // Clear storage
+      sessionStorage.removeItem('deleteSuccess');
+  }
+});
+</script>
+
+      
+</div>
+<div id="imageModal" class="modal image-enlage">
+  <div class="modal-content-wrapper image-enlage">
+    <span class="close image-enlage" onclick="closeModal()">&times;</span>
+    <img class="modal-content image-enlage" id="fullImage">
+  </div>
+</div>
+
+<div id="globalNotification" class="global-notification" style="display: none;">
+  <span class="notification-message"></span>
+  <button class="notification-close-btn">&times;</button>
+</div>
 </body>
 </html>
+
+
