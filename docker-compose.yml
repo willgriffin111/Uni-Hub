@@ -23,7 +23,7 @@ services:
       retries: 5
 
   web:
-    build: .
+    build: ./UniHub
     container_name: django-app
     env_file:
       - .env
@@ -39,12 +39,23 @@ services:
       MYSQL_PASSWORD: ${DB_PASSWORD}
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
     volumes:
-      - .:/app
+      - ./UniHub:/app
     command: >
       sh -c "python manage.py makemigrations &&
              python manage.py migrate &&
              python manage.py shell < create_superuser.py &&
              python manage.py runserver 0.0.0.0:8000"
+  notification:
+    build:
+      context: ./notification_service
+    container_name: notification-service
+    env_file:
+      - .env
+    restart: always
+    ports:
+      - "8001:8001"
+    environment:
+      SENDGRID_API_KEY: ${SENDGRID_API_KEY}
 
 volumes:
   mysql_data:

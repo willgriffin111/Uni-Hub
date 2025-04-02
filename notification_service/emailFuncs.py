@@ -1,32 +1,25 @@
 import os
+import time
+import pyotp
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
-from django.conf import settings
 
-import pyotp
-import time
+# Define base directory as the directory of this file
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-# Simulated storage (Replace with a database or Redis in production)
+# In-memory store for OTPs (for production, consider a database or Redis)
 otp_store = {}
 
-# Generate and store OTP
 def generate_otp(email):
-    secret = pyotp.random_base32()  # Generate a new secret per user
+    secret = pyotp.random_base32()
     totp = pyotp.TOTP(secret)
     otp = totp.now()
-
-    # Store OTP & secret
     otp_store[email] = {"otp": otp, "secret": secret, "timestamp": time.time()}
-    
     return otp
 
-# Fetch OTP (For debugging; remove in production)
-def get_stored_otp(email):
-    return otp_store.get(email, None)
-
-# Read the HTML template
 def load_email_template(filename, otp_code):
-    template_path = os.path.join(settings.BASE_DIR, "accounts", filename)  # Adjust folder name if needed
+    template_path = os.path.join(BASE_DIR, filename)
+
     try:
         with open(template_path, "r", encoding="utf-8") as file:
             html_content = file.read()
@@ -35,27 +28,24 @@ def load_email_template(filename, otp_code):
         print(f"Error: Template file not found at {template_path}")
         return None
 
-# Send OTP email
-def send_otp_email(email,otp_code):
-    email_body = load_email_template("optTemplate.html", otp_code)  # Load email template
-
+def send_otp_email(email, otp_code):
+    email_body = load_email_template("optTemplate.html", otp_code)
     message = Mail(
         from_email='donotreply@unihub.help',
         to_emails=email,
         subject='Your One-Time Password (OTP)',
         html_content=email_body
     )
-
-    try: #please for the love of god remember to put this in a env file i beg - DONE
-        sg = SendGridAPIClient(settings.SENDGRID_API_KEY)
+    try:
+        sg = SendGridAPIClient(os.environ.get("SENDGRID_API_KEY"))
         response = sg.send(message)
         print(f"OTP Email Sent! Status: {response.status_code}")
     except Exception as e:
         print(f"Error sending email: {e}")
-
+        raise
 
 def load_email_template_password_reset(filename, reset_link):
-    template_path = os.path.join(settings.BASE_DIR, "accounts", filename)  
+    template_path = os.path.join(BASE_DIR, filename)
     try:
         with open(template_path, "r", encoding="utf-8") as file:
             html_content = file.read()
@@ -73,8 +63,9 @@ def send_email_password_reset(email, reset_link):
         html_content=email_body
     )
     try:
-        sg = SendGridAPIClient(settings.SENDGRID_API_KEY)
+        sg = SendGridAPIClient(os.environ.get("SENDGRID_API_KEY"))
         response = sg.send(message)
         print(f"Password Reset Email Sent! Status: {response.status_code}")
     except Exception as e:
         print(f"Error sending email: {e}")
+        raise
