@@ -16,7 +16,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .serializers import CustomUserSerializer, RegisterSerializer
-from accounts.models import CustomUser
+from api.accounts.models import CustomUser
 
 User = get_user_model()
 

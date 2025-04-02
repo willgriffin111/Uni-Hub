@@ -6,4 +6,5 @@
 !**/migrations/__init__.py
 media/community/
 media/posts/
-media/profile_pics
+media/profile_pics/
+!media/profile_pics/user-image.jpg
