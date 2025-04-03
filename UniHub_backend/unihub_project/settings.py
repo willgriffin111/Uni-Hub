@@ -20,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(os.path.join(BASE_DIR, ".env"))
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+# BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 # Quick-start development settings - unsuitable for production
@@ -52,8 +52,6 @@ DATABASES = {
 
 SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
 
-# -----------------------------
-# Application definition
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -101,10 +99,11 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'unihub_project.urls'
 
+PROJECT_ROOT = BASE_DIR.parent
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'unihub_project/templates'],
+        'DIRS': [os.path.join(PROJECT_ROOT, 'frontend', 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -159,15 +158,15 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "unihub_project/static"),
+    os.path.join(PROJECT_ROOT, "frontend", "static"),
 ]
 LOGIN_URL = '/login/'
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = os.path.join(PROJECT_ROOT,"UniHub_backend", 'media')
 
 
 
