@@ -12,6 +12,7 @@ from django.urls import reverse
 from django.contrib.auth import get_user_model
 from rest_framework.permissions import IsAuthenticated
 from django.core.files.storage import default_storage
+from django.db.models import Q
 
 
 class CommunityEditAPI(APIView):
@@ -224,3 +225,18 @@ class CommunityEventEditAPI(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     
+# ------------------------SEARCH------------------------
+    
+class CommunitySearchAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        query = request.query_params.get('query', '').strip()
+        if query:
+            communities = Community.objects.filter(
+                Q(name__icontains=query) | Q(description__icontains=query)
+            )
+        else:
+            communities = Community.objects.none()
+        serializer = CommunitySerializer(communities, many=True, context={'request': request})
+        return Response(serializer.data)
