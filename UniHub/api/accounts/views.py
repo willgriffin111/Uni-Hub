@@ -1,4 +1,4 @@
-import os
+import os, time
 import requests
 from datetime import datetime, timedelta
 from django.contrib.auth import authenticate, login, logout, get_user_model
@@ -141,6 +141,7 @@ class PasswordResetAPI(APIView):
     """
     API endpoint to handle password reset requests.
     Sends an email with a reset link via the notification service.
+    The reset link includes an expiry parameter to ensure it expires.
     """
     permission_classes = [AllowAny]
 
@@ -156,7 +157,11 @@ class PasswordResetAPI(APIView):
         # Generate token and UID for password reset
         token = default_token_generator.make_token(user)
         uid = urlsafe_base64_encode(force_bytes(user.pk))
-        reset_link = f"http://localhost:8000/password-reset-confirm/?uid={uid}&token={token}"
+        
+        # Set expiration for the reset link 
+        expiry = int(time.time() + 3600)  # 3600 seconds = 1 hour
+        
+        reset_link = f"http://localhost:8000/password-reset-confirm/?uid={uid}&token={token}&expiry={expiry}"
 
         # Call the notification service to send the reset email
         try:
@@ -176,16 +181,26 @@ class PasswordResetAPI(APIView):
 class PasswordResetConfirmAPI(APIView):
     """
     API endpoint to confirm password reset and update the password.
+    Validates that the reset link has not expired.
     """
     permission_classes = [AllowAny]
 
     def post(self, request):
         uidb64 = request.data.get("uid")
         token = request.data.get("token")
+        expiry = request.data.get("expiry")
         new_password = request.data.get("new_password")
 
-        if not uidb64 or not token or not new_password:
-            return Response({"error": "UID, token, and new password are required."}, status=status.HTTP_400_BAD_REQUEST)
+        if not uidb64 or not token or not expiry or not new_password:
+            return Response({"error": "UID, token, expiry, and new password are required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            expiry = int(expiry)
+        except ValueError:
+            return Response({"error": "Invalid expiry parameter."}, status=status.HTTP_400_BAD_REQUEST)
+
+        if time.time() > expiry:
+            return Response({"error": "Reset link has expired."}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
             uid = urlsafe_base64_decode(uidb64).decode()
@@ -200,7 +215,6 @@ class PasswordResetConfirmAPI(APIView):
         user.save()
 
         return Response({"message": "Password successfully reset."}, status=status.HTTP_200_OK)
-
 
 class ProfileUpdateAPI(APIView):
     """
