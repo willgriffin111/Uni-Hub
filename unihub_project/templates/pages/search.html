@@ -106,17 +106,18 @@
               });
               html += '</div>';
             } else if (type === 'tags') {
-              html += '<h4>Posts with Tag</h4><div class="list-group">';
-              data.forEach(post => {
-                html += `
-                  <a href="/post/${post.id}" class="list-group-item list-group-item-action">
-                    <h5 class="mb-1">${post.title}</h5>
-                    <p class="mb-1">${post.content.substring(0, 100)}...</p>
-                  </a>
-                `;
-              });
-              html += '</div>';
-            }
+                html += '<h4>Posts with Tag</h4><div class="list-group">';
+                data.forEach(post => {
+                  html += `
+                    <a href="/#post-${post.id}" class="list-group-item list-group-item-action">
+                      <h5 class="mb-1">${post.title}</h5>
+                      <p class="mb-1">${post.content.substring(0, 100)}...</p>
+                      <p class="mb-1"><strong>Tags:</strong> ${post.tags || 'No tags'}</p>
+                    </a>
+                  `;
+                });
+                html += '</div>';
+              }              
             searchResults.innerHTML = html;
           })
           .catch(error => {
