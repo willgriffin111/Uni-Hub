@@ -124,7 +124,7 @@
         <div class="container">
           {% comment %} <h1>All Posts</h1> {% endcomment %}
           {% for post in posts %}
-          <div class="post">
+          <div class="post" id="post-{{ post.id }}">
             <!-- Post Avatar -->
             <div class="post-avatar">
               {% if post.user.profile_picture %}

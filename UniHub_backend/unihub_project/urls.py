@@ -38,7 +38,7 @@ urlpatterns = [
 
     path('search/', views.search_view, name='search_page'),
     # Include API endpoints from the accounts app
-    path('api/accounts/', include('api.accounts.urls')),  # Mount the accounts API
+    path('accounts/', include('api.accounts.urls')),  # Mount the accounts API
     path('api/post/', include('api.posts.urls')),  # Mount the posts API
     path('api/', include('api.posts.urls')),    # this is needed for search functions
     path('api/community/', include('api.community.urls')),  # Mount the community API

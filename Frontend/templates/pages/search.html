@@ -1,314 +1,144 @@
-
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UNI-HUB - Search</title>
-    
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- FontAwesome -->
-    <script src="https://kit.fontawesome.com/c43d240003.js" crossorigin="anonymous"></script>
-    <!-- Custom Styles -->
-
-    <!------------ CHANGE CSS STYLE SHEET LINKS ------------>
-
-    <link rel="stylesheet" href="/unihub_project/static/nav_footer.css">
-    <link rel="stylesheet" href="/unihub_project/static/search.css">
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UNI-HUB - Search</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- FontAwesome -->
+  <script src="https://kit.fontawesome.com/c43d240003.js" crossorigin="anonymous"></script>
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="{% static 'nav_footer.css' %}">
+  <link rel="stylesheet" href="{% static 'search.css' %}">
+  <!-- Optionally include home_page.css for common typography and spacing -->
+  <link rel="stylesheet" href="{% static 'home_page.css' %}">
 </head>
 <body>
 
-    <!---------------------      REMOVE HEADER FOR IMPORT       ----------------------->
-        <nav class="navbar navbar-expand-lg">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="{{ url_for('home') }}">UNI-HUB</a>
-                
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
-                        data-bs-target="#navbarNav" aria-controls="navbarNav" 
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                
-                <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
-                    <ul class="navbar-nav">
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('home') }}">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('profile') }}">Profile</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('activities') }}">Activities</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('communities') }}">Communities</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('accessibility') }}">Accessibility</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    <!---------------------      REMOVE HEADER FOR IMPORT       ----------------------->
+  {% include '../includes/header.html' %}
 
-    <!-- Search Area -->
-    <div class="container search-container">
-        <div class="search-header">
-            <h1>Search UNI-HUB</h1>
-            <p>Find people, communities, events, and more</p>
+  <!-- Main Search Content -->
+  <div class="container search-container my-4">
+    <div class="card shadow-sm">
+      <div class="card-header bg-white border-0">
+        <h3 class="mb-0">Search UNI-HUB</h3>
+      </div>
+      <div class="card-body">
+        <form id="searchForm" class="mb-4">
+          <div class="input-group">
+            <input type="text" id="searchQuery" class="form-control" placeholder="Search for users, communities, or hashtags...">
+            <span class="input-group-text p-0">
+              <select id="searchType" class="form-select border-0">
+                <option value="users">Users</option>
+                <option value="communities">Communities</option>
+                <option value="tags">Hashtags</option>
+              </select>
+            </span>
+            <button type="button" class="btn btn-dd4b39 search-button">Search</button>
+          </div>
+        </form>
+        <div id="searchResults">
+          <!-- Search results will be populated here -->
+          <div class="alert alert-info">Enter a search term to see results.</div>
         </div>
-
-        <!-- Search Box -->
-        <div class="search-box-container">
-            <div class="search-input-wrapper">
-                <i class="fa-solid fa-magnifying-glass search-icon"></i>
-                <input type="text" id="search-input" class="search-input" placeholder="Search for anything...">
-                <button class="search-button">Search</button>
-            </div>
-            
-            <!-- Filter Options -->
-            <div class="filter-options">
-                <div class="filter-label">Filter by:</div>
-                <div class="filter-buttons">
-                    <button class="filter-btn active" data-filter="all">All</button>
-                    <button class="filter-btn" data-filter="people">People</button>
-                    <button class="filter-btn" data-filter="communities">Communities</button>
-                    <button class="filter-btn" data-filter="events">Events</button>
-                    <button class="filter-btn" data-filter="posts">Posts</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Search Results -->
-        <div class="search-results">
-            <h2 class="results-heading">Results</h2>
-            
-            <!-- People Results -->
-            <div class="result-section" id="people-results">
-                <h3 class="section-title">People <span class="result-count">(1)</span></h3>
-                
-                <div class="result-cards">
-                    <!----------------------------- PERSON FOR FOR THE INCLUDE ------------------------------------->
-                    <div class="result-card person-card">
-                        <div class="person-avatar">
-                            <img src="{% static 'images/xqaxoy5y2hi61.webp' %}" alt="Sarah">
-                        </div>
-                        <div class="person-info">
-                            <h4 class="person-name">Sarah Johnson</h4>
-                            <p class="person-details">Computer Science • Year 2</p>
-                            <div class="mutual-connections">3 mutual connections</div>
-                        </div>
-                        <button class="add-friend-btn">Add Friend</button>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Communities Results -->
-            <div class="result-section" id="communities-results">
-                <h3 class="section-title">Communities <span class="result-count">(1)</span></h3>
-                
-                <div class="result-cards">
-                    <!----------------------------- COMMUNITY POST CARD ------------------------------------->
-                    <div class="result-card community-card">
-                        <div class="community-image">
-                            <img src="{% static 'images/webdev.webp' %}" alt="Web Development">
-                        </div>
-                        <div class="community-info">
-                            <div class="community-category">Study Group</div>
-                            <h4 class="community-name">Web Development Group</h4>
-                            <p class="community-details">A community focused on web development and design</p>
-                            <div class="community-stats">45 members</div>
-                        </div>
-                        <button class="join-community-btn">Join</button>
-                    </div>       
-                </div>
-            </div>
-            
-            <!-- Events Results -->
-            <div class="result-section" id="events-results">
-                <h3 class="section-title">Events <span class="result-count">(1)</span></h3>
-                
-                <div class="result-cards">
-
-                    <!----------------------------- EVENT POST CARD ------------------------------------->
-                    <div class="result-card event-card">
-                        <div class="event-date-box">
-                            <div class="event-month">MAR</div>
-                            <div class="event-day">15</div>
-                        </div>
-                        <div class="event-info">
-                            <h4 class="event-name">Spring Festival</h4>
-                            <p class="event-location"><i class="fa-solid fa-location-dot"></i> Main Campus Quad</p>
-                            <p class="event-time"><i class="fa-solid fa-clock"></i> 12:00 PM - 10:00 PM</p>
-                            <div class="event-attendees">125 attending</div>
-                        </div>
-                        <button class="attend-event-btn">Attend</button>
-                    </div>
-    
-                </div>
-            </div>
-            
-            <!-- Posts Results -->
-            <div class="result-section" id="posts-results">
-                <h3 class="section-title">Posts <span class="result-count">(1)</span></h3>
-                
-                <div class="result-cards">
-                    <!----------------------------- POST POST CARD ------------------------------------->
-                    <div class="result-card post-card">
-                        <div class="post-header">
-                            <div class="post-avatar">
-                                <img src="{% static 'images/bingus.jpg' %}" alt="Alex">
-                            </div>
-                            <div class="post-user-info">
-                                <h4 class="post-author">Alex Rogers</h4>
-                                <span class="post-time">· 1 week ago</span>
-                            </div>
-                        </div>
-                        <div class="post-content">
-                            <h4 class="post-title">Database Project Partner Needed</h4>
-                            <p class="post-text">Looking for a partner for the upcoming DB systems project. DM if interested!</p>
-                        </div>
-                        <div class="post-actions">
-                            <button class="post-action-btn like-btn">
-                                <i class="fa-solid fa-heart"></i>
-                                <span>15</span>
-                                <span class="likes-text">likes</span>
-                            </button>
-                            <button class="post-action-btn comment-btn">
-                                <i class="fa-solid fa-comment"></i>
-                                <span>7</span>
-                                <span class="comments-text">comments</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+      </div>
     </div>
+  </div>
 
-        <!----------------------------- REMOVE FOR FOR THE INCLUDE ------------------------------------->
-        <footer class="footer mt-auto">
-            <div class="container-fluid">
-                <div class="row">
-                    <!-- About Column -->
-                    <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
-                        <h5>About UNI-HUB</h5>
-                        <ul class="list-unstyled">
-                            <li><a href="#">About Us</a></li>
-                            <li><a href="#">Terms of Service</a></li>
-                            <li><a href="#">Privacy Policy</a></li>
-                            <li><a href="#">Contact Us</a></li>
-                        </ul>
+  {% include '../includes/footer.html' %}
+
+  <!-- JavaScript for search functionality -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const searchInput = document.getElementById('searchQuery');
+      const searchTypeSelect = document.getElementById('searchType');
+      const searchResults = document.getElementById('searchResults');
+      let debounceTimeout = null;
+  
+      function performSearch() {
+        const query = searchInput.value.trim();
+        const type = searchTypeSelect.value;
+        if (!query) {
+          searchResults.innerHTML = '<div class="alert alert-info">Please enter a search term</div>';
+          return;
+        }
+        let apiUrl = '';
+        if (type === 'users') {
+            apiUrl = `/api/search/users/?query=${query}`;
+          } else if (type === 'communities') {
+            apiUrl = `/api/community/search/?query=${query}`;
+          } else if (type === 'tags') {
+            apiUrl = `/api/tags/search/?query=${query}`;
+          }
+        fetch(apiUrl)
+          .then(response => response.json())
+          .then(data => {
+            if (data.length === 0) {
+              searchResults.innerHTML = '<div class="alert alert-info">No results found</div>';
+              return;
+            }
+            let html = '';
+            if (type === 'users') {
+              html += '<h4>Users</h4><div class="list-group">';
+              data.forEach(user => {
+                html += `
+                  <a href="/userprofile/${user.username}" class="list-group-item list-group-item-action">
+                    <div class="d-flex w-100 justify-content-between">
+                      <h5 class="mb-1">${user.username}</h5>
+                      <small>${user.user_type || ''}</small>
                     </div>
-    
-                    <!-- Student Resources -->
-                    <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
-                        <h5>Student Resources</h5>
-                        <ul class="list-unstyled">
-                            <li><a href="#">Academic Calendar</a></li>
-                            <li><a href="#">Library Services</a></li>
-                            <li><a href="#">Study Resources</a></li>
-                            <li><a href="#">Career Services</a></li>
-                        </ul>
-                    </div>
-    
-                    <!-- Campus Life -->
-                    <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
-                        <h5>Campus Life</h5>
-                        <ul class="list-unstyled">
-                            <li><a href="#">Events Calendar</a></li>
-                            <li><a href="#">Clubs & Societies</a></li>
-                            <li><a href="#">Student Support</a></li>
-                            <li><a href="#">Housing</a></li>
-                        </ul>
-                    </div>
-    
-                    <!-- Connect -->
-                    <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
-                        <h5>Connect With Us</h5>
-                        <ul class="list-unstyled">
-                            <li><a href="#">Social Media</a></li>
-                            <li><a href="#">News & Updates</a></li>
-                            <li><a href="#">Alumni Network</a></li>
-                            <li><a href="#">Help Center</a></li>
-                        </ul>
-                    </div>
-                </div>
-    
-                <!-- Copyright -->
-                <div class="row mt-4">
-                    <div class="col-12 text-center">
-                        <p class="copyright">© 2025 UNI-HUB. All rights reserved.</p>
-                    </div>
-                </div>
-            </div>
-        </footer>
-        <!----------------------------- REMOVE FOR FOR THE INCLUDE ------------------------------------->
-    
-    
-    <!-- JavaScript for search functionality -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Filter buttons functionality
-            const filterButtons = document.querySelectorAll('.filter-btn');
-            const resultSections = document.querySelectorAll('.result-section');
-            
-            filterButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    // Update active button
-                    filterButtons.forEach(btn => btn.classList.remove('active'));
-                    this.classList.add('active');
-                    
-                    const filter = this.getAttribute('data-filter');
-                    
-                    // Show/hide sections based on filter
-                    if (filter === 'all') {
-                        resultSections.forEach(section => {
-                            section.style.display = 'block';
-                        });
-                    } else {
-                        resultSections.forEach(section => {
-                            if (section.id === filter + '-results') {
-                                section.style.display = 'block';
-                            } else {
-                                section.style.display = 'none';
-                            }
-                        });
-                    }
+                    <p class="mb-1">${user.university || 'University not specified'}</p>
+                  </a>
+                `;
+              });
+              html += '</div>';
+            } else if (type === 'communities') {
+              html += '<h4>Communities</h4><div class="list-group">';
+              data.forEach(community => {
+                html += `
+                  <a href="/communities/${community.name}" class="list-group-item list-group-item-action">
+                    <h5 class="mb-1">${community.name}</h5>
+                    <p class="mb-1">${community.description || 'No description available.'}</p>
+                  </a>
+                `;
+              });
+              html += '</div>';
+            } else if (type === 'tags') {
+                html += '<h4>Posts with Tag</h4><div class="list-group">';
+                data.forEach(post => {
+                  html += `
+                    <a href="/#post-${post.id}" class="list-group-item list-group-item-action">
+                      <h5 class="mb-1">${post.title}</h5>
+                      <p class="mb-1">${post.content.substring(0, 100)}...</p>
+                      <p class="mb-1"><strong>Tags:</strong> ${post.tags || 'No tags'}</p>
+                    </a>
+                  `;
                 });
-            });
-            
-            // Search functionality (simplified for demo)
-            const searchButton = document.querySelector('.search-button');
-            const searchInput = document.getElementById('search-input');
-            
-            searchButton.addEventListener('click', function() {
-                // In a real application, this would send an AJAX request to the server
-                // For now, we'll just log the search term
-                console.log('Searching for:', searchInput.value);
-                
-                // You could update the results dynamically here
-                if (searchInput.value) {
-                    document.querySelector('.results-heading').textContent = 
-                        `Results for "${searchInput.value}"`;
-                } else {
-                    document.querySelector('.results-heading').textContent = "Results";
-                }
-            });
-            
-            // Allow search on Enter key
-            searchInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    searchButton.click();
-                }
-            });
-        });
-    </script>
-    
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+                html += '</div>';
+              }              
+            searchResults.innerHTML = html;
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            searchResults.innerHTML = '<div class="alert alert-danger">An error occurred while searching</div>';
+          });
+      }
+      
+  
+      // Debounce: wait 300ms after user stops typing before searching
+      searchInput.addEventListener('input', function() {
+        clearTimeout(debounceTimeout);
+        debounceTimeout = setTimeout(performSearch, 300);
+      });
+  
+      // Also search when the search type changes
+      searchTypeSelect.addEventListener('change', performSearch);
+    });
+  </script>
+  
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

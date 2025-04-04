@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views 
+from .views import TagSearchAPI
 
 urlpatterns = [
     path('post/', views.PostListCreateViewAPI.as_view(), name='post-list-create'),
@@ -13,5 +14,6 @@ urlpatterns = [
     path('edit-comment/<int:comment_id>/', views.CommentEditAPI.as_view(), name="edit_comment"),  
 
     path('search/users/', views.UserSearchAPI.as_view(), name="search_users"),
-
+    
+    path('tags/search/', TagSearchAPI.as_view(), name='api-tag-search'),
 ]

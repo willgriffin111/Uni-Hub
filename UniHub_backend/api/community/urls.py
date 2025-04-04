@@ -1,6 +1,7 @@
 from django.urls import path
 from . import views
 from .views import *
+from .views import CommunitySearchAPI
 
 urlpatterns = [
     path('editcommunity/', views.CommunityEditAPI.as_view(), name='api-community-edit'),
@@ -17,4 +18,6 @@ urlpatterns = [
     path('events/<int:event_id>/attendees/', AttendanceListAPI.as_view()),
     path('events/<int:event_id>/delete/', CommunityEventDeleteAPI.as_view()),
     path('events/<int:event_id>/edit/', CommunityEventEditAPI.as_view(), name='event_edit_api'),
+    
+    path('search/', CommunitySearchAPI.as_view(), name='api-community-search'),
 ]

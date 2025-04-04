@@ -101,7 +101,7 @@ def edit_comment_view(request, comment_id):
     return render(request, 'pages/edit_comment.html', {'comment': comment})
 
 def search_view(request):
-    return render(request, 'pages/search_page.html')
+    return render(request, 'pages/search.html')
 
 
 #community views

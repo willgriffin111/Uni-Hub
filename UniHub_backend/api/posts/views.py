@@ -8,6 +8,7 @@ from .models import Like, Post, Comment
 from django.contrib.auth import get_user_model
 from django.db.models import Q
 from api.community.models import Community, CommunityRole
+from rest_framework.permissions import IsAuthenticated
 
 User = get_user_model()
 
@@ -158,3 +159,16 @@ class UserSearchAPI(APIView):
             return Response(users_data, status=status.HTTP_200_OK)
         else:
             return Response({"message": "No search query provided."}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class TagSearchAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        query = request.query_params.get('query', '').strip()
+        if query:
+            posts = Post.objects.filter(tags__icontains=query)
+        else:
+            posts = Post.objects.none()
+        serializer = PostSerializer(posts, many=True, context={'request': request})
+        return Response(serializer.data)
