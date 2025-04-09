@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from api.posts.models import Post, Comment
 from django.utils import timezone
@@ -78,6 +78,9 @@ def profile_view(request):
         post.can_edit = (current_time - post.created_at).total_seconds() <= 30 * 60
     return render(request, "pages/profile.html", {"user": request.user, "posts": posts})
 
+
+    
+
 def profile_edit_view(request):
     """Render the profile edit page."""
     return render(request, "pages/profile_edit.html")
@@ -105,6 +108,14 @@ def search_view(request):
 
 
 #community views
+
+ROLE_HIERARCHY = {
+        "member": 1,
+        "event_leader": 2,
+        "community_leader": 3,
+        "admin": 4,
+    }
+
 @login_required
 def community_view(request, community_name):
     
@@ -112,12 +123,6 @@ def community_view(request, community_name):
     posts = Post.objects.filter(community=community).order_by('-created_at')
     current_time = timezone.now()
     
-    ROLE_HIERARCHY = {
-        "member": 1,
-        "event_leader": 2,
-        "community_leader": 3,
-        "admin": 4,
-    }
     user_role_level = 0
     
     # Get the members of the community
@@ -132,6 +137,15 @@ def community_view(request, community_name):
         user_role = CommunityRole.objects.filter(community=community, user=request.user).first()
         user_role_level = ROLE_HIERARCHY.get(user_role.role, 0)
         
+    for member in members:
+        role = CommunityRole.objects.filter(community=community, user=member).first()
+        member.role = role
+        member.role_level = ROLE_HIERARCHY.get(role.role, 0) if role else 0
+        
+    members = sorted(members, key=lambda m: m.role_level, reverse=True)
+        
+    is_creator = community.created_by == request.user
+    
     for post in posts:
         post.likes_count = post.likes.count()
         post.liked = post.likes.filter(user=request.user).exists()
@@ -147,6 +161,7 @@ def community_view(request, community_name):
         "members_count": members_count,
         "user_role_level": user_role_level,
         "is_member": is_member,
+        "is_creator": is_creator,
     })
 
 @login_required
@@ -165,7 +180,44 @@ def community_create_page(request):
 @login_required
 def community_edit_view(request, community_name):
     community = get_object_or_404(Community, name=community_name)
+    # Get the members of the community
+    members = community.members.all()
+    
+    # Check if the current user is a member of the community and their role
+    is_member = request.user in members
+    if is_member:
+        user_role = CommunityRole.objects.filter(community=community, user=request.user).first()
+        user_role_level = ROLE_HIERARCHY.get(user_role.role, 0)
+        if user_role_level < 3:
+            return redirect('community_page', community_name=community_name)
+    
     return render(request, "pages/community_edit.html", {'community': community, "user": request.user})
+
+@login_required
+def community_manage_view(request, community_name):
+    community = get_object_or_404(Community, name=community_name)
+    # Get the members of the community
+    members = community.members.all()
+    
+    # Check if the current user is a member of the community and their role
+    is_member = request.user in members
+    if is_member:
+        user_role = CommunityRole.objects.filter(community=community, user=request.user).first()
+        user_role_level = ROLE_HIERARCHY.get(user_role.role, 0)
+        if user_role_level < 3:
+            return redirect('community_page', community_name=community_name)
+        
+    for member in members:
+        role = CommunityRole.objects.filter(community=community, user=member).first()
+        member.role = role
+        member.role_level = ROLE_HIERARCHY.get(role.role, 0) if role else 0
+        
+    members = sorted(members, key=lambda m: m.role_level, reverse=True)
+        
+    is_creator = community.created_by == request.user
+    
+    return render(request, "pages/community_manage.html", {'community': community, "members": members, "user": request.user, "user_role_level": user_role_level, "is_creator": is_creator})
+
 
 def event_edit_view(request, event_id):
     event = get_object_or_404(CommunityEvent, id=event_id)
@@ -178,9 +230,16 @@ def user_profile_page(request, username):
     selected_user = get_object_or_404(User, username=username)
     
     posts = Post.objects.filter(user=selected_user)
+    # Process posts: like count, user liked, comment count, etc.
+    for post in posts:
+        post.likes_count = post.likes.count()
+        post.liked = post.likes.filter(user=request.user).exists()
+        post.comments_count = post.comments.count()
+        post.can_edit = False
     is_friend = selected_user in request.user.friends.all()
     return render(request, 'pages/user_profile.html', {
-        'user': selected_user,
+        'user': request.user,
+        'user_profile': selected_user,
         'posts': posts,
         'is_friend': is_friend
     })

@@ -31,11 +31,13 @@
                 </h4>
               {% endif %}
             </div>
+            {% if post.user == user %}
             <div class="post-options">
               <div class="dropdown">
                 <button class="options-btn" onclick="toggleOptionsMenu(event, {{ post.id }})">
                   <i class="fa-solid fa-ellipsis" style="font-weight: bolder;"></i>
                 </button>
+                
                 <div class="options-menu" id="options-menu-{{ post.id }}">
                   {% if post.can_edit and post.user == user %}
                   <form action="{% url 'edit_post' post.id %}" method="get" style="display:block; margin-bottom: 10px;">
@@ -51,6 +53,7 @@
                 </div>
               </div>
             </div>
+            {% endif %}
           </div>
           <!-- Text -->
           <div class="post-text">

@@ -44,7 +44,7 @@
                     {% endif %}
                     <button class="btn-contact"><i class="fa-solid fa-envelope"></i> Contact</button>
                     <button class="btn-share"><i class="fa-solid fa-share-nodes"></i> Share</button>
-                    {% if user_role_level >= 3 %}
+                    {% if user_role_level >= 4 or is_creator %}
                         <button class="btn-delete" id="deleteCommunityBtn"><i class="fa-solid fa-trash"></i> Delete</button>
                     {% endif %}
                 </div>
@@ -120,35 +120,19 @@
                         <div class="content-card">
                             <h2 class="card-title">Leadership</h2>
                             <div class="leadership-list">
+                              {% for member in members %}
+                              {% if member.role.role != "member" %}
                                 <div class="leadership-item">
                                     <div class="leader-avatar">
-                                        <img src="/images/bingus.jpg">
+                                      <img src="{{ member.profile_picture.url }}" alt="{{ member.username }}">
                                     </div>
                                     <div class="leader-info">
-                                        <h4 class="leader-name">Alex Rogers</h4>
-                                        <p class="leader-role">Group Admin</p>
+                                        <h4 class="leader-name">{{ member.username }}</h4>
+                                        <p class="leader-role">{{ member.role.get_role_display }}</p>
                                     </div>
                                 </div>
-                                
-                                <div class="leadership-item">
-                                    <div class="leader-avatar">
-                                        <img src="/images/y2ht5fgx63g61.webp" alt="Michael Chen">
-                                    </div>
-                                    <div class="leader-info">
-                                        <h4 class="leader-name">Michael Chen</h4>
-                                        <p class="leader-role">Moderator</p>
-                                    </div>
-                                </div>
-                                
-                                <div class="leadership-item">
-                                    <div class="leader-avatar">
-                                        <img src="/images/xqaxoy5y2hi61.webp" alt="Sarah Johnson">
-                                    </div>
-                                    <div class="leader-info">
-                                        <h4 class="leader-name">Sarah Johnson</h4>
-                                        <p class="leader-role">Events Coordinator</p>
-                                    </div>
-                                </div>
+                              {% endif %}
+                              {% endfor %}
                             </div>
                         </div>
                         
@@ -217,44 +201,19 @@
                         <div class="members-section">
                             <h3 class="section-title">Leadership Team</h3>
                             <div class="members-grid">
-                                <!-- Leader 1 -->
+                              {% for member in members %}
+                              {% if member.role.role != "member" %}
                                 <div class="member-card">
-                                    <div class="member-avatar">
-                                        <img src="/images/bingus.jpg" alt="Alex Rogers">
-                                    </div>
-                                    <div class="member-info">
-                                        <h4 class="member-name">Alex Rogers</h4>
-                                        <p class="member-role">Group Admin</p>
-                                        <p class="member-details">Computer Science • Year 2</p>
-                                    </div>
-                                    <button class="member-action-btn"><i class="fa-solid fa-envelope"></i></button>
+                                  <div class="member-avatar">
+                                    <img src="{{ member.profile_picture.url }}" alt="{{ member.username }}">
+                                  </div>
+                                  <div class="member-info">
+                                    <h4 class="member-name">{{ member.username }}</h4>
+                                    <p class="member-role">{{ member.role.get_role_display }}</p>
+                                  </div>
                                 </div>
-                                
-                                <!-- Leader 2 -->
-                                <div class="member-card">
-                                    <div class="member-avatar">
-                                        <img src="" alt="Michael Chen">
-                                    </div>
-                                    <div class="member-info">
-                                        <h4 class="member-name">Michael Chen</h4>
-                                        <p class="member-role">Moderator</p>
-                                        <p class="member-details">Electrical Engineering • Year 3</p>
-                                    </div>
-                                    <button class="member-action-btn"><i class="fa-solid fa-envelope"></i></button>
-                                </div>
-                                
-                                <!-- Leader 3 -->
-                                <div class="member-card">
-                                    <div class="member-avatar">
-                                        <img src="" alt="Sarah Johnson">
-                                    </div>
-                                    <div class="member-info">
-                                        <h4 class="member-name">Sarah Johnson</h4>
-                                        <p class="member-role">Events Coordinator</p>
-                                        <p class="member-details">Computer Science • Year 2</p>
-                                    </div>
-                                    <button class="member-action-btn"><i class="fa-solid fa-envelope"></i></button>
-                                </div>
+                              {% endif %}
+                            {% endfor %}
                             </div>
                         </div>
                         
@@ -264,6 +223,7 @@
                             <div class="members-grid">
                                 <!-- Render more members here, usually with a loop in the actual template -->
                                 {%for member in members %}
+                                {% if member.role.role == "member" %}
                                 <div class="member-card">
                                     <div class="member-avatar">
                                         <img src="{{member.profile_picture.url}}" alt="{{member.username}}">
@@ -272,8 +232,8 @@
                                         <h4 class="member-name">{{member.username}}</h4>
                                         <p class="member-details">Computer Science • Year 3</p>
                                     </div>
-                                    <button class="member-action-btn"><i class="fa-solid fa-envelope"></i></button>
                                 </div>
+                                {%endif%}
                                 {%endfor%}
                             </div>
                             
@@ -387,7 +347,7 @@
         
         <!-- Moderator Grid -->
         <div class="moderator-grid">
-            <!-- Event Settings Card -->
+            {% comment %} <!-- Event Settings Card -->
             <div class="mod-card">
                 <div class="mod-card-icon">
                     <i class="fa-solid fa-calendar-days"></i>
@@ -397,7 +357,7 @@
                 <div class="mod-card-actions">
                     <button class="mod-card-btn">Manage</button>
                 </div>
-            </div>
+            </div> {% endcomment %}
             
             <!-- User Settings Card -->
             <div class="mod-card">
@@ -407,21 +367,12 @@
                 <h3 class="mod-card-title">User Settings</h3>
                 <p class="mod-card-description">Manage community members, roles, and permissions.</p>
                 <div class="mod-card-actions">
+                  <a href="{% url 'community_manage_page' community_name=community.name %}">
                     <button class="mod-card-btn">Manage</button>
+                    </a>
                 </div>
             </div>
             
-            <!-- Session Settings Card -->
-            <div class="mod-card">
-                <div class="mod-card-icon">
-                    <i class="fa-solid fa-clock"></i>
-                </div>
-                <h3 class="mod-card-title">Session Settings</h3>
-                <p class="mod-card-description">Configure meeting times, session durations, and recurring events.</p>
-                <div class="mod-card-actions">
-                    <button class="mod-card-btn">Manage</button>
-                </div>
-            </div>
             
             <!-- General Settings Card -->
             <div class="mod-card">
@@ -877,7 +828,7 @@ document.addEventListener('DOMContentLoaded', function() {
           });
         }
 
-  
+        {%if user_role_level >= 2 %}
         // Create Event Modal functionality
         const createEventBtn = document.getElementById('createEventBtn');
         const createEventModal = document.getElementById('createEventModal');
@@ -922,11 +873,10 @@ document.addEventListener('DOMContentLoaded', function() {
             alert("An error occurred while creating the event.");
           });
         });
-  
+        {%endif%}
         // Initial load of events
         loadEvents();
       });
-    
 </script> 
 
     <!-- Notification Container -->

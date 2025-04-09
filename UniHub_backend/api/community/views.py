@@ -1,12 +1,12 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from api.community.models import Community, CommunityRole
-from .serializers import CommunitySerializer, CommunityEventSerializer, CommunityEventAttendanceSerializer
+from .serializers import CommunitySerializer, CommunityEventSerializer, CommunityEventAttendanceSerializer, CommunityRoleUpdateSerializer
 from rest_framework import generics, permissions, status
 from django.http import JsonResponse
 import os
 from django.core.files import File
 from .models import Community, CommunityRole, CommunityEvent, CommunityEventAttendance
+from api.accounts.models import CustomUser
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.contrib.auth import get_user_model
@@ -240,3 +240,105 @@ class CommunitySearchAPI(APIView):
             communities = Community.objects.none()
         serializer = CommunitySerializer(communities, many=True, context={'request': request})
         return Response(serializer.data)
+    
+# ------------------------ROLES------------------------
+
+ROLE_HIERARCHY = {
+    'member': 1,
+    'event_leader': 2,
+    'community_leader': 3,
+    'admin': 4
+}
+
+class PermoteMemberAPI(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def post(self, request):
+        """
+        Promote a user to a higher role in the community.
+        wont let users permote themselves or demote users
+        also checks role permissions to ensure user is allowed to permote others
+        this is kinda messy i know but it should cover all possible issues so :|
+        """
+        community_id = request.data.get('community_id')
+        permote_user_id = request.data.get('permote_user_id')
+        permote_role = request.data.get('permote_role')
+        user = request.user
+
+        community = get_object_or_404(Community, id=community_id)
+        permote_user = get_object_or_404(CustomUser, id=permote_user_id)
+        if user == permote_user:
+            return Response({"detail": "You cannot permote yourself."}, status=status.HTTP_400_BAD)
+        
+        user_role = get_object_or_404(CommunityRole,user=user, community=community)
+        permote_user_role = get_object_or_404(CommunityRole,user=permote_user, community=community)
+        
+        user_role_level = ROLE_HIERARCHY.get(user_role.role, 0)
+        permote_role_level = ROLE_HIERARCHY.get(permote_role, 0)
+        if user_role_level >= 3 and user_role_level >= permote_role_level:
+            permote_user_role_level = ROLE_HIERARCHY.get(permote_user_role.role, 0)
+            if permote_user_role_level >= permote_role_level:
+                return Response({"detail": "You cannot permote this user."}, status=status.HTTP_400)
+            
+            serializer = CommunityRoleUpdateSerializer(instance=permote_user_role, data={'role': permote_role}, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response({"detail": f"{permote_user.username} promoted to {permote_role}."}, status=status.HTTP_200_OK)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            
+        else:
+            return Response({"detail": "You dont have permission to permote to this level."}, status=status.HTTP_400_BAD)
+        
+        
+class DemoteMemberAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        """
+        Allows an admin or community creator to demote another user within the community.
+        You cannot demote yourself.
+        You can only demote users with a lower role.
+        """
+        print("hello")
+        community_id = request.data.get('community_id')
+        demote_user_id = request.data.get('demote_user_id')
+        demote_role = request.data.get('demote_role') 
+        user = request.user
+        print(demote_user_id, demote_role)
+
+        community = get_object_or_404(Community, id=community_id)
+        demote_user = get_object_or_404(CustomUser, id=demote_user_id)
+
+        if user == demote_user:
+            return Response({"detail": "You cannot demote yourself."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Check that both the requester and target have roles in the community
+        user_role = get_object_or_404(CommunityRole, user=user, community=community)
+        demote_user_role = get_object_or_404(CommunityRole, user=demote_user, community=community)
+
+        user_role_level = ROLE_HIERARCHY.get(user_role.role, 0)
+        demote_user_role_level = ROLE_HIERARCHY.get(demote_user_role.role, 0)
+        new_role_level = ROLE_HIERARCHY.get(demote_role, 0)
+
+        # Can only demote if the acting user is admin or creator
+        is_admin = user_role.role == 'admin'
+        is_creator = community.created_by == user
+
+        if not (is_admin or is_creator):
+            return Response({"detail": "You don't have permission to demote users."}, status=status.HTTP_403_FORBIDDEN)
+
+        if new_role_level >= demote_user_role_level:
+            return Response({"detail": "You can only demote users to a *lower* role than they currently have."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Prevent demoting someone with equal or higher role unless admin
+        if demote_user_role_level >= user_role_level and not is_creator:
+            return Response({"detail": "You can't demote a user with an equal or higher role."}, status=status.HTTP_403_FORBIDDEN)
+
+        serializer = CommunityRoleUpdateSerializer(instance=demote_user_role, data={'role': demote_role}, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"detail": f"{demote_user.username} was demoted to {demote_role}."}, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        

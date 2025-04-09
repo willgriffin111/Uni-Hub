@@ -126,18 +126,23 @@
                         </div>
                         <div class="card-body">
                             <div class="progress-stats">
-                                <div class="stat-item">
+                                <div class="stat-item text-center">
                                     <h4>Posts created</h4>
-                                    <span class="stat-value">3</span>
-                                </div>
-                                <div class="stat-item">
+                                    <span class="stat-value">{{ posts|length }}</span>
+                                  </div>
+                                  <div class="stat-item text-center">
                                     <h4>Events Attended</h4>
-                                    <span class="stat-value">12</span>
-                                </div>
-                                <div class="stat-item">
+                                    {% if user.events_attended %}
+                                      <span class="stat-value">{{ user.events_attended.count }}</span>
+                                    {% else %}
+                                      <span class="stat-value">0</span>
+                                    {% endif %}
+                  
+                                  </div>
+                                  <div class="stat-item text-center">
                                     <h4>Friends</h4>
-                                    <span class="stat-value">0</span>
-                                </div>
+                                    <span class="stat-value">{{ user.friends.count }}</span>
+                                  </div>
                             </div>
                         </div>
                     </div>

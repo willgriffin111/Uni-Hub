@@ -23,17 +23,17 @@
     <!-- Profile Header -->
     <div class="profile-header-simple text-center">
       <div class="profile-photo-container">
-        {% if user.profile_picture %}
-          <img src="{{ user.profile_picture.url }}" alt="Profile Photo" class="profile-photo">
+        {% if user_profile.profile_picture %}
+          <img src="{{ user_profile.profile_picture.url }}" alt="Profile Photo" class="profile-photo">
         {% else %}
-          <img src="{% static 'user-image.png' %}" alt="{{ user.username }}" width="200" height="200">
+          <img src="{% static 'user_profile-image.png' %}" alt="{{ user_profile.username }}" width="200" height="200">
         {% endif %}
       </div>
-      <h1 class="profile-name">{{ user.first_name }} {{ user.last_name }}</h1>
-      <p class="university-name">{{ user.university }}</p>
+      <h1 class="profile-name">{{ user_profile.first_name }} {{ user_profile.last_name }}</h1>
+      <p class="university-name">{{ user_profile.university }}</p>
       <button class="btn {% if is_friend %}btn-danger{% else %}btn-success{% endif %}" 
             id="addFriendBtn" 
-            data-username="{{ user.username }}">
+            data-username="{{ user_profile.username }}">
         {% if is_friend %}Unfriend{% else %}Add Friend{% endif %}
         </button>
     </div>
@@ -51,21 +51,21 @@
             <div class="card-body">
               <div class="info-item">
                 <span class="label">Gender:</span>
-                {% if user.gender %}
-                  <span class="value">{{ user.gender }}</span>
+                {% if user_profile.gender %}
+                  <span class="value">{{ user_profile.gender }}</span>
                 {% else %}
                   <span class="value">Not set</span>
                 {% endif %}
               </div>
               <div class="info-item">
                 <span class="label">Email:</span>
-                <span class="value">{{ user.email }}</span>
+                <span class="value">{{ user_profile.email }}</span>
               </div>
               <div class="info-item">
                 <span class="label">Date of Birth:</span>
                 <span class="value">
-                  {% if user.dob %}
-                    {{ user.dob|date:"F j, Y" }}
+                  {% if user_profile.dob %}
+                    {{ user_profile.dob|date:"F j, Y" }}
                   {% else %}
                     Not set
                   {% endif %}
@@ -73,8 +73,8 @@
               </div>
               <div class="info-item">
                 <span class="label">Bio:</span>
-                {% if user.bio %}
-                  <span class="value">{{ user.bio }}</span>
+                {% if user_profile.bio %}
+                  <span class="value">{{ user_profile.bio }}</span>
                 {% else %}
                   <span class="value">Not set</span>
                 {% endif %}
@@ -98,8 +98,8 @@
                 </div>
                 <div class="stat-item text-center">
                   <h4>Events Attended</h4>
-                  {% if user.events_attended %}
-                    <span class="stat-value">{{ user.events_attended.count }}</span>
+                  {% if user_profile.events_attended %}
+                    <span class="stat-value">{{ user_profile.events_attended.count }}</span>
                   {% else %}
                     <span class="stat-value">0</span>
                   {% endif %}
@@ -107,64 +107,19 @@
                 </div>
                 <div class="stat-item text-center">
                   <h4>Friends</h4>
-                  <span class="stat-value">{{ user.friends.count }}</span>
+                  <span class="stat-value">{{ user_profile.friends.count }}</span>
                 </div>
               </div>
             </div>
           </div>
           <!-- Selected User's Recent Posts -->
           <div class="profile-card">
-            <div class="card-header">
-              <h3>Recent Posts</h3>
-            </div>
-            <div class="card-body post-container-scrollable">
-              <div class="posts-container">
-                {% for post in posts %}
-                  <div class="post mb-4">
-                    <!-- Post Header -->
-                    <div class="d-flex align-items-center mb-2">
-                      <div class="post-avatar me-2">
-                        {% if post.user.profile_picture %}
-                          <img src="{{ post.user.profile_picture.url }}" alt="{{ post.user.username }}" class="rounded-circle" style="width:50px; height:50px; object-fit:cover;">
-                        {% else %}
-                          <img src="{% static 'user-image.png' %}" alt="{{ post.user.username }}" class="rounded-circle" style="width:50px; height:50px; object-fit:cover;">
-                        {% endif %}
-                      </div>
-                      <div>
-                        <h5 class="mb-0">{{ post.user.username }}</h5>
-                        <small class="text-muted">{{ post.created_at|timesince }} ago</small> 
-                      </div>
-                    </div>
-                    <!-- Post Content -->
-                    <div class="post-text mb-2">
-                      <h4>{{ post.title }}</h4>
-                      <p>{{ post.content }}</p>
-                    </div>
-                    <!-- Post Tags -->
-                    {% if post.tags %}
-                      <div class="tags mb-2">
-                        <strong>Tags:</strong> {{ post.tags }}
-                      </div>
-                    {% endif %}
-                    <!-- Post Media -->
-                    {% if post.image %}
-                      <div class="post-media mb-2">
-                        <img src="{{ post.image.url }}" alt="Post Image" class="img-fluid">
-                      </div>
-                    {% endif %}
-                  </div>
-                {% empty %}
-                  <div class="no-posts-message">
-                    <p>No posts to display yet.</p>
-                  </div>
-                {% endfor %}
-              </div>
-            </div>
-            </div>
-            </div>
-            </div>
-            </div>
-            </div>
+              {% include '../includes/post_content.html' %} 
+          </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
   <!-- Footer -->
   {% include '../includes/footer.html' %}

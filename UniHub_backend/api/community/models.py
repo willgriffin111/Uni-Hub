@@ -46,6 +46,18 @@ ROLE_HIERARCHY = {
 }
 
 class CommunityRole(models.Model):
+    """
+    Defines the role of a user in a community.
+    
+    Role choices:
+      - admin: Full control, can manage the community and sessions.
+      - community_leader: Can help moderate posts community and events.
+      - event_leader: can only create edit and delete events
+      - member: Standard member can only make posts to community.
+    
+    Ensures a user can have only one role per community.
+    """
+    
     ROLE_CHOICES = [
         ('member', 'Member'),
         ('event_leader', 'Event Leader'),

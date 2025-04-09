@@ -148,6 +148,7 @@
                     </h4>
                   {% endif %}
                 </div>
+                {% if post.user == user %}
                 <div class="post-options">
                   <div class="dropdown">
                     <button class="options-btn" onclick="toggleOptionsMenu(event, {{ post.id }})">
@@ -168,6 +169,7 @@
                     </div>
                   </div>
                 </div>
+                {% endif %}
               </div>
               <!-- Text -->
               <div class="post-text">

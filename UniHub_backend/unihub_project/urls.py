@@ -35,7 +35,9 @@ urlpatterns = [
     path('create-community/', community_list_view, name='community_create'),
     path('communities/<str:community_name>/', views.community_view, name="community_page"),
     path('edit_community/<str:community_name>/', views.community_edit_view, name="community_edit_page"),
-
+    path('manage_community/<str:community_name>/', views.community_manage_view, name="community_manage_page"),
+    
+    
     path('search/', views.search_view, name='search_page'),
     # Include API endpoints from the accounts app
     path('accounts/', include('api.accounts.urls')),  # Mount the accounts API
