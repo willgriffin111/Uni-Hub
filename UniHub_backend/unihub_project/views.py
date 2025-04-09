@@ -28,7 +28,7 @@ def home_page(request):
             post.liked = post.likes.filter(user=request.user).exists()
             post.comments_count = post.comments.count()
             post.can_edit = (current_time - post.created_at).total_seconds() <= 30 * 60
-        # Cache the posts list with a TTL of 600 seconds (10 minutes)
+        # Cache the posts list for 600 seconds (10 minutes)
         cache.set(cache_key, posts, timeout=600)
         print(f"Set cache key: {cache_key} with {len(posts)} posts.")
     else:
@@ -49,11 +49,11 @@ def home_page(request):
     ).order_by('-attendance_count')[:3]
     
     current_user = request.user
-    # Retrieve friend suggestions, excluding the current user and current friends.
-    suggestions_qs = User.objects.exclude(id=current_user.id)\
-                    .exclude(id__in=current_user.friends.values_list('id', flat=True))[:3]
-    filtered_suggestions = [user for user in suggestions_qs if str(user) != "root"]
-    suggestions = filtered_suggestions
+    # Retrieve friend suggestions, excluding the current user current friends and root.
+    suggestions = User.objects.exclude(id=current_user.id)\
+                    .exclude(id__in=current_user.friends.values_list('id', flat=True))\
+                    .exclude(username="root")[:3]
+                    
     return render(request, 'pages/home_page.html', {
         'posts': posts,
         'user': request.user,
@@ -78,20 +78,39 @@ def Verify_view(request):
 
 @login_required
 def profile_view(request):
-    """Render the profile page (requires login)."""
-    posts = Post.objects.filter(user_id=request.user).order_by('-created_at')  # '-' makes it descending (newest first)
+    cache_key = f"home_posts_user_{request.user.id}"
     current_time = timezone.now()
-    
-    # For each post, get like count, check if the user liked it, and get comment count
-    for post in posts:
-        post.likes_count = post.likes.count()  # Get total like count
-        post.liked = post.likes.filter(user=request.user).exists()  # Check if the user has liked this post
-        post.comments_count = post.comments.count()
-        
-        # Check if the post was created within 30 minutes (for edit permission)
-        post.can_edit = (current_time - post.created_at).total_seconds() <= 30 * 60
-    return render(request, "pages/profile.html", {"user": request.user, "posts": posts})
+    # Retrieve the posts from the home page cache.
+    posts_all = cache.get(cache_key)
+    if posts_all is None:
+        print(f"\n Cache miss for key: {cache_key}. Querying database for posts.")
+        posts_all = list(Post.objects.all().order_by('-created_at'))
+        for post in posts_all:
+            post.likes_count = post.likes.count()
+            post.liked = post.likes.filter(user=request.user).exists()
+            post.comments_count = post.comments.count()
+            post.can_edit = (current_time - post.created_at).total_seconds() <= 30 * 60
+        print(f"Set cache key: {cache_key} with {len(posts_all)} posts.")
+        cache.set(cache_key, posts_all, timeout=600)
+    else:
+        print(f"\n Cache hit for key: {cache_key}. Updating dynamic fields for {len(posts_all)} posts.")
+        for post in posts_all:
+            post.likes_count = post.likes.count()
+            post.liked = post.likes.filter(user=request.user).exists()
+            post.comments_count = post.comments.count()
+            post.can_edit = (current_time - post.created_at).total_seconds() <= 30 * 60
 
+    # Filter for posts belonging to the logged-in user.
+    user_posts = []
+    for post in posts_all:
+        if post.user == request.user:
+            post.likes_count = post.likes.count()
+            post.liked = post.likes.filter(user=request.user).exists()
+            post.comments_count = post.comments.count()
+            post.can_edit = (current_time - post.created_at).total_seconds() <= 30 * 60
+            user_posts.append(post)
+    
+    return render(request, "pages/profile.html", {"user": request.user, "posts": user_posts})
 def profile_edit_view(request):
     """Render the profile edit page."""
     return render(request, "pages/profile_edit.html")
@@ -117,45 +136,55 @@ def edit_comment_view(request, comment_id):
 def search_view(request):
     return render(request, 'pages/search.html')
 
-
-#community views
 @login_required
 def community_view(request, community_name):
-    
     community = get_object_or_404(Community, name=community_name)
-    posts = Post.objects.filter(community=community).order_by('-created_at')
+    cache_key = f"home_posts_user_{request.user.id}"
     current_time = timezone.now()
     
-    ROLE_HIERARCHY = {
-        "member": 1,
-        "event_leader": 2,
-        "community_leader": 3,
-        "admin": 4,
-    }
-    user_role_level = 0
-    
-    # Get the members of the community
+    posts_all = cache.get(cache_key)
+    if posts_all is None:
+        print(f"\n Cache miss for key: {cache_key}. Querying database for posts.")
+        posts_all = list(Post.objects.all().order_by('-created_at'))
+        for post in posts_all:
+            post.likes_count = post.likes.count()
+            post.liked = post.likes.filter(user=request.user).exists()
+            post.comments_count = post.comments.count()
+            post.can_edit = (current_time - post.created_at).total_seconds() <= 30 * 60
+        print(f"Set cache key: {cache_key} with {len(posts_all)} posts.")
+        cache.set(cache_key, posts_all, timeout=600)
+    else:
+        print(f"\n Cache hit for key: {cache_key}. Updating dynamic fields for {len(posts_all)} posts.")
+        for post in posts_all:
+            post.likes_count = post.likes.count()
+            post.liked = post.likes.filter(user=request.user).exists()
+            post.comments_count = post.comments.count()
+            post.can_edit = (current_time - post.created_at).total_seconds() <= 30 * 60
+
+    # Filter posts to only those in the requested community.
+    community_posts = []
+    for post in posts_all:
+        if post.community == community:
+            # Update dynamic fields for each post in the community.
+            post.likes_count = post.likes.count()
+            post.liked = post.likes.filter(user=request.user).exists()
+            post.comments_count = post.comments.count()
+            post.can_edit = (current_time - post.created_at).total_seconds() <= 30 * 60
+            community_posts.append(post)
+
+    # Load additional community data (members, etc.) as needed.
     members = community.members.all()
-    
-    # Get the number of members
     members_count = members.count()
-    
-    # Check if the current user is a member of the community
     is_member = request.user in members
+    ROLE_HIERARCHY = {"member": 1, "event_leader": 2, "community_leader": 3, "admin": 4}
+    user_role_level = 0
     if is_member:
         user_role = CommunityRole.objects.filter(community=community, user=request.user).first()
         user_role_level = ROLE_HIERARCHY.get(user_role.role, 0)
-        
-    for post in posts:
-        post.likes_count = post.likes.count()
-        post.liked = post.likes.filter(user=request.user).exists()
-        post.comments_count = post.comments.count()
-        # allow editing within 30 minutes
-        post.can_edit = (current_time - post.created_at).total_seconds() <= 30 * 60
 
     return render(request, 'pages/community_view.html', {
         "community": community,
-        "posts": posts,
+        "posts": community_posts,
         "user": request.user,
         "members": members,
         "members_count": members_count,
@@ -181,24 +210,48 @@ def community_edit_view(request, community_name):
     community = get_object_or_404(Community, name=community_name)
     return render(request, "pages/community_edit.html", {'community': community, "user": request.user})
 
+@login_required
 def event_edit_view(request, event_id):
     event = get_object_or_404(CommunityEvent, id=event_id)
     return render(request, 'pages/event_edit.html', {'event': event})
 
-
-
-
+@login_required
 def user_profile_page(request, username):
     selected_user = get_object_or_404(User, username=username)
+    cache_key = f"home_posts_user_{request.user.id}"
+    current_time = timezone.now()
     
-    posts = Post.objects.filter(user=selected_user)
+    posts_all = cache.get(cache_key)
+    if posts_all is None:
+        print(f"\n Cache miss for key: {cache_key}. Querying database for posts.")
+        posts_all = list(Post.objects.all().order_by('-created_at'))
+        for post in posts_all:
+            post.likes_count = post.likes.count()
+            post.liked = post.likes.filter(user=request.user).exists()
+            post.comments_count = post.comments.count()
+            # 'can_edit' is set only if the selected user is the current user.
+            post.can_edit = (selected_user == request.user and 
+                             (current_time - post.created_at).total_seconds() <= 30 * 60)
+        print(f"Set cache key: {cache_key} with {len(posts_all)} posts.")
+        cache.set(cache_key, posts_all, timeout=600)
+    else:
+        print(f"\n Cache hit for key: {cache_key}. Updating dynamic fields for {len(posts_all)} posts.")
+        for post in posts_all:
+            post.likes_count = post.likes.count()
+            post.liked = post.likes.filter(user=request.user).exists()
+            post.comments_count = post.comments.count()
+            post.can_edit = (selected_user == request.user and 
+                             (current_time - post.created_at).total_seconds() <= 30 * 60)
+
+    # Filter posts to only those that belong to the selected user.
+    user_posts = [post for post in posts_all if post.user == selected_user]
     is_friend = selected_user in request.user.friends.all()
     return render(request, 'pages/user_profile.html', {
         'user': selected_user,
-        'posts': posts,
+        'posts': user_posts,
         'is_friend': is_friend
     })
-    
+
     
 # THESE ARE OLD VIEWS:
 
