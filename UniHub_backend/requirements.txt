@@ -10,3 +10,5 @@ python-dotenv
 fastapi
 uvicorn
 requests
+redis
+django-redis

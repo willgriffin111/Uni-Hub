@@ -33,6 +33,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      redis:
+        condition: service_started
     ports:
       - "8000:8000"
     environment:
@@ -48,6 +50,14 @@ services:
              python manage.py migrate &&
              python manage.py shell < create_superuser.py &&
              python manage.py runserver 0.0.0.0:8000"
+
+  redis:
+    image: redis:latest
+    container_name: redis-cache
+    restart: always
+    ports:
+      - "6379:6379"
+
   notification:
     build:
       context: ./notification_service

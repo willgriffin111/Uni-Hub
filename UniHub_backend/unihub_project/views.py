@@ -5,24 +5,42 @@ from django.utils import timezone
 from api.community.models import Community, CommunityEvent, CommunityRole
 from django.db.models import Count, Q
 from django.contrib.auth import get_user_model
+from django.core.cache import cache
 
 User = get_user_model()
 @login_required
 def home_page(request):
     """Render the home page with posts, top communities, 
-    and upcoming events ordered by attendee count."""
+    and upcoming events (posts are cached for 10 minutes per user)."""
     
-    posts = Post.objects.all().order_by('-created_at')  # Order by newest first
+    # Define a cache key unique for the current user.
+    cache_key = f"home_posts_user_{request.user.id}"
     current_time = timezone.now()
     
-    # Process posts: like count, user liked, comment count, etc.
-    for post in posts:
-        post.likes_count = post.likes.count()
-        post.liked = post.likes.filter(user=request.user).exists()
-        post.comments_count = post.comments.count()
-        post.can_edit = (current_time - post.created_at).total_seconds() <= 30 * 60
-    
-    # Retrieve top 3 communities with most members
+    # Attempt to retrieve the posts list from cache.
+    posts = cache.get(cache_key)
+    if posts is None:
+        print(f"\n Cache miss for key: {cache_key}. Querying database for posts.")
+        # Cache miss: Query the database and process posts.
+        posts = list(Post.objects.all().order_by('-created_at'))
+        for post in posts:
+            post.likes_count = post.likes.count()
+            post.liked = post.likes.filter(user=request.user).exists()
+            post.comments_count = post.comments.count()
+            post.can_edit = (current_time - post.created_at).total_seconds() <= 30 * 60
+        # Cache the posts list with a TTL of 600 seconds (10 minutes)
+        cache.set(cache_key, posts, timeout=600)
+        print(f"Set cache key: {cache_key} with {len(posts)} posts.")
+    else:
+        print(f"\n Cache hit for key: {cache_key}. Updating dynamic fields for {len(posts)} posts.")
+        # Cache hit: Update dynamic fields so that like and comment counts are current.
+        for post in posts:
+            post.likes_count = post.likes.count()
+            post.liked = post.likes.filter(user=request.user).exists()
+            post.comments_count = post.comments.count()
+            post.can_edit = (current_time - post.created_at).total_seconds() <= 30 * 60
+
+    # Retrieve top 3 communities with most members.
     top_communities = Community.objects.annotate(num_members=Count('members')).order_by('-num_members')[:3]
     
     now_date = current_time.date()
@@ -31,15 +49,11 @@ def home_page(request):
     ).order_by('-attendance_count')[:3]
     
     current_user = request.user
-    suggestions = User.objects.exclude(id=current_user.id)\
+    # Retrieve friend suggestions, excluding the current user and current friends.
+    suggestions_qs = User.objects.exclude(id=current_user.id)\
                     .exclude(id__in=current_user.friends.values_list('id', flat=True))[:3]
-    filtered_suggestions = []
-    for user in suggestions:
-        if str(user) != "root":
-            filtered_suggestions.append(user)
+    filtered_suggestions = [user for user in suggestions_qs if str(user) != "root"]
     suggestions = filtered_suggestions
-    # print(suggestions)
-
     return render(request, 'pages/home_page.html', {
         'posts': posts,
         'user': request.user,
