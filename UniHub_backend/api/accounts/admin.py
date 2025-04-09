@@ -1,26 +1,43 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .models import CustomUser
+from django.contrib.auth.models import Group
 
 class CustomUserAdmin(UserAdmin):
     model = CustomUser
-
-    # Display user details including email_verified
-    list_display = ['id', 'username', 'email', 'first_name', 'last_name', 'dob', 'university', 'student_id', 'user_type', 'email_verified']
-    list_filter = ['user_type', 'university', 'dob', 'email_verified']  # Add email_verified to filter options
-
-    # Allow editing `email_verified` in the user detail view
-    fieldsets = UserAdmin.fieldsets + (
-        (None, {'fields': ('dob', 'university', 'student_id', 'user_type', 'email_verified')}),
+    fieldsets = (
+        (None, {'fields': ('username', 'password')}),
+        ('Personal info', {
+            'fields': (
+                'first_name', 'last_name', 'email', 'dob', 'university', 
+                'student_id', 'profile_picture', 'bio', 'gender'
+            )
+        }),
+        ('Permissions', {
+            'fields': (
+                'is_active', 'is_staff', 'is_superuser', 
+                'groups', 'user_permissions'
+            )
+        }),
+        ('User Type', {'fields': ('user_type', 'email_verified')}),
+        ('Important dates', {'fields': ('last_login', 'date_joined')}),
     )
-
-    # Allow selecting `email_verified` when creating a new user
-    add_fieldsets = UserAdmin.add_fieldsets + (
-        (None, {'fields': ('dob', 'university', 'student_id', 'user_type', 'email_verified')}),
+    add_fieldsets = (
+        (None, {
+            'classes': ('wide',),
+            'fields': (
+                'username', 'email', 'password1', 'password2', 
+                'first_name', 'last_name', 'dob', 'university', 
+                'student_id', 'user_type'
+            ),
+        }),
     )
-
-    # Enable searching users by username, email, or university
-    search_fields = ['username', 'email', 'university']
-    ordering = ['id']
+    list_display = (
+        'username', 'email', 'first_name', 'last_name',
+        'user_type', 'is_staff', 'email_verified'
+    )
+    search_fields = ('username', 'email', 'first_name', 'last_name')
+    ordering = ('username',)
 
 admin.site.register(CustomUser, CustomUserAdmin)
+admin.site.unregister(Group)
