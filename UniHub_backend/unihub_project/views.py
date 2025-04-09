@@ -149,6 +149,8 @@ ROLE_HIERARCHY = {
 @login_required
 def community_view(request, community_name):
     community = get_object_or_404(Community, name=community_name)
+    if community.is_user_blocked(request.user):
+        return redirect('index_page')
     cache_key = f"posts"
     current_time = timezone.now()
     
@@ -260,6 +262,7 @@ def community_manage_view(request, community_name):
         role = CommunityRole.objects.filter(community=community, user=member).first()
         member.role = role
         member.role_level = ROLE_HIERARCHY.get(role.role, 0) if role else 0
+        member.is_blocked = community.is_user_blocked(member)
         
     members = sorted(members, key=lambda m: m.role_level, reverse=True)
         

@@ -23,4 +23,7 @@ urlpatterns = [
     
     path('api/community/promote/', PermoteMemberAPI.as_view(), name='api-promote-member'),
     path('api/community/demote/', DemoteMemberAPI.as_view(), name='api-demote-member'),
+    
+    path('api/community/block/', BlockMemberAPI.as_view(), name='api-block-member'),
+    path('api/community/unblock/', UnBlockMemberAPI.as_view(), name='api-unblock-member'),
 ]

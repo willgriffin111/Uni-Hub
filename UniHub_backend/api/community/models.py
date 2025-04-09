@@ -37,6 +37,10 @@ class Community(models.Model):
 
     def __str__(self):
         return self.name
+    
+    def is_user_blocked(self, user):
+        """Check if a user is blocked from this community."""
+        return self.blocked_users.filter(user=user).exists()
 
 ROLE_HIERARCHY = {
     'member': 1,
@@ -78,6 +82,29 @@ class CommunityRole(models.Model):
     def has_permission(self, required_role):
         """Checks if the user has the required permission level or higher."""
         return ROLE_HIERARCHY[self.role] >= ROLE_HIERARCHY[required_role]
+    
+    
+class CommunityBlock(models.Model):
+    """
+    Tracks users who are blocked from a specific community.
+    
+    Fields:
+      - user: The user who is blocked.
+      - community: The community from which they are blocked.
+      - reason: Optional reason for blocking.
+      - blocked_at: Timestamp of when the user was blocked.
+    """
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="community_blocks")
+    community = models.ForeignKey(Community, on_delete=models.CASCADE, related_name="blocked_users")
+    reason = models.TextField(blank=True, null=True)
+    blocked_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'community')
+
+    def __str__(self):
+        return f"{self.user.username} blocked from {self.community.name}"
+    
 
 # ARE WE STILL GOING TO DO THIS? - WILL
 # class VirtualSession(models.Model):

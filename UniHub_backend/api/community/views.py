@@ -5,7 +5,7 @@ from rest_framework import generics, permissions, status
 from django.http import JsonResponse
 import os
 from django.core.files import File
-from .models import Community, CommunityRole, CommunityEvent, CommunityEventAttendance
+from .models import Community, CommunityRole, CommunityEvent, CommunityEventAttendance, CommunityBlock
 from api.accounts.models import CustomUser
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
@@ -300,12 +300,11 @@ class DemoteMemberAPI(APIView):
         You cannot demote yourself.
         You can only demote users with a lower role.
         """
-        print("hello")
         community_id = request.data.get('community_id')
         demote_user_id = request.data.get('demote_user_id')
         demote_role = request.data.get('demote_role') 
         user = request.user
-        print(demote_user_id, demote_role)
+        
 
         community = get_object_or_404(Community, id=community_id)
         demote_user = get_object_or_404(CustomUser, id=demote_user_id)
@@ -342,3 +341,61 @@ class DemoteMemberAPI(APIView):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
+        
+class BlockMemberAPI(APIView):
+    """
+    Allows an admin or community leader to block a user from a community.
+    """
+    permission_classes = [IsAuthenticated]
+    
+    def post(self, request):
+        community = get_object_or_404(Community, id=request.data.get('community_id'))
+        block_user = get_object_or_404(CustomUser, id=request.data.get('user_id'))
+        reason = request.data.get('reason')
+        user = request.user
+
+        if user == block_user:
+            return Response({"detail": "You cannot block yourself."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Check that both the requester and target have roles in the community
+        user_role = get_object_or_404(CommunityRole, user=user, community=community)
+        block_user_role = get_object_or_404(CommunityRole, user=block_user, community=community)
+
+        user_role_level = ROLE_HIERARCHY.get(user_role.role, 0)
+        if user_role_level < 3:
+            return Response({"detail": "You must be a community leader or higher to block users."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        
+        # Create a new block entry
+        CommunityBlock.objects.create(user=block_user, community=community, reason=reason)
+        
+        return Response({"detail": f"{block_user.username} was blocked."}, status=status.HTTP_200_OK)
+    
+    
+class UnBlockMemberAPI(APIView):
+    """
+    Allows an admin or community leader to unblock a user from a community.
+    """
+    permission_classes = [IsAuthenticated]
+    
+    def post(self, request):
+        community = get_object_or_404(Community, id=request.data.get('community_id'))
+        unblock_user = get_object_or_404(CustomUser, id=request.data.get('user_id'))
+        user = request.user
+        
+        if user == unblock_user:
+            return Response({"detail": "You cannot unblock yourself."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Check that both the requester and target have roles in the community
+        user_role = get_object_or_404(CommunityRole, user=user, community=community)
+        block_user_role = get_object_or_404(CommunityRole, user=unblock_user, community=community)
+
+        user_role_level = ROLE_HIERARCHY.get(user_role.role, 0)
+        if user_role_level < 3:
+            return Response({"detail": "You must be a community leader or higher to unblock users."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Delete the block entry
+        CommunityBlock.objects.filter(user=unblock_user, community=community).delete()
+        
+        # Optionally send a notification or handle additional logic
+        return Response({"detail": f"{unblock_user.username} was unblocked."}, status=status.HTTP_200_OK)

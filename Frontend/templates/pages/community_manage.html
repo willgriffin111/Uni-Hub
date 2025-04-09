@@ -63,7 +63,7 @@
                     <h3 class="section-title">Members</h3>
                     <div class="members-grid">
                         {% for member in members %}
-                        {% if member.role.role == "member" %}
+                        {% if member.role.role == "member" and not member.is_blocked %}
                         <div class="member-card" data-name="{{ member.username|lower }}">
                             <div class="member-avatar">
                                 <img src="{{ member.profile_picture.url }}" alt="{{ member.username }}">
@@ -82,17 +82,42 @@
                                     </select>
                                     <button type="submit" class="btn btn-sm btn-success">Update Role</button>
                                 </form>
+    
+                                <!-- Block User Button -->
+                                <form onsubmit="blockMember(event, {{ member.id }}, {{ community.id }})" >
+                                    <button type="submit" class="btn btn-sm btn-danger">Block</button>
+                                </form>
                             </div>
                         </div>
                         {% endif %}
                         {% endfor %}
                     </div>
 
-                    <!-- Pagination -->
-                    <div class="pagination-container mt-4 d-flex justify-content-center">
-                        <button class="pagination-btn prev-btn" disabled><i class="fa-solid fa-chevron-left"></i></button>
-                        <button class="pagination-btn next-btn"><i class="fa-solid fa-chevron-right"></i></button>
+                    <!-- Blocked Users Section -->
+                    <div class="members-section mt-4">
+                        <h3 class="section-title">Blocked Users</h3>
+                        <div class="members-grid">
+                            {% for member in members %}
+                            {% if member.is_blocked %}
+                            <div class="member-card" data-name="{{ member.username|lower }}">
+                                <div class="member-avatar">
+                                    <img src="{{ member.profile_picture.url }}" alt="{{ member.username }}">
+                                </div>
+                                <div class="member-info">
+                                    <h4 class="member-name">{{ member.username }}</h4>
+                                    <p class="member-role">Blocked User</p>
+                                </div>
+                                <div class="d-flex gap-2">
+                                    <form onsubmit="unblockMember(event, {{ member.id }}, {{ community.id }})">
+                                        <button type="submit" class="btn btn-sm btn-danger">Unblock</button>
+                                    </form>
+                                </div>
+                            </div>
+                            {%endif%}
+                            {% endfor %}
+                        </div>
                     </div>
+
                 </div>
             </div>
         </div>
@@ -198,6 +223,102 @@
             });
         });
         
+
+            document.getElementById('memberSearchInput').addEventListener('input', function () {
+                const searchTerm = this.value.toLowerCase();
+                const memberCards = document.querySelectorAll('.member-card');
+        
+                memberCards.forEach(card => {
+                    const name = card.dataset.name;
+                    if (name.includes(searchTerm)) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+
+
+
+            async function blockMember(event, memberId, communityId) {
+                event.preventDefault(); // Prevent form from submitting normally
+            
+                const form = event.target;
+                const csrfToken = getCSRFToken();
+
+                const reason = prompt("Please provide a reason for blocking this user:");
+
+                // If the reason is empty or the user cancels, don't proceed
+                if (!reason) {
+                    alert("Reason is required.");
+                    return;
+                }
+            
+                const data = {
+                    community_id: communityId,
+                    user_id: memberId,
+                    reason: reason
+                };
+            
+                try {
+                    const response = await fetch("{% url 'api-block-member' %}", {
+                        method: "POST",
+                        credentials: "include",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRFToken": csrfToken
+                        },
+                        body: JSON.stringify(data)
+                    });
+            
+                    const result = await response.json();
+                    if (response.ok) {
+                        alert(result.detail || "User blocked successfully!");
+                        window.location.reload();
+                    } else {
+                        alert(result.detail || "Error blocking user.");
+                    }
+                } catch (error) {
+                    console.error("Network error:", error);
+                    alert("Network error while blocking user.");
+                }
+            }
+
+            async function unblockMember(event, memberId, communityId) {
+                event.preventDefault(); // Prevent form from submitting normally
+            
+                const form = event.target;
+                const csrfToken = getCSRFToken();
+
+            
+                const data = {
+                    community_id: communityId,
+                    user_id: memberId,
+                };
+            
+                try {
+                    const response = await fetch("{% url 'api-unblock-member' %}", {
+                        method: "POST",
+                        credentials: "include",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRFToken": csrfToken
+                        },
+                        body: JSON.stringify(data)
+                    });
+            
+                    const result = await response.json();
+                    if (response.ok) {
+                        alert(result.detail || "User unblocked successfully!");
+                        window.location.reload();
+                    } else {
+                        alert(result.detail || "Error unblocking user.");
+                    }
+                } catch (error) {
+                    console.error("Network error:", error);
+                    alert("Network error while unblocking user.");
+                }
+            }
         </script>
 </body>
 </html>
