@@ -38,7 +38,7 @@ class PostListCreateViewAPI(generics.ListCreateAPIView):
         # Save post with user and optional community
         serializer.save(user=self.request.user, image=image, community=community_obj if community else None)
         
-        cache_key = f"home_posts_user_{self.request.user.id}"
+        cache_key = f"posts"
         cache.delete(cache_key)
 
     def get_serializer_context(self):
@@ -66,7 +66,7 @@ class PostEditAPI(APIView):
 
         post.save()
         
-        cache_key = f"home_posts_user_{self.request.user.id}"
+        cache_key = f"posts"
         cache.delete(cache_key)
 
         return Response(PostSerializer(post).data, status=status.HTTP_200_OK)
@@ -79,7 +79,7 @@ class PostDeleteAPI(APIView):
         post.image.delete(save=False) 
         post.delete()
         
-        cache_key = f"home_posts_user_{self.request.user.id}"
+        cache_key = f"posts"
         cache.delete(cache_key)
 
         return redirect('index_page')

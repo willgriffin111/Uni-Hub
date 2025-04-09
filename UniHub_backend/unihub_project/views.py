@@ -14,7 +14,7 @@ def home_page(request):
     and upcoming events (posts are cached for 10 minutes per user)."""
     
     # Define a cache key unique for the current user.
-    cache_key = f"home_posts_user_{request.user.id}"
+    cache_key = f"posts"
     current_time = timezone.now()
     
     # Attempt to retrieve the posts list from cache.
@@ -78,7 +78,7 @@ def Verify_view(request):
 
 @login_required
 def profile_view(request):
-    cache_key = f"home_posts_user_{request.user.id}"
+    cache_key = f"posts"
     current_time = timezone.now()
     # Retrieve the posts from the home page cache.
     posts_all = cache.get(cache_key)
@@ -139,7 +139,7 @@ def search_view(request):
 @login_required
 def community_view(request, community_name):
     community = get_object_or_404(Community, name=community_name)
-    cache_key = f"home_posts_user_{request.user.id}"
+    cache_key = f"posts"
     current_time = timezone.now()
     
     posts_all = cache.get(cache_key)
@@ -218,7 +218,7 @@ def event_edit_view(request, event_id):
 @login_required
 def user_profile_page(request, username):
     selected_user = get_object_or_404(User, username=username)
-    cache_key = f"home_posts_user_{request.user.id}"
+    cache_key = f"posts"
     current_time = timezone.now()
     
     posts_all = cache.get(cache_key)
