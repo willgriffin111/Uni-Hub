@@ -10,6 +10,7 @@ from django.db.models import Q
 from api.community.models import Community, CommunityRole
 from rest_framework.permissions import IsAuthenticated
 from django.core.cache import cache
+from api.community.models import Community,CommunityRole
 
 User = get_user_model()
 
@@ -183,3 +184,34 @@ class TagSearchAPI(APIView):
             posts = Post.objects.none()
         serializer = PostSerializer(posts, many=True, context={'request': request})
         return Response(serializer.data)
+    
+    
+    
+#community post delete
+
+#special post deleate for community leaders for posts in their community
+class CommunityPostDeleteAPI(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def post(self, request,post_id, community_id):
+        user = request.user
+        
+        community = get_object_or_404(Community, id=community_id)
+        post = get_object_or_404(Post, id=post_id, community=community)
+        
+        user_role = get_object_or_404(CommunityRole,user=user, community_id=community)
+        
+        
+        if not (CommunityRole.has_permission(user_role, 'community_leader')):
+            return Response({"detail": "You do not have permission to remove this post"}, status=status.HTTP_400)
+            
+        
+        post.image.delete(save=False) 
+        post.delete()
+        
+        cache_key = f"posts"
+        cache.delete(cache_key)
+
+        return redirect('community_page', community.name)
+
+        

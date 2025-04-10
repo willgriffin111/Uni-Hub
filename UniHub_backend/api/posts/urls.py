@@ -16,4 +16,7 @@ urlpatterns = [
     path('search/users/', views.UserSearchAPI.as_view(), name="search_users"),
     
     path('tags/search/', TagSearchAPI.as_view(), name='api-tag-search'),
+    
+     path('delete-post/<int:post_id>/', views.PostDeleteAPI.as_view(), name="delete_post"),
+     path('post-delete-community/<int:post_id>/<int:community_id>/', views.CommunityPostDeleteAPI.as_view(), name='community-delete-post')
 ]
