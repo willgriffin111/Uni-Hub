@@ -12,3 +12,4 @@ uvicorn
 requests
 redis
 django-redis
+django-unfold

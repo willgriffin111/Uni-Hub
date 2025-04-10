@@ -1,0 +1,13 @@
+
+input[type="text"],
+input[type="email"],
+input[type="number"],
+option,
+textarea {
+    background-color: #ffffff;  
+    color: #000000;  
+    border: none;           
+}
+
+
+

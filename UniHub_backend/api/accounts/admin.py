@@ -13,12 +13,6 @@ class CustomUserAdmin(UserAdmin):
                 'student_id', 'profile_picture', 'bio', 'gender'
             )
         }),
-        ('Permissions', {
-            'fields': (
-                'is_active', 'is_staff', 'is_superuser', 
-                'groups', 'user_permissions'
-            )
-        }),
         ('User Type', {'fields': ('user_type', 'email_verified')}),
         ('Important dates', {'fields': ('last_login', 'date_joined')}),
     )
