@@ -6,9 +6,13 @@ from api.community.models import Community, CommunityEvent, CommunityRole
 from django.db.models import Count, Q
 from django.contrib.auth import get_user_model
 from django.core.cache import cache
+from .decorators import verification_required
 
 User = get_user_model()
+
+
 @login_required
+@verification_required
 def home_page(request):
     """Render the home page with posts, top communities, 
     and upcoming events (posts are cached for 10 minutes per user)."""
@@ -70,12 +74,16 @@ def register_view(request):
     """Render the register page."""
     return render(request, "pages/register.html")
 
-@login_required
 def Verify_view(request):
-    """Render the one time password page."""
-    return render(request, "pages/OTP.html")
+    if not request.session.get('otp_code'):
+        if request.user.is_authenticated:
+            return redirect('/profile/')
+        else:
+            return redirect('/login/')
+    return render(request, 'pages/OTP.html')
 
 
+@verification_required
 @login_required
 def profile_view(request):
     cache_key = f"posts"
@@ -111,28 +119,39 @@ def profile_view(request):
             user_posts.append(post)
     
     return render(request, "pages/profile.html", {"user": request.user, "posts": user_posts})
+
+@login_required
+@verification_required
 def profile_edit_view(request):
     """Render the profile edit page."""
     return render(request, "pages/profile_edit.html")
 
-
+@login_required
+@verification_required
 def edit_post(request, post_id):
     # Get the post ID from the URL
     post = get_object_or_404(Post, id=post_id)  # Ensure the post exists
     return render(request, 'pages/post_edit.html', {'post': post})
 
+@login_required
+@verification_required
 def password_reset_view(request):
     return render(request, "pages/password_reset.html")
 
+@verification_required
+@login_required
 def password_reset_confirm_view(request):
     return render(request, "pages/password_reset_confirm.html")
 
 @login_required
+@verification_required
 def edit_comment_view(request, comment_id):
     """Render the edit comment page."""
     comment = get_object_or_404(Comment, id=comment_id, user=request.user)  # Ensure only the owner can edit
     return render(request, 'pages/edit_comment.html', {'comment': comment})
 
+@login_required
+@verification_required
 def search_view(request):
     return render(request, 'pages/search.html')
 
@@ -146,6 +165,7 @@ ROLE_HIERARCHY = {
         "admin": 4,
     }
 
+@verification_required
 @login_required
 def community_view(request, community_name):
     community = get_object_or_404(Community, name=community_name)
@@ -215,12 +235,14 @@ def community_view(request, community_name):
         "is_creator": is_creator,
     })
 
+@verification_required
 @login_required
 def community_list_view(request):
     """Show a list of communities."""
     communities = Community.objects.all()  # Fetch all communities
     return render(request, "pages/community_create.html", {"communities": communities})
 
+@verification_required
 @login_required
 def community_create_page(request):
     """Render the form to create a new community."""
@@ -228,6 +250,7 @@ def community_create_page(request):
 
     return render(request, "pages/community.html", {'community': community, 'posts': posts, "user": request.user})
 
+@verification_required
 @login_required
 def community_edit_view(request, community_name):
     community = get_object_or_404(Community, name=community_name)
@@ -244,6 +267,7 @@ def community_edit_view(request, community_name):
     
     return render(request, "pages/community_edit.html", {'community': community, "user": request.user})
 
+@verification_required
 @login_required
 def community_manage_view(request, community_name):
     community = get_object_or_404(Community, name=community_name)
@@ -270,12 +294,14 @@ def community_manage_view(request, community_name):
     
     return render(request, "pages/community_manage.html", {'community': community, "members": members, "user": request.user, "user_role_level": user_role_level, "is_creator": is_creator})
 
-
+@login_required
+@verification_required
 def event_edit_view(request, event_id):
     event = get_object_or_404(CommunityEvent, id=event_id)
     return render(request, 'pages/event_edit.html', {'event': event})
 
 @login_required
+@verification_required
 def user_profile_page(request, username):
     selected_user = get_object_or_404(User, username=username)
     cache_key = f"posts"
@@ -318,6 +344,7 @@ def user_profile_page(request, username):
 # THESE ARE OLD VIEWS:
 
 @login_required
+@verification_required
 def post_view(request):
     """Render the profile page (requires login)."""
     return render(request, "pages/posts.html", {"user": request.user})
@@ -325,6 +352,7 @@ def post_view(request):
 
 
 @login_required
+@verification_required
 def dashboard_view(request):
     """Render the dashboard page (requires login)."""
     return render(request, "pages/dashboard.html", {"user": request.user})
