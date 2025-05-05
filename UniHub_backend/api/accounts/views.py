@@ -257,6 +257,7 @@ class ProfileUpdateAPI(APIView):
         user.last_name = data.get('last_name', user.last_name)
         user.username = data.get('username', user.username)
         user.email = data.get('email', user.email)
+        user.address = data.get('address', user.address)
 
         # Handle date of birth correctly
         dob = data.get('dob')

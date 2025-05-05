@@ -1,13 +1,20 @@
 import os
 import time
+import logging
 import pyotp
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 
-# Define base directory as the directory of this file
+logging.basicConfig(
+    level=logging.DEBUG,
+    format="%(asctime)s %(levelname)s %(name)s: %(message)s",
+)
+logger = logging.getLogger(__name__)
+
+logging.getLogger("python_http_client").setLevel(logging.INFO) # Stop email template debug logs
+
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-# In-memory store for OTPs (for production, consider a database or Redis)
 otp_store = {}
 
 def generate_otp(email):
@@ -15,6 +22,9 @@ def generate_otp(email):
     totp = pyotp.TOTP(secret)
     otp = totp.now()
     otp_store[email] = {"otp": otp, "secret": secret, "timestamp": time.time()}
+
+    logger.debug(f"Generated OTP for {email}: {otp}")
+    logger.debug(f"Stored secret for {email}: {secret}")
     return otp
 
 def load_email_template(filename, otp_code):

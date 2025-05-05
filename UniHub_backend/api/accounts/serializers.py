@@ -9,7 +9,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
         model = User
         fields = [
             'id', 'username', 'email', 'first_name',
-            'last_name', 'dob', 'university', 'student_id', 'user_type'
+            'last_name', 'dob', 'university', 'student_id', 'user_type', 'address'
         ]
 
 
@@ -22,7 +22,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         model = User
         fields = [
             'username', 'email', 'password', 'first_name',
-            'last_name', 'dob', 'university', 'student_id', 'user_type',
+            'last_name', 'dob', 'university', 'student_id', 'user_type', 'address',
             'profile_picture',
             'bio',
             'gender',
@@ -39,5 +39,6 @@ class RegisterSerializer(serializers.ModelSerializer):
             dob=validated_data.get('dob'),
             university=validated_data.get('university', ''),
             student_id=validated_data.get('student_id', ''),
-            user_type=validated_data.get('user_type', 'student')
+            user_type=validated_data.get('user_type', 'student'),
+            address=validated_data.get('address', '')
         )
