@@ -13,6 +13,8 @@ from django.contrib.auth import get_user_model
 from rest_framework.permissions import IsAuthenticated
 from django.core.files.storage import default_storage
 from django.db.models import Q
+import requests
+from datetime import datetime
 
 
 class CommunityEditAPI(APIView):
@@ -163,26 +165,62 @@ class MarkAttendanceAPI(APIView):
 
     def post(self, request, event_id):
         event = get_object_or_404(CommunityEvent, id=event_id)
-        community = event.community
-        user_role = CommunityRole.objects.filter(user=request.user, community=community).first()
+        role = CommunityRole.objects.filter(
+            user=request.user,
+            community=event.community
+        ).first()
+        if not role or not role.has_permission("member"):
+            return JsonResponse(
+                {"detail": "You must be a member to attend."},
+                status=403
+            )
 
-        if not user_role or not user_role.has_permission('member'):
-            return Response({"detail": "You must be apart of this community to attend."}, status=status.HTTP_403_FORBIDDEN)
-        
-        status_choice = request.data.get('status')
+        existing = CommunityEventAttendance.objects.filter(
+            user=request.user,
+            event=event
+        ).first()
 
-        if status_choice not in ['yes', 'no']:
-            return Response({"detail": "Invalid status. Use 'yes' or 'no'."},
-                            status=status.HTTP_400_BAD_REQUEST)
+        if existing:
+            new_status = "no" if existing.status == "yes" else "yes"
+        else:
+            new_status = "yes"
 
-        attendance, created = CommunityEventAttendance.objects.update_or_create(
+        attendance, _ = CommunityEventAttendance.objects.update_or_create(
             user=request.user,
             event=event,
-            defaults={'status': status_choice}
+            defaults={"status": new_status}
         )
 
-        return Response({"detail": f"Marked as {status_choice} for event '{event.title}'"},
-                        status=status.HTTP_200_OK)
+        if new_status == "yes":
+            event_dt = datetime.combine(event.event_date, event.event_time)
+            payload = {
+                "email":             request.user.email,
+                "event_title":       event.title,
+                "event_description": event.description,
+                "event_date":        event_dt.strftime("%B %d, %Y"),
+                "event_time":        event_dt.strftime("%I:%M %p"),
+                "event_location":    event.location or "To be announced",
+            }
+            try:
+                resp = requests.post(
+                    "http://notification:8001/send-event-confirmation",
+                    json=payload,
+                    timeout=5
+                )
+                if resp.status_code != 200:
+                    print(
+                        f"Notif svc error {resp.status_code}: {resp.text}"
+                    )
+            except Exception as e:
+                print(f"Error calling notification svc: {e}")
+
+        return JsonResponse(
+            {
+                "detail": f"Attendance marked as '{new_status}'",
+                "status":  new_status
+            },
+            status=200
+        )
 
 
 class AttendanceListAPI(APIView):

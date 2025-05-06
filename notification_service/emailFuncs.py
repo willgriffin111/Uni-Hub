@@ -79,3 +79,38 @@ def send_email_password_reset(email, reset_link):
     except Exception as e:
         print(f"Error sending email: {e}")
         raise
+
+def load_email_template_event_confirmation(filename, title, description, date, time, location):
+    template_path = os.path.join(BASE_DIR, filename)
+    try:
+        with open(template_path, "r", encoding="utf-8") as f:
+            html = f.read()
+    except FileNotFoundError:
+        logger.error(f"Template not found: {template_path}")
+        return None
+
+    html = html.replace("{{EVENT_TITLE}}", title)
+    html = html.replace("{{EVENT_DESCRIPTION}}", description)
+    html = html.replace("{{EVENT_DATE}}", date)
+    html = html.replace("{{EVENT_TIME}}", time)
+    html = html.replace("{{EVENT_LOCATION}}", location)
+    return html
+
+def send_event_confirmation_email(email, title, description, date, time, location):
+    body = load_email_template_event_confirmation(
+        "event_confirmation_template.html",
+        title, description, date, time, location
+    )
+    if body is None:
+        raise RuntimeError("Event confirmation template missing")
+
+    message = Mail(
+        from_email="donotreply@unihub.help",
+        to_emails=email,
+        subject=f"You're attending: {title}",
+        html_content=body
+    )
+    sg = SendGridAPIClient(os.environ["SENDGRID_API_KEY"])
+    resp = sg.send(message)
+    logger.info(f"Sent event-confirm email to {email}, status={resp.status_code}")
+    return resp.status_code
