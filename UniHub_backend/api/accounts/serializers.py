@@ -9,7 +9,9 @@ class CustomUserSerializer(serializers.ModelSerializer):
         model = User
         fields = [
             'id', 'username', 'email', 'first_name',
-            'last_name', 'dob', 'university', 'student_id', 'user_type', 'address'
+            'last_name', 'dob', 'university', 'student_id', 'user_type', 'address',
+            'course', 'year_of_ study', 'intrests', 
+            
         ]
 
 
@@ -26,6 +28,7 @@ class RegisterSerializer(serializers.ModelSerializer):
             'profile_picture',
             'bio',
             'gender',
+            'course', 'year_of_ study', 'intrests'
         ]
 
     def create(self, validated_data):
@@ -40,5 +43,8 @@ class RegisterSerializer(serializers.ModelSerializer):
             university=validated_data.get('university', ''),
             student_id=validated_data.get('student_id', ''),
             user_type=validated_data.get('user_type', 'student'),
-            address=validated_data.get('address', '')
+            address=validated_data.get('address', ''),
+            course=validated_data.get('course', ''),
+            year_of_study=validated_data.get('year_of_study', ''),
+            intrests=validated_data.get('intrests', ''),
         )

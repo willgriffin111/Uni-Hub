@@ -267,6 +267,10 @@ class ProfileUpdateAPI(APIView):
         user.student_id = data.get('student_id', user.student_id)
         user.bio = data.get('bio', user.bio)
         user.gender = data.get('gender', user.gender)
+        
+        user.course = data.get('course', user.course)
+        user.year_of_study = data.get('year_of_study', user.year_of_study)
+        user.intrests = data.get('intrests', user.intrests)
 
         try:
             user.save()
@@ -281,11 +285,15 @@ class ProfileUpdateAPI(APIView):
                 "last_name": user.last_name,
                 "username": user.username,
                 "email": user.email,
+                "address": user.address,
                 "dob": user.dob,
                 "university": user.university,
                 "student_id": user.student_id,
                 "bio": user.bio,
                 "gender": user.gender,
+                "course": user.course,
+                "year_of_study": user.year_of_study,
+                "intrests": user.intrests,
             }
         }, status=status.HTTP_200_OK)
 

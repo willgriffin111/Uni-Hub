@@ -26,7 +26,7 @@
         <div class="col-md-4">
           <div class="card mb-4">
             <div class="card-header">
-              <h3>Profile Photo</h3>
+              <h3>Profile Photo &amp; Academics</h3>
             </div>
             <div class="card-body text-center">
                 {% if user.profile_picture %}
@@ -46,7 +46,41 @@
                     <button type="button" class="btn btn-danger mt-2" id="removeProfilePictureBtn">Remove Profile Picture</button>
                 {% endif %}
             </div>
-            
+            <div class="mb-3 text-start">
+              <label for="university" class="form-label">University</label>
+              <input type="text" 
+                     class="form-control" 
+                     id="university" 
+                     name="university" 
+                     value="{{ user.university }}">
+            </div>
+
+            <div class="mb-3 text-start">
+              <label for="course_program" class="form-label">Course / Program</label>
+              <input type="text" 
+                     class="form-control" 
+                     id="course_program" 
+                     name="course" 
+                     value="{{ user.course }}">
+            </div>
+            <div class="mb-3 text-start">
+              <label for="year" class="form-label">Year</label>
+              <input type="number" 
+                     class="form-control" 
+                     id="year" 
+                     name="year_of_study" 
+                     min="1" max="10" 
+                     value="{{ user.year_of_study }}">
+            </div>
+            <div class="mb-3 text-start">
+              <label for="interests" class="form-label">Interests</label>
+              <input type="text" 
+                     class="form-control" 
+                     id="interests" 
+                     name="intrests" 
+                     placeholder="e.g. Robotics, Literature" 
+                     value="{{ user.intrests }}">
+            </div>
           </div>
         </div>
 
@@ -81,10 +115,6 @@
                 <label for="address" class="form-label">Address</label>
                 <input type="text" class="form-control" id="address" name="address" value="{{ user.address }}">
               <div class="mb-3">
-                <label for="university" class="form-label">University</label>
-                <input type="text" class="form-control" id="university" name="university" value="{{ user.university }}">
-              </div>
-              <div class="mb-3">
                 <label for="student_id" class="form-label">Student ID</label>
                 <input type="text" class="form-control" id="student_id" name="student_id" value="{{ user.student_id }}">
               </div>
@@ -109,6 +139,7 @@
           </div>
         </div>
       </div>
+    </div>
       <!-- Submit Button -->
       <div class="text-center mb-4">
         <button type="submit" class="btn btn-success" >Save Changes</button>
