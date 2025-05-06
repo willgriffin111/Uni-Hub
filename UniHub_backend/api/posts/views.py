@@ -151,27 +151,35 @@ class CommentEditAPI(APIView):
 This API view allows authenticated users to search for other users by username
 """
 class UserSearchAPI(APIView):
-    permission_classes = [permissions.IsAuthenticated]  
+    permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request):
-        query = request.GET.get('query', None)
-        if query:
-            user_profile_list = User.objects.filter(    # filters based on username, provided from search query
-                Q(username__icontains=query)
-            ).exclude(id=request.user.id) # dont't include the current user
+        query = request.GET.get('query', '').strip()
+        if not query:
+            return Response(
+                {"message": "No search query provided."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
-            users_data = [
-                {
-                    "username": user.username, 
-                    "user_type": user.user_type,
-                    "university": user.university
-                } 
-                for user in user_profile_list
-            ]
-            return Response(users_data, status=status.HTTP_200_OK)
-        else:
-            return Response({"message": "No search query provided."}, status=status.HTTP_400_BAD_REQUEST)
+        # ive spelt interests wrong in the model and i cba to fix it but i think im the only one using it 
+        users = User.objects.filter(
+            Q(username__icontains=query) |
+            Q(course__icontains=query) |
+            Q(intrests__icontains=query)
+        ).exclude(id=request.user.id)
 
+        users_data = []
+        for u in users:
+            users_data.append({
+                "username":     u.username,
+                "user_type":    u.user_type,
+                "university":   u.university,
+                "course":       u.course,
+                "year_of_study":u.year_of_study,
+                "intrests":    u.intrests,    # here too
+            })
+
+        return Response(users_data, status=status.HTTP_200_OK)
 
 class TagSearchAPI(APIView):
     permission_classes = [IsAuthenticated]
