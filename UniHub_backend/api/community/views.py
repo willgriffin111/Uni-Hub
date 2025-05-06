@@ -99,7 +99,7 @@ class CreateCommunityView(generics.CreateAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         # Save the community with created_by as the current user.
-        community = serializer.save(created_by=request.user)
+        community = serializer.save(created_by=request.user)            
         # Add creator as a member and assign the admin role.
         community.members.add(request.user)
         CommunityRole.objects.create(user=request.user, community=community, role='community_leader')

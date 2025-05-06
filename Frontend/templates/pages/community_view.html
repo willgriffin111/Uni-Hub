@@ -112,10 +112,13 @@
                         <div class="content-card">
                             <h2 class="card-title">About Us</h2>
                             <div class="about-content">
-                                <p>{{ community.description }}</p>
+                                <p>Description: {{ community.description }}</p>
                             </div>
+                            <div class="tags-list">
+                                <p> Tags: {{ community.tags }}</p>
+                            </div>
+
                         </div>
-                        
                         <!-- Leadership/Roles Card -->
                         <div class="content-card">
                             <h2 class="card-title">Leadership</h2>
@@ -137,7 +140,7 @@
                         </div>
                         
                         <!-- Contact Info Card -->
-                        <div class="content-card">
+                        {% comment %} <div class="content-card">
                             <h2 class="card-title">Contact Information</h2>
                             <div class="contact-list">
                                 <div class="contact-item">
@@ -157,7 +160,7 @@
                                     <span>Weekly Meetings: Tuesdays, 5:30 PM - 7:30 PM</span>
                                 </div>
                             </div>
-                        </div>
+                        </div> {% endcomment %}
                         
                         <!-- Community Details Card -->
                         <div class="content-card">
@@ -165,19 +168,11 @@
                             <div class="details-list">
                                 <div class="detail-item">
                                     <div class="detail-label">Created</div>
-                                    <div class="detail-value">September 10, 2024</div>
+                                    <div class="detail-value"> {{ community.created_at}}</div>
                                 </div>
                                 <div class="detail-item">
-                                    <div class="detail-label">Category</div>
-                                    <div class="detail-value">Study Group</div>
-                                </div>
-                                <div class="detail-item">
-                                    <div class="detail-label">Department</div>
-                                    <div class="detail-value">Computer Science</div>
-                                </div>
-                                <div class="detail-item">
-                                    <div class="detail-label">Visibility</div>
-                                    <div class="detail-value">Public</div>
+                                <div class = "detail-label"> Contact Email</div>
+                                <div class = "detail-value"> {{ community.contact_email }}</div>
                                 </div>
                             </div>
                         </div>

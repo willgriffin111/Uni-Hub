@@ -29,6 +29,7 @@ class Community(models.Model):
     contact_email = models.EmailField()
     created_at = models.DateTimeField(auto_now_add=True)
     
+    tags = models.TextField(blank=True)
     members = models.ManyToManyField(
         settings.AUTH_USER_MODEL,
         related_name="joined_communities",
