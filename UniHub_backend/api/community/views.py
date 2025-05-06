@@ -234,7 +234,7 @@ class CommunitySearchAPI(APIView):
         query = request.query_params.get('query', '').strip()
         if query:
             communities = Community.objects.filter(
-                Q(name__icontains=query) | Q(description__icontains=query)
+                Q(name__icontains=query) | Q(description__icontains=query) | Q(tags__icontains=query)
             )
         else:
             communities = Community.objects.none()
