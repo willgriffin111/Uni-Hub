@@ -37,7 +37,7 @@ class CommunityEventSerializer(serializers.ModelSerializer):
     class Meta:
         model = CommunityEvent
         fields = [
-            'id', 'title', 'description', 'event_date', 'event_time', 
+            'id', 'title', 'description', 'event_date', 'event_time', 'max_attendees', 'requred_materials',
             'location', 'attendance_count', 'attendees', 'is_user_attending'
         ]
 

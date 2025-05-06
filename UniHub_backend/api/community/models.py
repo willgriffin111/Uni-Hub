@@ -165,6 +165,9 @@ class CommunityEvent(models.Model):
     location = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    
+    max_attendees = models.PositiveIntegerField(default=100)    
+    requred_materials = models.TextField(blank=True)
 
     def __str__(self):
         return f"{self.title} - {self.event_date} ({self.community.name})"

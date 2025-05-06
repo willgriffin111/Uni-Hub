@@ -2,113 +2,192 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UNI-HUB</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Fontawesome -->
-    <script src="https://kit.fontawesome.com/c43d240003.js" crossorigin="anonymous"></script>
-    <!-- Custom Stylesheets -->
-    <link rel="stylesheet" href="{% static 'nav_footer.css' %}">
-    <link rel="stylesheet" href="{% static 'create_post.css' %}">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UNI-HUB</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Fontawesome -->
+  <script src="https://kit.fontawesome.com/c43d240003.js" crossorigin="anonymous"></script>
+  <!-- Custom Stylesheets -->
+  <link rel="stylesheet" href="{% static 'nav_footer.css' %}">
+  <link rel="stylesheet" href="{% static 'create_post.css' %}">
 </head>
 <body>
-    <!-- Header -->
-    {% include '../includes/header.html' %}
+  {% include '../includes/header.html' %}
 
-    <!-- Event Edit Page -->
-    <div class="container community-container">
-        <!-- Page Header -->
-        <div class="page-header">
-            <h1>Edit Event</h1>
-            <p>Update the details of your event</p>
-        </div>
-
-        <div class="centered-form-container">
-            <div class="profile-card">
-                <div class="card-header">
-                    <h3>Event Details</h3>
-                </div>
-                <div class="card-body">
-                    <form id="editEventForm" class="community-form">
-                        {% csrf_token %}
-                        <div class="form-group">
-                            <label for="eventTitle">Title</label>
-                            <input type="text" id="eventTitle" name="title" class="form-input" value="{{ event.title }}" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="eventDescription">Description</label>
-                            <textarea id="eventDescription" name="description" class="form-textarea" rows="6" required>{{ event.description }}</textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="eventDate">Date</label>
-                            <input type="date" id="eventDate" name="event_date" class="form-input" value="{{ event.event_date }}" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="eventTime">Time</label>
-                            <input type="time" id="eventTime" name="event_time" class="form-input" value="{{ event.event_time }}" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="eventLocation">Location</label>
-                            <input type="text" id="eventLocation" name="location" class="form-input" value="{{ event.location }}" required>
-                        </div>
-                        <div class="form-actions">
-                            <button type="submit" class="submit-btn">Update Event</button>
-                        </div>
-                    </form>
-                    <p id="responseMessage"></p>  
-                </div>
-            </div>
-        </div>
+  <div class="container community-container">
+    <div class="page-header">
+      <h1>Edit Event</h1>
+      <p>Update the details of your event</p>
     </div>
 
-    <!-- Footer -->
-    {% include '../includes/footer.html' %}
+    <div class="centered-form-container">
+      <div class="profile-card">
+        <div class="card-header">
+          <h3>Event Details</h3>
+        </div>
+        <div class="card-body">
+          <form id="editEventForm" class="community-form">
+            {% csrf_token %}
 
-    <script>
-        document.getElementById("editEventForm").addEventListener("submit", async function(event) {
-            event.preventDefault();
+            <!-- 1) embed all attendance records for JS -->
+            {% for attendance in event.attendances.all %}
+              <div class="attendance-record" 
+                   data-status="{{ attendance.status }}" 
+                   style="display:none;"></div>
+            {% endfor %}
 
-            const eventId = "{{ event.id }}";
-            const title = document.getElementById("eventTitle").value;
-            const description = document.getElementById("eventDescription").value;
-            const event_date = document.getElementById("eventDate").value;
-            const event_time = document.getElementById("eventTime").value;
-            const location = document.getElementById("eventLocation").value;
-            const csrfToken = "{{ csrf_token }}";
+            <div class="form-group">
+              <label for="eventTitle">Title</label>
+              <input
+                type="text"
+                id="eventTitle"
+                name="title"
+                class="form-input"
+                value="{{ event.title }}"
+                required>
+            </div>
 
-            const payload = {
-                title: title,
-                description: description,
-                event_date: event_date,
-                event_time: event_time,
-                location: location
-            };
+            <div class="form-group">
+              <label for="eventDescription">Description</label>
+              <textarea
+                id="eventDescription"
+                name="description"
+                class="form-textarea"
+                rows="6"
+                required>{{ event.description }}</textarea>
+            </div>
 
-            try {
-                const response = await fetch(`/api/community/events/${eventId}/edit/`, {
-                    method: "PUT",
-                    credentials: "include",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "X-CSRFToken": csrfToken
-                    },
-                    body: JSON.stringify(payload)
-                });
+            <div class="form-group">
+              <label for="eventDate">Date</label>
+              <input
+                type="date"
+                id="eventDate"
+                name="event_date"
+                class="form-input"
+                value="{{ event.event_date }}"
+                required>
+            </div>
 
-                const result = await response.json();
+            <div class="form-group">
+              <label for="eventTime">Time</label>
+              <input
+                type="time"
+                id="eventTime"
+                name="event_time"
+                class="form-input"
+                value="{{ event.event_time }}"
+                required>
+            </div>
 
-                if (response.ok) {
-                    alert("Event updated successfully!");
-                    window.location.href = "/community/{{ event.community.name }}/";
-                } else {
-                    document.getElementById("responseMessage").innerText = "Error: " + JSON.stringify(result);
-                }
-            } catch (error) {
-                document.getElementById("responseMessage").innerText = "Network error!";
-            }
+            <div class="form-group">
+              <label for="eventLocation">Location</label>
+              <input
+                type="text"
+                id="eventLocation"
+                name="location"
+                class="form-input"
+                value="{{ event.location }}"
+                required>
+            </div>
+
+            <div class="form-group">
+              <label for="max_attendees">Max Attendees</label>
+              <input
+                type="number"
+                id="max_attendees"
+                name="max_attendees"
+                class="form-input"
+                value="{{ event.max_attendees }}"
+                required>
+              <small id="maxAttHelper" class="form-text text-muted">
+              </small>
+            </div>
+
+            <div class="form-group">
+              <label for="required_materials">Required Materials</label>
+              <input
+                type="text"
+                id="required_materials"
+                name="required_materials"
+                class="form-input"
+                value="{{ event.required_materials }}">
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="submit-btn">Update Event</button>
+            </div>
+          </form>
+
+          <p id="responseMessage"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% include '../includes/footer.html' %}
+
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const yesCount = document.querySelectorAll(
+      '.attendance-record[data-status="yes"]'
+    ).length;
+
+    const maxInput = document.getElementById('max_attendees');
+    maxInput.min = yesCount;
+
+    const helper = document.getElementById('maxAttHelper');
+    helper.textContent = 
+      yesCount > 0
+        ? `Can’t go below ${yesCount} (already registered).`
+        : 'Enter how many people can attend.';
+
+    document.getElementById('editEventForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      const proposed = parseInt(maxInput.value, 10) || 0;
+      if (proposed < yesCount) {
+        alert(`You can’t set Max Attendees below ${yesCount} (already registered).`);
+        maxInput.focus();
+        return;
+      }
+
+      const eventId = "{{ event.id }}";
+      const payload = {
+        title: document.getElementById('eventTitle').value,
+        description: document.getElementById('eventDescription').value,
+        event_date: document.getElementById('eventDate').value,
+        event_time: document.getElementById('eventTime').value,
+        location: document.getElementById('eventLocation').value,
+        max_attendees: proposed,
+        required_materials: document.getElementById('required_materials').value
+      };
+      const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
+
+      try {
+        const res = await fetch(`/api/community/events/${eventId}/edit/`, {
+          method: 'PUT',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken
+          },
+          body: JSON.stringify(payload)
         });
-    </script>
+        const result = await res.json();
+        if (res.ok) {
+          alert('Event updated successfully!');
+          window.location.href = '/community/{{ event.community.name }}/';
+        } else {
+          document.getElementById('responseMessage').innerText =
+            'Error: ' + JSON.stringify(result);
+        }
+      } catch (_) {
+        document.getElementById('responseMessage').innerText = 'Network error!';
+      }
+    });
+  });
+  </script>
 </body>
 </html>
