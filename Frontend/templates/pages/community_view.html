@@ -102,7 +102,13 @@
                             
                             <div class="posts-list">
                                 <!-- Posts content goes here -->
-                                {% include '../includes/post_content.html' %} 
+                                {%if community.community_private and user_role_level >= 1%}
+                                  {% include '../includes/post_content.html' %} 
+                                {%elif not community.community_private %}
+                                  {% include '../includes/post_content.html' %}
+                                {%else%}
+                                  <lable>This is a private community — join now to access its posts and connect with members.</label> 
+                                {%endif%}
                             </div>
                         </div>
                     </div>

@@ -28,6 +28,7 @@ class Community(models.Model):
     )
     contact_email = models.EmailField()
     created_at = models.DateTimeField(auto_now_add=True)
+    community_private = models.BooleanField(default=False)
     
     tags = models.TextField(blank=True)
     members = models.ManyToManyField(

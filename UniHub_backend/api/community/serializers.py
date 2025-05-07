@@ -27,7 +27,7 @@ from .models import Community
 class CommunitySerializer(serializers.ModelSerializer):
     class Meta:
         model = Community
-        fields = ['name', 'description', 'community_image','tags' ,'contact_email']
+        fields = ['name', 'description', 'community_image','tags' ,'contact_email', 'community_private',]
 
 class CommunityEventSerializer(serializers.ModelSerializer):
     is_user_attending = serializers.SerializerMethodField()
