@@ -22,10 +22,9 @@ urlpatterns = [
     
     path('profile-edit/', views.profile_edit_view, name="profile_edit_page"),
     
+    path('faq/', views.faq_view, name="faq_page"),
     #homepage
-    path('dashboard/', views.dashboard_view, name="dashboard_page"),
     path('profile/', views.profile_view, name="profile_page"),
-    path('post/', views.post_view, name="post_page"),
 
     path('edit_post/<int:post_id>/', views.edit_post, name="edit_post"),
     
@@ -35,10 +34,12 @@ urlpatterns = [
     path('create-community/', community_list_view, name='community_create'),
     path('communities/<str:community_name>/', views.community_view, name="community_page"),
     path('edit_community/<str:community_name>/', views.community_edit_view, name="community_edit_page"),
-
+    path('manage_community/<str:community_name>/', views.community_manage_view, name="community_manage_page"),
+    
+    
     path('search/', views.search_view, name='search_page'),
     # Include API endpoints from the accounts app
-    path('api/accounts/', include('api.accounts.urls')),  # Mount the accounts API
+    path('accounts/', include('api.accounts.urls')),  # Mount the accounts API
     path('api/post/', include('api.posts.urls')),  # Mount the posts API
     path('api/', include('api.posts.urls')),    # this is needed for search functions
     path('api/community/', include('api.community.urls')),  # Mount the community API
@@ -54,6 +55,7 @@ urlpatterns = [
     path('community/event/<int:event_id>/edit/', event_edit_view, name='event_edit_page'),
     
     path('userprofile/<str:username>/', user_profile_page, name='user-profile-page'),
+
 
 
 

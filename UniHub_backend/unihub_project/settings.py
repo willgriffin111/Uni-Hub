@@ -54,6 +54,7 @@ SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
 
 
 INSTALLED_APPS = [
+    'unfold',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -66,6 +67,7 @@ INSTALLED_APPS = [
     'api.community',
 ]
 
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.SessionAuthentication',  # Enables session-based authentication
@@ -74,6 +76,17 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',  # Requires the user to be logged in
     ]
 }
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://redis:6379/1", 
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
+}
+
 
 # REST_FRAMEWORK = {
 #     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -174,3 +187,15 @@ MEDIA_ROOT = os.path.join(PROJECT_ROOT,"UniHub_backend", 'media')
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+from django.templatetags.static import static
+
+UNFOLD = {
+    "SITE_TITLE": "UniHub Admin",
+    "SITE_HEADER": "UniHub Admin",
+    "STYLES": [
+        lambda request: static("admin.css"),  # Path to your custom CSS file
+    ],
+        
+    
+}

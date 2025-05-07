@@ -8,6 +8,9 @@ from .models import Like, Post, Comment
 from django.contrib.auth import get_user_model
 from django.db.models import Q
 from api.community.models import Community, CommunityRole
+from rest_framework.permissions import IsAuthenticated
+from django.core.cache import cache
+from api.community.models import Community,CommunityRole
 
 User = get_user_model()
 
@@ -35,6 +38,9 @@ class PostListCreateViewAPI(generics.ListCreateAPIView):
 
         # Save post with user and optional community
         serializer.save(user=self.request.user, image=image, community=community_obj if community else None)
+        
+        cache_key = f"posts"
+        cache.delete(cache_key)
 
     def get_serializer_context(self):
         """Ensures that the serializer gets the request context."""
@@ -60,6 +66,10 @@ class PostEditAPI(APIView):
             post.image = request.FILES["image"]
 
         post.save()
+        
+        cache_key = f"posts"
+        cache.delete(cache_key)
+
         return Response(PostSerializer(post).data, status=status.HTTP_200_OK)
     
 class PostDeleteAPI(APIView):
@@ -69,7 +79,10 @@ class PostDeleteAPI(APIView):
         post = get_object_or_404(Post, id=post_id, user=request.user)
         post.image.delete(save=False) 
         post.delete()
-        # return redirect('post_list')
+        
+        cache_key = f"posts"
+        cache.delete(cache_key)
+
         return redirect('index_page')
 
 
@@ -138,23 +151,75 @@ class CommentEditAPI(APIView):
 This API view allows authenticated users to search for other users by username
 """
 class UserSearchAPI(APIView):
-    permission_classes = [permissions.IsAuthenticated]  
+    permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request):
-        query = request.GET.get('query', None)
-        if query:
-            user_profile_list = User.objects.filter(    # filters based on username, provided from search query
-                Q(username__icontains=query)
-            ).exclude(id=request.user.id) # dont't include the current user
+        query = request.GET.get('query', '').strip()
+        if not query:
+            return Response(
+                {"message": "No search query provided."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
-            users_data = [
-                {
-                    "username": user.username, 
-                    "user_type": user.user_type,
-                    "university": user.university
-                } 
-                for user in user_profile_list
-            ]
-            return Response(users_data, status=status.HTTP_200_OK)
+        # ive spelt interests wrong in the model and i cba to fix it but i think im the only one using it 
+        users = User.objects.filter(
+            Q(username__icontains=query) |
+            Q(course__icontains=query) |
+            Q(intrests__icontains=query)
+        ).exclude(id=request.user.id)
+
+        users_data = []
+        for u in users:
+            users_data.append({
+                "username":     u.username,
+                "user_type":    u.user_type,
+                "university":   u.university,
+                "course":       u.course,
+                "year_of_study":u.year_of_study,
+                "intrests":    u.intrests,    # here too
+            })
+
+        return Response(users_data, status=status.HTTP_200_OK)
+
+class TagSearchAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        query = request.query_params.get('query', '').strip()
+        if query:
+            posts = Post.objects.filter(tags__icontains=query)
         else:
-            return Response({"message": "No search query provided."}, status=status.HTTP_400_BAD_REQUEST)
+            posts = Post.objects.none()
+        serializer = PostSerializer(posts, many=True, context={'request': request})
+        return Response(serializer.data)
+    
+    
+    
+#community post delete
+
+#special post deleate for community leaders for posts in their community
+class CommunityPostDeleteAPI(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def post(self, request,post_id, community_id):
+        user = request.user
+        
+        community = get_object_or_404(Community, id=community_id)
+        post = get_object_or_404(Post, id=post_id, community=community)
+        
+        user_role = get_object_or_404(CommunityRole,user=user, community_id=community)
+        
+        
+        if not (CommunityRole.has_permission(user_role, 'community_leader')):
+            return Response({"detail": "You do not have permission to remove this post"}, status=status.HTTP_400)
+            
+        
+        post.image.delete(save=False) 
+        post.delete()
+        
+        cache_key = f"posts"
+        cache.delete(cache_key)
+
+        return redirect('community_page', community.name)
+
+        

@@ -28,7 +28,9 @@ class Community(models.Model):
     )
     contact_email = models.EmailField()
     created_at = models.DateTimeField(auto_now_add=True)
+    community_private = models.BooleanField(default=False)
     
+    tags = models.TextField(blank=True)
     members = models.ManyToManyField(
         settings.AUTH_USER_MODEL,
         related_name="joined_communities",
@@ -37,6 +39,10 @@ class Community(models.Model):
 
     def __str__(self):
         return self.name
+    
+    def is_user_blocked(self, user):
+        """Check if a user is blocked from this community."""
+        return self.blocked_users.filter(user=user).exists()
 
 ROLE_HIERARCHY = {
     'member': 1,
@@ -46,6 +52,18 @@ ROLE_HIERARCHY = {
 }
 
 class CommunityRole(models.Model):
+    """
+    Defines the role of a user in a community.
+    
+    Role choices:
+      - admin: Full control, can manage the community and sessions.
+      - community_leader: Can help moderate posts community and events.
+      - event_leader: can only create edit and delete events
+      - member: Standard member can only make posts to community.
+    
+    Ensures a user can have only one role per community.
+    """
+    
     ROLE_CHOICES = [
         ('member', 'Member'),
         ('event_leader', 'Event Leader'),
@@ -66,37 +84,29 @@ class CommunityRole(models.Model):
     def has_permission(self, required_role):
         """Checks if the user has the required permission level or higher."""
         return ROLE_HIERARCHY[self.role] >= ROLE_HIERARCHY[required_role]
-
-# ARE WE STILL GOING TO DO THIS? - WILL
-# class VirtualSession(models.Model):
-#     """
-#     Represents a virtual or interactive session scheduled by community leaders.
     
-#     Fields:
-#       - community: The community hosting the session.
-#       - title: Session title.
-#       - description: Detailed info about the session.
-#       - scheduled_at: DateTime when the session will start.
-#       - duration_minutes: How long the session lasts (in minutes).
-#       - session_link: URL for accessing the virtual session.
-#       - created_at: Timestamp when the session was created.
-#       - updated_at: Timestamp for last update.
-#     """
-#     community = models.ForeignKey(
-#         Community, 
-#         on_delete=models.CASCADE, 
-#         related_name="virtual_sessions"
-#     )
-#     title = models.CharField(max_length=255)
-#     description = models.TextField(blank=True)
-#     scheduled_at = models.DateTimeField()
-#     duration_minutes = models.PositiveIntegerField(default=60)
-#     session_link = models.URLField(blank=True, null=True)
-#     created_at = models.DateTimeField(auto_now_add=True)
-#     updated_at = models.DateTimeField(auto_now=True)
+    
+class CommunityBlock(models.Model):
+    """
+    Tracks users who are blocked from a specific community.
+    
+    Fields:
+      - user: The user who is blocked.
+      - community: The community from which they are blocked.
+      - reason: Optional reason for blocking.
+      - blocked_at: Timestamp of when the user was blocked.
+    """
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="community_blocks")
+    community = models.ForeignKey(Community, on_delete=models.CASCADE, related_name="blocked_users")
+    reason = models.TextField(blank=True, null=True)
+    blocked_at = models.DateTimeField(auto_now_add=True)
 
-#     def __str__(self):
-#         return f"{self.title} ({self.community.name})"
+    class Meta:
+        unique_together = ('user', 'community')
+
+    def __str__(self):
+        return f"{self.user.username} blocked from {self.community.name}"
+    
 
 
 class CommunityEvent(models.Model):
@@ -125,6 +135,9 @@ class CommunityEvent(models.Model):
     location = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    
+    max_attendees = models.PositiveIntegerField(default=50)    
+    requred_materials = models.TextField(blank=True)   #spelt wrong
 
     def __str__(self):
         return f"{self.title} - {self.event_date} ({self.community.name})"

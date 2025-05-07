@@ -77,13 +77,7 @@ Then this will return a response back to `GROUP_PROJECT\unihub_project\templates
 ```
 
 
-## To Be Added
-- Search for hashtags and communities
-- Be able to interact friend searched users
-- Be able to join searched communities
-- Be able to interact with searched posts with hashtags
 
-ill rewrite this later to make it less confusing 
 
 
 

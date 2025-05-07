@@ -42,9 +42,9 @@
                     {% if user_role_level <= 1 %}
                         <button id="joinLeaveBtn" class="btn-join-leave">Join Community</button>
                     {% endif %}
-                    <button class="btn-contact"><i class="fa-solid fa-envelope"></i> Contact</button>
-                    <button class="btn-share"><i class="fa-solid fa-share-nodes"></i> Share</button>
-                    {% if user_role_level >= 3 %}
+                    {% comment %} <button class="btn-contact"><i class="fa-solid fa-envelope"></i> Contact</button>
+                    <button class="btn-share"><i class="fa-solid fa-share-nodes"></i> Share</button> {% endcomment %}
+                    {% if user_role_level >= 4 or is_creator %}
                         <button class="btn-delete" id="deleteCommunityBtn"><i class="fa-solid fa-trash"></i> Delete</button>
                     {% endif %}
                 </div>
@@ -102,7 +102,13 @@
                             
                             <div class="posts-list">
                                 <!-- Posts content goes here -->
-                                {% include '../includes/post_content.html' %} 
+                                {%if community.community_private and user_role_level >= 1%}
+                                  {% include '../includes/post_content.html' %} 
+                                {%elif not community.community_private %}
+                                  {% include '../includes/post_content.html' %}
+                                {%else%}
+                                  <lable>This is a private community — join now to access its posts and connect with members.</label> 
+                                {%endif%}
                             </div>
                         </div>
                     </div>
@@ -112,48 +118,35 @@
                         <div class="content-card">
                             <h2 class="card-title">About Us</h2>
                             <div class="about-content">
-                                <p>{{ community.description }}</p>
+                                <p>Description: {{ community.description }}</p>
                             </div>
+                            <div class="tags-list">
+                                <p> Tags: {{ community.tags }}</p>
+                            </div>
+
                         </div>
-                        
                         <!-- Leadership/Roles Card -->
                         <div class="content-card">
                             <h2 class="card-title">Leadership</h2>
                             <div class="leadership-list">
+                              {% for member in members %}
+                              {% if member.role.role != "member" %}
                                 <div class="leadership-item">
                                     <div class="leader-avatar">
-                                        <img src="/images/bingus.jpg">
+                                      <img src="{{ member.profile_picture.url }}" alt="{{ member.username }}">
                                     </div>
                                     <div class="leader-info">
-                                        <h4 class="leader-name">Alex Rogers</h4>
-                                        <p class="leader-role">Group Admin</p>
+                                        <h4 class="leader-name">{{ member.username }}</h4>
+                                        <p class="leader-role">{{ member.role.get_role_display }}</p>
                                     </div>
                                 </div>
-                                
-                                <div class="leadership-item">
-                                    <div class="leader-avatar">
-                                        <img src="/images/y2ht5fgx63g61.webp" alt="Michael Chen">
-                                    </div>
-                                    <div class="leader-info">
-                                        <h4 class="leader-name">Michael Chen</h4>
-                                        <p class="leader-role">Moderator</p>
-                                    </div>
-                                </div>
-                                
-                                <div class="leadership-item">
-                                    <div class="leader-avatar">
-                                        <img src="/images/xqaxoy5y2hi61.webp" alt="Sarah Johnson">
-                                    </div>
-                                    <div class="leader-info">
-                                        <h4 class="leader-name">Sarah Johnson</h4>
-                                        <p class="leader-role">Events Coordinator</p>
-                                    </div>
-                                </div>
+                              {% endif %}
+                              {% endfor %}
                             </div>
                         </div>
                         
                         <!-- Contact Info Card -->
-                        <div class="content-card">
+                        {% comment %} <div class="content-card">
                             <h2 class="card-title">Contact Information</h2>
                             <div class="contact-list">
                                 <div class="contact-item">
@@ -173,7 +166,7 @@
                                     <span>Weekly Meetings: Tuesdays, 5:30 PM - 7:30 PM</span>
                                 </div>
                             </div>
-                        </div>
+                        </div> {% endcomment %}
                         
                         <!-- Community Details Card -->
                         <div class="content-card">
@@ -181,19 +174,11 @@
                             <div class="details-list">
                                 <div class="detail-item">
                                     <div class="detail-label">Created</div>
-                                    <div class="detail-value">September 10, 2024</div>
+                                    <div class="detail-value"> {{ community.created_at}}</div>
                                 </div>
                                 <div class="detail-item">
-                                    <div class="detail-label">Category</div>
-                                    <div class="detail-value">Study Group</div>
-                                </div>
-                                <div class="detail-item">
-                                    <div class="detail-label">Department</div>
-                                    <div class="detail-value">Computer Science</div>
-                                </div>
-                                <div class="detail-item">
-                                    <div class="detail-label">Visibility</div>
-                                    <div class="detail-value">Public</div>
+                                <div class = "detail-label"> Contact Email</div>
+                                <div class = "detail-value"> {{ community.contact_email }}</div>
                                 </div>
                             </div>
                         </div>
@@ -204,57 +189,32 @@
             <!-- Members Tab -->
             <div class="tab-pane fade" id="members">
                 <div class="content-card">
-                    <div class="members-header">
+                    {% comment %} <div class="members-header">
                         <h2 class="card-title">Community Members ({{ members_count }})</h2>
                         <div class="members-search">
                             <i class="fa-solid fa-magnifying-glass"></i>
                             <input type="text" placeholder="Search members..." class="members-search-input">
                         </div>
-                    </div>
+                    </div> {% endcomment %}
                     
                     <div class="members-list">
                         <!-- Leadership Section -->
                         <div class="members-section">
                             <h3 class="section-title">Leadership Team</h3>
                             <div class="members-grid">
-                                <!-- Leader 1 -->
+                              {% for member in members %}
+                              {% if member.role.role != "member" %}
                                 <div class="member-card">
-                                    <div class="member-avatar">
-                                        <img src="/images/bingus.jpg" alt="Alex Rogers">
-                                    </div>
-                                    <div class="member-info">
-                                        <h4 class="member-name">Alex Rogers</h4>
-                                        <p class="member-role">Group Admin</p>
-                                        <p class="member-details">Computer Science • Year 2</p>
-                                    </div>
-                                    <button class="member-action-btn"><i class="fa-solid fa-envelope"></i></button>
+                                  <div class="member-avatar">
+                                    <img src="{{ member.profile_picture.url }}" alt="{{ member.username }}">
+                                  </div>
+                                  <div class="member-info">
+                                    <h4 class="member-name">{{ member.username }}</h4>
+                                    <p class="member-role">{{ member.role.get_role_display }}</p>
+                                  </div>
                                 </div>
-                                
-                                <!-- Leader 2 -->
-                                <div class="member-card">
-                                    <div class="member-avatar">
-                                        <img src="" alt="Michael Chen">
-                                    </div>
-                                    <div class="member-info">
-                                        <h4 class="member-name">Michael Chen</h4>
-                                        <p class="member-role">Moderator</p>
-                                        <p class="member-details">Electrical Engineering • Year 3</p>
-                                    </div>
-                                    <button class="member-action-btn"><i class="fa-solid fa-envelope"></i></button>
-                                </div>
-                                
-                                <!-- Leader 3 -->
-                                <div class="member-card">
-                                    <div class="member-avatar">
-                                        <img src="" alt="Sarah Johnson">
-                                    </div>
-                                    <div class="member-info">
-                                        <h4 class="member-name">Sarah Johnson</h4>
-                                        <p class="member-role">Events Coordinator</p>
-                                        <p class="member-details">Computer Science • Year 2</p>
-                                    </div>
-                                    <button class="member-action-btn"><i class="fa-solid fa-envelope"></i></button>
-                                </div>
+                              {% endif %}
+                            {% endfor %}
                             </div>
                         </div>
                         
@@ -264,6 +224,7 @@
                             <div class="members-grid">
                                 <!-- Render more members here, usually with a loop in the actual template -->
                                 {%for member in members %}
+                                {% if member.role.role == "member" %}
                                 <div class="member-card">
                                     <div class="member-avatar">
                                         <img src="{{member.profile_picture.url}}" alt="{{member.username}}">
@@ -272,17 +233,12 @@
                                         <h4 class="member-name">{{member.username}}</h4>
                                         <p class="member-details">Computer Science • Year 3</p>
                                     </div>
-                                    <button class="member-action-btn"><i class="fa-solid fa-envelope"></i></button>
                                 </div>
+                                {%endif%}
                                 {%endfor%}
                             </div>
                             
-                            <!-- Pagination -->
-                            <div class="pagination-container">
-                                <button class="pagination-btn prev-btn" disabled><i class="fa-solid fa-chevron-left"></i></button>
-                                {% comment %} <span class="pagination-text">Page 1 of 10</span> {% endcomment %}
-                                <button class="pagination-btn next-btn"><i class="fa-solid fa-chevron-right"></i></button>
-                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -368,6 +324,15 @@
                             <label for="eventTime">Time:</label>
                             <input type="time" id="eventTime" name="event_time" class="form-control" required>
                         </div>
+                        <div>
+                            <label for="maxAttendees">Max Attendees:</label>
+                            <input type="number" id="maxAttendees" name="max_attendees" class="form-control" min="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="requiredMaterials">Required Materials:</label>  
+                            <input type="text" id="requiredMaterials" name="required_materials" class="form-control">
+                        </div>
+
                         <div class="form-group">
                             <label for="eventLocation">Location:</label>
                             <input type="text" id="eventLocation" name="location" class="form-control" required>
@@ -387,7 +352,7 @@
         
         <!-- Moderator Grid -->
         <div class="moderator-grid">
-            <!-- Event Settings Card -->
+            {% comment %} <!-- Event Settings Card -->
             <div class="mod-card">
                 <div class="mod-card-icon">
                     <i class="fa-solid fa-calendar-days"></i>
@@ -397,7 +362,7 @@
                 <div class="mod-card-actions">
                     <button class="mod-card-btn">Manage</button>
                 </div>
-            </div>
+            </div> {% endcomment %}
             
             <!-- User Settings Card -->
             <div class="mod-card">
@@ -407,21 +372,12 @@
                 <h3 class="mod-card-title">User Settings</h3>
                 <p class="mod-card-description">Manage community members, roles, and permissions.</p>
                 <div class="mod-card-actions">
+                  <a href="{% url 'community_manage_page' community_name=community.name %}">
                     <button class="mod-card-btn">Manage</button>
+                    </a>
                 </div>
             </div>
             
-            <!-- Session Settings Card -->
-            <div class="mod-card">
-                <div class="mod-card-icon">
-                    <i class="fa-solid fa-clock"></i>
-                </div>
-                <h3 class="mod-card-title">Session Settings</h3>
-                <p class="mod-card-description">Configure meeting times, session durations, and recurring events.</p>
-                <div class="mod-card-actions">
-                    <button class="mod-card-btn">Manage</button>
-                </div>
-            </div>
             
             <!-- General Settings Card -->
             <div class="mod-card">
@@ -490,444 +446,256 @@
 </body>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Get the button
-        const joinLeaveBtn = document.getElementById('joinLeaveBtn');
-        if (!joinLeaveBtn) return;
-    
-        // Convert Django boolean value to JavaScript boolean
-        let isMember = "{{ is_member }}".toLowerCase() === "true";
-        const communityId = "{{ community.id }}"; // Django renders this as a string
-        const csrftoken = "{{ csrf_token }}"; // CSRF token from Django
-    
-        // Set initial button text based on membership
-        joinLeaveBtn.textContent = isMember ? 'Leave Community' : 'Join Community';
-        joinLeaveBtn.classList.toggle('is-member', isMember);
-    
-        joinLeaveBtn.addEventListener('click', function() {
-            // Toggle membership status
-            isMember = !isMember;
-            
-            // Update button text
-            joinLeaveBtn.textContent = isMember ? 'Leave Community' : 'Join Community';
-            joinLeaveBtn.classList.toggle('is-member', isMember);
-    
-            // Send the request to the server
-            fetch('{% url "api-communityjoin" %}', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': csrftoken, // CSRF token for security
-                },
-                body: JSON.stringify({
-                    community_id: communityId
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-              if (data.detail) {
-                  location.reload(); // Reload the page on success
-              } else {
-                  alert("Something went wrong.");
-              }
-            })
-            .catch(error => console.error('Error joining/leaving community:', error));
-        });
-    });
-        
-        // Attend event functionality
-        const attendBtns = document.querySelectorAll('.attend-btn');
-        
-        attendBtns.forEach(btn => {
-            if (!btn.classList.contains('attending')) {
-                btn.addEventListener('click', function() {
-                    const isAttending = btn.classList.contains('attending');
-                    const attendanceCountEl = btn.previousElementSibling;
-                    let count = parseInt(attendanceCountEl.textContent);
-                    
-                    if (isAttending) {
-                        // User is no longer attending
-                        btn.textContent = 'Attend';
-                        btn.classList.remove('attending');
-                        count--;
-                        attendanceCountEl.textContent = count + ' attending';
-                    } else {
-                        // User is now attending
-                        btn.textContent = 'Attending';
-                        btn.classList.add('attending');
-                        count++;
-                        attendanceCountEl.textContent = count + ' attending';
-                    }
-                });
-            }
-        });
-
-document.addEventListener('DOMContentLoaded', function() {
-    // Post Modal Functionality
-    var modal = document.getElementById("postModal");
-    var postBtn = document.getElementById("openPostModal"); // Updated selector to target the specific button
-    var closeModal = document.getElementsByClassName("close-modal")[0];
-    var readonlyInput = document.querySelector(".create-post input[readonly]");
-    
-    // When the user clicks on the create post button or the readonly input
-    if (postBtn) {
-        postBtn.onclick = function() {
-        modal.style.display = "block";
-        document.querySelector(".modal-post-compose .compose-input").focus();
-        }
-    }
-    
-    // Also allow clicking on the readonly input to open the modal
-    if (readonlyInput) {
-        readonlyInput.onclick = function() {
-        modal.style.display = "block";
-        document.querySelector(".modal-post-compose .compose-input").focus();
-        }
-    }
-    
-    // When the user clicks on the close button
-    if (closeModal) {
-        closeModal.onclick = function() {
-        modal.style.display = "none";
-        }
-    }
-    
-    // When the user clicks anywhere outside of the modal
-    window.onclick = function(event) {
-        if (event.target == modal) {
-        modal.style.display = "none";
-        }
-    }
-    
-    // Image upload preview functionality
-    const imageUpload = document.getElementById('modal-img-upload');
-    const imagePreview = document.getElementById('image-preview');
-    const imagePreviewContainer = document.querySelector('.image-preview-container');
-    const removeImageBtn = document.getElementById('remove-image');
-    
-    if (imageUpload) {
-        imageUpload.addEventListener('change', function() {
-        if (this.files && this.files[0]) {
-            const reader = new FileReader();
-            
-            reader.onload = function(e) {
-            imagePreview.src = e.target.result;
-            imagePreviewContainer.style.display = 'block';
-            }
-            
-            reader.readAsDataURL(this.files[0]);
-        }
-        });
-    }
-    
-    if (removeImageBtn) {
-        removeImageBtn.addEventListener('click', function() {
-        imagePreview.src = '#';
-        imagePreviewContainer.style.display = 'none';
-        imageUpload.value = '';
-        });
-    }
-    
-    // Post submission logic
-    const submitBtn = document.querySelector('.compose-submit');
-    if (submitBtn) {
-        submitBtn.addEventListener('click', function() {
-        // Get post data
-        const title = document.querySelector('.compose-title-input').value;
-        const content = document.querySelector('.compose-input').value;
-        const tags = document.querySelector('.compose-tags-input').value;
-        
-        // Basic validation
-        if (!content.trim()) {
-            alert('Please enter some content for your post.');
-            return;
-        }
-        
-        // Here you would typically send the data to your server
-        console.log('Submitting post:', { title, content, tags });
-        
-        // Close the modal and reset form
-        modal.style.display = 'none';
-        document.querySelector('.compose-title-input').value = '';
-        document.querySelector('.compose-input').value = '';
-        document.querySelector('.compose-tags-input').value = '';
-        imagePreviewContainer.style.display = 'none';
-        imageUpload.value = '';
-        });
-    }
-    });
-
-
-    document.addEventListener('DOMContentLoaded', function() {
-        const csrftoken = "{{ csrf_token }}";
-        const communityId = "{{ community.id }}";
-
-        const eventsListUrl = `/api/community/community/${communityId}/events/`;
-        function formatDate(isoDate) {
-          const d = new Date(isoDate);
-          return {
-            month: d.toLocaleString('default', { month: 'short' }),
-            day: d.getDate()
-          };
-        }
+  document.addEventListener('DOMContentLoaded', function() {
+      // Get the button
+      const joinLeaveBtn = document.getElementById('joinLeaveBtn');
+      if (!joinLeaveBtn) return;
   
-        // Load events from API endpoint
-        function loadEvents() {
-          fetch(eventsListUrl, { credentials: 'include' })
-            .then(response => response.json())
-            .then(events => {
-              const now = new Date();
-              const upcomingEvents = [];
-              const pastEvents = [];
-              let totalAttendance = 0;
-              events.forEach(event => {
-                const eventDateTime = new Date(event.event_date + 'T' + event.event_time);
-                totalAttendance += event.attendance_count || 0;
-                if (eventDateTime >= now) {
-                  upcomingEvents.push(event);
-                } else {
-                  pastEvents.push(event);
-                }
-              });
-              renderEvents(upcomingEvents, pastEvents);
-              updateStats(events.length, upcomingEvents.length, pastEvents.length, totalAttendance);
-            })
-            .catch(error => console.error("Error fetching events:", error));
-        }
+      // Convert Django boolean value to JavaScript boolean
+      let isMember = "{{ is_member }}".toLowerCase() === "true";
+      const communityId = "{{ community.id }}";
+      const csrftoken = "{{ csrf_token }}";
+      const userRoleLevel = {{ user_role_level }};
   
-        // Render events into Upcoming and Past containers
-        function renderEvents(upcoming, past) {
-          const upcomingContainer = document.getElementById('upcomingEventsList');
-          const pastContainer = document.getElementById('pastEventsList');
-          upcomingContainer.innerHTML = "";
-          pastContainer.innerHTML = "";
+      joinLeaveBtn.textContent = isMember ? 'Leave Community' : 'Join Community';
+      joinLeaveBtn.classList.toggle('is-member', isMember);
   
-          // Render upcoming events
-          if (upcoming.length === 0) {
-            upcomingContainer.innerHTML = "<p>No upcoming events.</p>";
-          } else {
-            upcoming.forEach(event => {
-              const dt = formatDate(event.event_date);
-              const attendees = event.attendees || [];
-              upcomingContainer.innerHTML += `
-                <div class="event-card" data-event-id="${event.id}">
-                  <div class="event-date">
-                    <div class="event-month">${dt.month}</div>
-                    <div class="event-day">${dt.day}</div>
-                  </div>
-                  <div class="event-details">
-                    <h3 class="event-title">${event.title}</h3>
-                    <p class="event-description">${event.description}</p>
-                    <p class="event-time"><i class="fa-solid fa-clock"></i> ${event.event_time}</p>
-                    <p class="event-location"><i class="fa-solid fa-location-dot"></i> ${event.location}</p>
-                    <div class="event-attendance">
-                      <span class="attendance-count">${event.attendance_count || 0} attending</span>
-                      <button class="attend-btn ${event.is_user_attending ? 'attending' : ''}" data-event-id="${event.id}">
-                        ${event.is_user_attending ? 'Attending' : 'Attend'}
-                      </button>
-                      <button class="edit-event-btn" data-event-id="${event.id}">Edit</button>
-                      <button class="delete-event-btn" data-event-id="${event.id}">Delete</button>
-                    </div>
-                    <div class="attendees-list">
-                      ${attendees.length > 0 ?
-                        attendees.map(a => `<span class="attendee">${a}</span>`).join(' ')
-                        : "<span>No attendees yet.</span>"}
-                    </div>
-                  </div>
-                </div>
-              `;
-            });
-          }
+      joinLeaveBtn.addEventListener('click', function() {
+          isMember = !isMember;
+          joinLeaveBtn.textContent = isMember ? 'Leave Community' : 'Join Community';
+          joinLeaveBtn.classList.toggle('is-member', isMember);
   
-          // Render past events 
-          if (past.length === 0) {
-            pastContainer.innerHTML = "<p>No past events.</p>";
-          } else {
-            past.forEach(event => {
-              const dt = formatDate(event.event_date);
-              const attendees = event.attendees || [];
-              pastContainer.innerHTML += `
-                <div class="event-card past-event" data-event-id="${event.id}">
-                  <div class="event-date">
-                    <div class="event-month">${dt.month}</div>
-                    <div class="event-day">${dt.day}</div>
-                  </div>
-                  <div class="event-details">
-                    <h3 class="event-title">${event.title}</h3>
-                    <p class="event-description">${event.description}</p>
-                    <p class="event-time"><i class="fa-solid fa-clock"></i> ${event.event_time}</p>
-                    <p class="event-location"><i class="fa-solid fa-location-dot"></i> ${event.location}</p>
-                    <div class="event-attendance">
-                      <span class="attendance-count">${event.attendance_count || 0} attended</span>
-                      <button class="edit-event-btn" data-event-id="${event.id}">Edit</button>
-                      <button class="delete-event-btn" data-event-id="${event.id}">Delete</button>
-                    </div>
-                    <div class="attendees-list">
-                      ${attendees.length > 0 ?
-                        attendees.map(a => `<span class="attendee">${a}</span>`).join(' ')
-                        : "<span>No attendees.</span>"}
-                    </div>
-                  </div>
-                </div>
-              `;
-            });
-          }
-          
-          attachAttendanceHandlers();
-          attachDeleteHandlers();
-          attachEditHandlers();
-        
-        }
-        // Update sidebar statistics
-        function updateStats(total, upcomingCount, pastCount, totalAttendance) {
-          document.getElementById('statsUpcoming').textContent = upcomingCount;
-          document.getElementById('statsPast').textContent = pastCount;
-          document.getElementById('statsTotal').textContent = total;
-          document.getElementById('statsAvg').textContent = total ? Math.round(totalAttendance / total) : 0;
-        }
-  
-        // Attach handlers for Attend buttons
-        function attachAttendanceHandlers() {
-          const attendBtns = document.querySelectorAll('.attend-btn');
-          attendBtns.forEach(btn => {
-            btn.addEventListener('click', function() {
-              const eventId = btn.getAttribute('data-event-id');
-              const newStatus = btn.classList.contains('attending') ? 'no' : 'yes';
-              fetch(`/api/community/events/${eventId}/attendance/`, {
-                method: 'POST',
-                headers: {
+          fetch('{% url "api-communityjoin" %}', {
+              method: 'POST',
+              headers: {
                   'Content-Type': 'application/json',
                   'X-CSRFToken': csrftoken
-                },
-                body: JSON.stringify({ status: newStatus })
-              })
-              .then(response => response.json())
-              .then(data => {
-                const attendanceCountEl = btn.parentElement.querySelector('.attendance-count');
-                let count = parseInt(attendanceCountEl.textContent);
-                const attendeesListEl = btn.closest('.event-details').querySelector('.attendees-list');
-                const currentUsername = "{{ user.username }}";
-                if (newStatus === 'yes') {
-                  btn.textContent = 'Attending';
-                  btn.classList.add('attending');
-                  count++;
-                  if (!Array.from(attendeesListEl.children).some(span => span.textContent === currentUsername)) {
-                    const span = document.createElement('span');
-                    span.className = 'attendee';
-                    span.textContent = currentUsername;
-                    attendeesListEl.appendChild(span);
-                  }
-                } else {
-                  btn.textContent = 'Attend';
-                  btn.classList.remove('attending');
-                  count--;
-                  Array.from(attendeesListEl.children).forEach(span => {
-                    if (span.textContent === currentUsername) {
-                      span.remove();
-                    }
-                  });
-                }
-                attendanceCountEl.textContent = count + ' attending';
-              })
-              .catch(error => console.error("Error updating attendance:", error));
-            });
-          });
-        }
-
-        function attachEditHandlers() {
-            const editBtns = document.querySelectorAll('.edit-event-btn');
-            editBtns.forEach(btn => {
-              btn.addEventListener('click', function() {
-                const eventId = btn.getAttribute('data-event-id');
-                // Redirect to the event edit page
-                window.location.href = `/community/event/${eventId}/edit/`;
-              });
-            });
-          }
-  
-        // Attach handlers for Delete buttons
-        function attachDeleteHandlers() {
-          const deleteBtns = document.querySelectorAll('.delete-event-btn');
-          deleteBtns.forEach(btn => {
-            btn.addEventListener('click', function() {
-              const eventId = btn.getAttribute('data-event-id');
-              if (confirm("Are you sure you want to delete this event?")) {
-                fetch(`/api/community/events/${eventId}/delete/`, {
-                  method: 'DELETE',
-                  headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': csrftoken
-                  }
-                })
-                .then(response => {
-                  if (response.ok) {
-                    // Remove event card from the UI
-                    const eventCard = btn.closest('.event-card');
-                    eventCard.remove();
-                    loadEvents(); // Refresh events list and stats
-                  } else {
-                    alert("Error deleting event.");
-                  }
-                })
-                .catch(error => {
-                  console.error("Error deleting event:", error);
-                });
-              }
-            });
-          });
-        }
-
-  
-        // Create Event Modal functionality
-        const createEventBtn = document.getElementById('createEventBtn');
-        const createEventModal = document.getElementById('createEventModal');
-        const closeCreateModal = document.querySelector('.close-create-modal');
-        const createEventForm = document.getElementById('createEventForm');
-  
-        createEventBtn.addEventListener('click', function() {
-          createEventModal.style.display = 'block';
-        });
-        closeCreateModal.addEventListener('click', function() {
-          createEventModal.style.display = 'none';
-        });
-        createEventForm.addEventListener('submit', function(e) {
-          e.preventDefault();
-          const payload = {
-            title: document.getElementById('eventTitle').value,
-            description: document.getElementById('eventDescription').value,
-            event_date: document.getElementById('eventDate').value,
-            event_time: document.getElementById('eventTime').value,
-            location: document.getElementById('eventLocation').value
-          };
-          fetch(`/api/community/community/${communityId}/events/create/`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'X-CSRFToken': csrftoken
-            },
-            body: JSON.stringify(payload)
+              },
+              body: JSON.stringify({ community_id: communityId })
           })
           .then(response => response.json())
           .then(data => {
-            if (data.id) {
-              alert("Event created successfully!");
-              createEventModal.style.display = 'none';
-              loadEvents();
-            } else {
-              alert("Error creating event: " + JSON.stringify(data));
-            }
+            if (data.detail) location.reload();
+            else alert("Something went wrong.");
           })
-          .catch(error => {
-            console.error("Error creating event:", error);
-            alert("An error occurred while creating the event.");
+          .catch(error => console.error('Error joining/leaving community:', error));
+      });
+  });
+      
+  document.addEventListener('DOMContentLoaded', function() {
+      const csrftoken = "{{ csrf_token }}";
+      const communityId = "{{ community.id }}";
+      const userRoleLevel = {{ user_role_level }};
+      const eventsListUrl = `/api/community/community/${communityId}/events/`;
+
+      function formatDate(isoDate) {
+        const d = new Date(isoDate);
+        return {
+          month: d.toLocaleString('default', { month: 'short' }),
+          day: d.getDate()
+        };
+      }
+
+      function loadEvents() {
+        fetch(eventsListUrl, { credentials: 'include' })
+          .then(response => response.json())
+          .then(events => {
+            const now = new Date();
+            const upcoming = [];
+            const past = [];
+            let totalAttendance = 0;
+            events.forEach(event => {
+              const dt = new Date(event.event_date + 'T' + event.event_time);
+              totalAttendance += event.attendance_count || 0;
+              if (dt >= now) upcoming.push(event);
+              else past.push(event);
+            });
+            renderEvents(upcoming, past);
+            updateStats(events.length, upcoming.length, past.length, totalAttendance);
+          })
+          .catch(error => console.error("Error fetching events:", error));
+      }
+
+      function renderEvents(upcoming, past) {
+        const upC = document.getElementById('upcomingEventsList');
+        const pastC = document.getElementById('pastEventsList');
+        upC.innerHTML = ""; pastC.innerHTML = "";
+
+        if (upcoming.length === 0) {
+          upC.innerHTML = "<p>No upcoming events.</p>";
+        } else {
+          upcoming.forEach(event => {
+            const dt = formatDate(event.event_date);
+            const count = event.attendance_count || 0;
+            const max = event.max_attendees;
+            const isAtt = event.is_user_attending;
+            const btnLabel = isAtt ? 'You are attending' : `${count} attending`;
+
+            upC.innerHTML += `
+              <div class="event-card" data-event-id="${event.id}">
+                <div class="event-date">
+                  <div class="event-month">${dt.month}</div>
+                  <div class="event-day">${dt.day}</div>
+                </div>
+                <div class="event-details">
+                  <h3 class="event-title">${event.title}</h3>
+                  <p class="event-time"><i class="fa-solid fa-clock"></i> ${event.event_time}</p>
+                  <p class="event-location"><i class="fa-solid fa-location-dot"></i> ${event.location}</p>
+                  <p class="event-description">${event.description}</p>
+                  <p class="event-materials"><i class="fa-solid fa-list"></i> ${event.requred_materials || 'No materials required'}</p>
+                  <div class="event-attendance">
+                    ${ (isAtt || count < max)
+                        ? `<button class="attend-btn ${isAtt ? 'attending' : ''}"
+                                   data-event-id="${event.id}">${btnLabel}</button>`
+                        : '' }
+                    <span class="capacity-info">(${count} / ${max})</span>
+                    ${ userRoleLevel >= 2 
+                        ? `<button class="edit-event-btn" data-event-id="${event.id}">Edit</button>
+                           <button class="delete-event-btn" data-event-id="${event.id}">Delete</button>`
+                        : '' }
+                  </div>
+                </div>
+              </div>
+            `;
+          });
+          attachAttendanceHandlers();
+          attachEditHandlers();
+          attachDeleteHandlers();
+        }
+
+        if (past.length === 0) {
+          pastC.innerHTML = "<p>No past events.</p>";
+        } else {
+          past.forEach(event => {
+            const dt = formatDate(event.event_date);
+            const attendees = event.attendees || [];
+            pastC.innerHTML += `
+              <div class="event-card past-event" data-event-id="${event.id}">
+                <div class="event-date">
+                  <div class="event-month">${dt.month}</div>
+                  <div class="event-day">${dt.day}</div>
+                </div>
+                <div class="event-details">
+                  <h3 class="event-title">${event.title}</h3>
+                  <p class="event-time"><i class="fa-solid fa-clock"></i> ${event.event_time}</p>
+                  <p class="event-location"><i class="fa-solid fa-location-dot"></i> ${event.location}</p>
+                  <div class="event-attendance">
+                    <span class="attendance-count">${event.attendance_count || 0} attended</span>
+                    ${ userRoleLevel >= 2 
+                        ? `<button class="edit-event-btn" data-event-id="${event.id}">Edit</button>
+                           <button class="delete-event-btn" data-event-id="${event.id}">Delete</button>`
+                        : '' }
+                  </div>
+                  <div class="attendees-list">
+                    ${ attendees.length > 0
+                        ? attendees.map(a => `<span class="attendee">${a}</span>`).join(' ')
+                        : "<span>No attendees.</span>" }
+                  </div>
+                </div>
+              </div>
+            `;
+          });
+          attachDeleteHandlers();
+          attachEditHandlers();
+        }
+      }
+
+      function updateStats(total, upCount, pastCount, totalA) {
+        document.getElementById('statsUpcoming').textContent = upCount;
+        document.getElementById('statsPast').textContent = pastCount;
+        document.getElementById('statsTotal').textContent = total;
+        document.getElementById('statsAvg').textContent = total ? Math.round(totalA/total) : 0;
+      }
+
+      function attachAttendanceHandlers() {
+        document.querySelectorAll('.attend-btn').forEach(btn => {
+          btn.addEventListener('click', function() {
+            const id = btn.dataset.eventId;
+            fetch(`/api/community/events/${id}/attendance/`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrftoken },
+              body: JSON.stringify({ status: btn.classList.contains('attending') ? 'no' : 'yes' })
+            })
+            .then(() => loadEvents())
+            .catch(error => console.error("Error updating attendance:", error));
           });
         });
-  
-        // Initial load of events
-        loadEvents();
+      }
+
+      function attachEditHandlers() {
+        document.querySelectorAll('.edit-event-btn').forEach(btn => {
+          btn.addEventListener('click', function() {
+            const id = btn.dataset.eventId;
+            window.location.href = `/community/event/${id}/edit/`;
+          });
+        });
+      }
+
+      function attachDeleteHandlers() {
+        document.querySelectorAll('.delete-event-btn').forEach(btn => {
+          btn.addEventListener('click', function() {
+            const id = btn.dataset.eventId;
+            if (confirm("Are you sure you want to delete this event?")) {
+              fetch(`/api/community/events/${id}/delete/`, {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrftoken }
+              })
+              .then(res => { if (res.ok) loadEvents(); else alert("Error deleting event."); })
+              .catch(error => console.error("Error deleting event:", error));
+            }
+          });
+        });
+      }
+
+      {% if user_role_level >= 2 %}
+      const createEventBtn = document.getElementById('createEventBtn');
+      const createEventModal = document.getElementById('createEventModal');
+      const closeCreateModal = document.querySelector('.close-create-modal');
+      const createEventForm = document.getElementById('createEventForm');
+
+      createEventBtn.addEventListener('click', function() {
+        createEventModal.style.display = 'block';
       });
-    
-</script> 
+      closeCreateModal.addEventListener('click', function() {
+        createEventModal.style.display = 'none';
+      });
+      createEventForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const payload = {
+          title: document.getElementById('eventTitle').value,
+          description: document.getElementById('eventDescription').value,
+          event_date: document.getElementById('eventDate').value,
+          event_time: document.getElementById('eventTime').value,
+          max_attendees: document.getElementById('maxAttendees').value,
+          requred_materials: document.getElementById('requiredMaterials').value,
+          location: document.getElementById('eventLocation').value
+        };
+        fetch(`/api/community/community/${communityId}/events/create/`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrftoken },
+          body: JSON.stringify(payload)
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.id) {
+            alert("Event created successfully!");
+            createEventModal.style.display = 'none';
+            loadEvents();
+          } else {
+            alert("Error creating event: " + JSON.stringify(data));
+          }
+        })
+        .catch(error => {
+          console.error("Error creating event:", error);
+          alert("An error occurred while creating the event.");
+        });
+      });
+      {% endif %}
+      loadEvents();
+    });
+</script>
+
+
 
     <!-- Notification Container -->
 <div id="deleteNotification" class="notification" style="display: none;">

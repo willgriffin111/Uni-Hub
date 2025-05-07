@@ -40,11 +40,14 @@ class LoginAPI(APIView):
         password = request.data.get("password")
         user = authenticate(request, username=username, password=password)
         if user is not None:
-            login(request, user)
-            request.session['username'] = user.username
             if user.email_verified:
+                # Log the user in if they are already verified.
+                login(request, user)
+                request.session['username'] = user.username
                 return JsonResponse({"redirect": "/profile/"}, status=200)
             else:
+                # If not verified, save the username in session and redirect to OTP verification.
+                request.session['username'] = user.username
                 return JsonResponse({"redirect": "/accounts/api/verify/"}, status=200)
         else:
             return JsonResponse({"error": "Invalid credentials"}, status=401)
@@ -60,13 +63,21 @@ class RegisterAPI(APIView):
         serializer = RegisterSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            user = authenticate(request, username=request.data['username'], password=request.data['password'])
+            user = authenticate(
+                request,
+                username=request.data['username'],
+                password=request.data['password']
+            )
             if user is not None:
-                login(request, user)
-                request.session.save()
-                request.session['email'] = request.data['email']
-                request.session['username'] = request.data['username']
-                return JsonResponse({"message": "Registration successful"}, status=201)
+                if user.email_verified:
+                    # Already verified: log the user in immediately.
+                    login(request, user)
+                    request.session['username'] = user.username
+                    return JsonResponse({"message": "Registration successful", "redirect": "/profile/"}, status=201)
+                else:
+                    # Not yet verified: store username in session, prompt for email verification.
+                    request.session['username'] = user.username
+                    return JsonResponse({"message": "Registration successful", "redirect": "/accounts/api/verify/"}, status=201)
             else:
                 return JsonResponse({"error": "Invalid credentials"}, status=401)
         return JsonResponse(serializer.errors, status=400)
@@ -79,7 +90,11 @@ class VerifyAPI(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request):
+        # Retrieve the user by username stored in the session.
         user = get_user_by_username(request, request.session.get('username'))
+        if user is None:
+            return JsonResponse({"error": "User not found in session"}, status=400)
+
         email = user.email
         if not email:
             return JsonResponse({"error": "Email not provided"}, status=400)
@@ -98,7 +113,7 @@ class VerifyAPI(APIView):
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=500)
 
-        # Store OTP and expiration time in session (OTP expires in 10 minutes)
+        # Store OTP and its expiration (10 minutes from now) in session.
         expiration_time = timezone.now() + timedelta(minutes=10)
         request.session['otp_code'] = otp_code
         request.session['otp_expiration'] = expiration_time.isoformat()
@@ -117,11 +132,17 @@ class VerifyAPI(APIView):
         if timezone.now() > otp_expiration_time:
             return JsonResponse({"message": "OTP has expired"}, status=400)
 
-        user = request.user
+        # Retrieve the user from session.
+        user = get_user_by_username(request, request.session.get('username'))
+        if user is None:
+            return JsonResponse({"error": "User not found in session"}, status=400)
+
         if otp_code == otp_code_from_session:
+            # Mark the user as verified, save, and then log them in.
             user.email_verified = True
             user.save()
-            return JsonResponse({"message": "Verification successful"}, status=201)
+            login(request, user)
+            return JsonResponse({"message": "Verification successful", "redirect": "/profile/"}, status=201)
 
         return JsonResponse({"message": "Verification unsuccessful"}, status=400)
 
@@ -236,6 +257,7 @@ class ProfileUpdateAPI(APIView):
         user.last_name = data.get('last_name', user.last_name)
         user.username = data.get('username', user.username)
         user.email = data.get('email', user.email)
+        user.address = data.get('address', user.address)
 
         # Handle date of birth correctly
         dob = data.get('dob')
@@ -245,6 +267,10 @@ class ProfileUpdateAPI(APIView):
         user.student_id = data.get('student_id', user.student_id)
         user.bio = data.get('bio', user.bio)
         user.gender = data.get('gender', user.gender)
+        
+        user.course = data.get('course', user.course)
+        user.year_of_study = data.get('year_of_study', user.year_of_study)
+        user.intrests = data.get('intrests', user.intrests)
 
         try:
             user.save()
@@ -259,11 +285,15 @@ class ProfileUpdateAPI(APIView):
                 "last_name": user.last_name,
                 "username": user.username,
                 "email": user.email,
+                "address": user.address,
                 "dob": user.dob,
                 "university": user.university,
                 "student_id": user.student_id,
                 "bio": user.bio,
                 "gender": user.gender,
+                "course": user.course,
+                "year_of_study": user.year_of_study,
+                "intrests": user.intrests,
             }
         }, status=status.HTTP_200_OK)
 

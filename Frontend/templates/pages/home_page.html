@@ -46,26 +46,13 @@
               <i class="fa-solid fa-search"></i>
               <span>Search</span>
             </a>
-            <a href="#" class="menu-item">
-              <i class="fa-solid fa-bell"></i>
-              <span>Notifications</span>
-              <span class="notification-badge">3</span>
-            </a>
-            <a href="#" class="menu-item">
-              <i class="fa-solid fa-envelope"></i>
-              <span>Messages</span>
-            </a>
             <a href="{% url 'profile_page' %}" class="menu-item">
               <i class="fa-solid fa-user"></i>
               <span>Profile</span>
             </a>
             <a href="{% url 'community_create' %}" class="menu-item">
               <i class="fa-solid fa-user-group"></i>
-              <span>Communities</span>
-            </a>
-            <a href="#" class="menu-item">
-              <i class="fa-solid fa-calendar-days"></i>
-              <span>Events</span>
+              <span>Create communities</span>
             </a>
           </div>
           <button class="post-btn btn btn-primary mt-3">Post</button>
@@ -124,7 +111,7 @@
         <div class="container">
           {% comment %} <h1>All Posts</h1> {% endcomment %}
           {% for post in posts %}
-          <div class="post">
+          <div class="post" id="post-{{ post.id }}">
             <!-- Post Avatar -->
             <div class="post-avatar">
               {% if post.user.profile_picture %}
@@ -148,6 +135,7 @@
                     </h4>
                   {% endif %}
                 </div>
+                {% if post.user == user %}
                 <div class="post-options">
                   <div class="dropdown">
                     <button class="options-btn" onclick="toggleOptionsMenu(event, {{ post.id }})">
@@ -168,6 +156,7 @@
                     </div>
                   </div>
                 </div>
+                {% endif %}
               </div>
               <!-- Text -->
               <div class="post-text">
@@ -280,7 +269,6 @@
             <a href="{% url 'community_page' community.name %}" class="community-link">
               <div class="community-item d-flex justify-content-between align-items-center mb-3">
                 <div class="community-info">
-                  <span class="community-category">Study Group</span>
                   <h4 class="community-title">{{ community.name }}</h4>
                   <span class="community-stats">{{ community.num_members }} members</span>
                 </div>
@@ -297,6 +285,7 @@
           <div class="sidebar-card">
             <h3 class="sidebar-title">Upcoming Events</h3>
             {% for event in events %}
+            <a href="{% url 'community_page' event.community.name %}" class="community-link">
               <div class="event-item d-flex flex-column mb-3 w-100">
                 <div class="event-date text-center me-3">
                   <span class="day d-block">{{ event.event_date|date:"d" }}</span>
@@ -313,11 +302,16 @@
                   <p class="event-time">
                     <i class="fa-solid fa-user"></i> {{ event.attendance_count|default:"0" }} attending
                   </p>
+
                 </div>
               </div>
+            </a>
             {% empty %}
+
               <p>No upcoming events.</p>
+
             {% endfor %}
+
           </div>
         
           <!-- Friend Suggestions Card -->
