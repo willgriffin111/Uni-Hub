@@ -22,6 +22,7 @@ urlpatterns = [
     
     path('profile-edit/', views.profile_edit_view, name="profile_edit_page"),
     
+    path('faq/', views.faq_view, name="faq_page"),
     #homepage
     path('dashboard/', views.dashboard_view, name="dashboard_page"),
     path('profile/', views.profile_view, name="profile_page"),
@@ -56,6 +57,7 @@ urlpatterns = [
     path('community/event/<int:event_id>/edit/', event_edit_view, name='event_edit_page'),
     
     path('userprofile/<str:username>/', user_profile_page, name='user-profile-page'),
+
 
 
 

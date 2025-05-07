@@ -357,3 +357,9 @@ def dashboard_view(request):
     """Render the dashboard page (requires login)."""
     return render(request, "pages/dashboard.html", {"user": request.user})
 
+
+@login_required
+@verification_required
+def faq_view(request):
+    """Render the FAQ page (requires login)."""
+    return render(request, "pages/faq.html", {"user": request.user})
