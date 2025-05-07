@@ -108,37 +108,6 @@ class CommunityBlock(models.Model):
         return f"{self.user.username} blocked from {self.community.name}"
     
 
-# ARE WE STILL GOING TO DO THIS? - WILL
-# class VirtualSession(models.Model):
-#     """
-#     Represents a virtual or interactive session scheduled by community leaders.
-    
-#     Fields:
-#       - community: The community hosting the session.
-#       - title: Session title.
-#       - description: Detailed info about the session.
-#       - scheduled_at: DateTime when the session will start.
-#       - duration_minutes: How long the session lasts (in minutes).
-#       - session_link: URL for accessing the virtual session.
-#       - created_at: Timestamp when the session was created.
-#       - updated_at: Timestamp for last update.
-#     """
-#     community = models.ForeignKey(
-#         Community, 
-#         on_delete=models.CASCADE, 
-#         related_name="virtual_sessions"
-#     )
-#     title = models.CharField(max_length=255)
-#     description = models.TextField(blank=True)
-#     scheduled_at = models.DateTimeField()
-#     duration_minutes = models.PositiveIntegerField(default=60)
-#     session_link = models.URLField(blank=True, null=True)
-#     created_at = models.DateTimeField(auto_now_add=True)
-#     updated_at = models.DateTimeField(auto_now=True)
-
-#     def __str__(self):
-#         return f"{self.title} ({self.community.name})"
-
 
 class CommunityEvent(models.Model):
     """
@@ -167,8 +136,8 @@ class CommunityEvent(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
-    max_attendees = models.PositiveIntegerField(default=100)    
-    requred_materials = models.TextField(blank=True)
+    max_attendees = models.PositiveIntegerField(default=50)    
+    requred_materials = models.TextField(blank=True)   #spelt wrong
 
     def __str__(self):
         return f"{self.title} - {self.event_date} ({self.community.name})"

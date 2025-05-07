@@ -285,6 +285,7 @@
           <div class="sidebar-card">
             <h3 class="sidebar-title">Upcoming Events</h3>
             {% for event in events %}
+            <a href="{% url 'community_page' event.community.name %}" class="community-link">
               <div class="event-item d-flex flex-column mb-3 w-100">
                 <div class="event-date text-center me-3">
                   <span class="day d-block">{{ event.event_date|date:"d" }}</span>
@@ -301,11 +302,16 @@
                   <p class="event-time">
                     <i class="fa-solid fa-user"></i> {{ event.attendance_count|default:"0" }} attending
                   </p>
+
                 </div>
               </div>
+            </a>
             {% empty %}
+
               <p>No upcoming events.</p>
+
             {% endfor %}
+
           </div>
         
           <!-- Friend Suggestions Card -->

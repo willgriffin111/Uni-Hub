@@ -24,9 +24,7 @@ urlpatterns = [
     
     path('faq/', views.faq_view, name="faq_page"),
     #homepage
-    path('dashboard/', views.dashboard_view, name="dashboard_page"),
     path('profile/', views.profile_view, name="profile_page"),
-    path('post/', views.post_view, name="post_page"),
 
     path('edit_post/<int:post_id>/', views.edit_post, name="edit_post"),
     

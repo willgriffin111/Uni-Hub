@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from api.community.models import Community, CommunityEvent, CommunityEventAttendance, CommunityRole
+from .models import Community
+
 
 User = get_user_model()
 
@@ -22,7 +24,6 @@ class CommunitySerializer(serializers.ModelSerializer):
             'tags',
         ]
         read_only_fields = ['id', 'created_at', 'created_by_username']
-from .models import Community
 
 class CommunitySerializer(serializers.ModelSerializer):
     class Meta:

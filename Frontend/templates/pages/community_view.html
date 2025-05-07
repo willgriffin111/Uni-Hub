@@ -42,8 +42,8 @@
                     {% if user_role_level <= 1 %}
                         <button id="joinLeaveBtn" class="btn-join-leave">Join Community</button>
                     {% endif %}
-                    <button class="btn-contact"><i class="fa-solid fa-envelope"></i> Contact</button>
-                    <button class="btn-share"><i class="fa-solid fa-share-nodes"></i> Share</button>
+                    {% comment %} <button class="btn-contact"><i class="fa-solid fa-envelope"></i> Contact</button>
+                    <button class="btn-share"><i class="fa-solid fa-share-nodes"></i> Share</button> {% endcomment %}
                     {% if user_role_level >= 4 or is_creator %}
                         <button class="btn-delete" id="deleteCommunityBtn"><i class="fa-solid fa-trash"></i> Delete</button>
                     {% endif %}
@@ -189,13 +189,13 @@
             <!-- Members Tab -->
             <div class="tab-pane fade" id="members">
                 <div class="content-card">
-                    <div class="members-header">
+                    {% comment %} <div class="members-header">
                         <h2 class="card-title">Community Members ({{ members_count }})</h2>
                         <div class="members-search">
                             <i class="fa-solid fa-magnifying-glass"></i>
                             <input type="text" placeholder="Search members..." class="members-search-input">
                         </div>
-                    </div>
+                    </div> {% endcomment %}
                     
                     <div class="members-list">
                         <!-- Leadership Section -->
@@ -238,12 +238,7 @@
                                 {%endfor%}
                             </div>
                             
-                            <!-- Pagination -->
-                            <div class="pagination-container">
-                                <button class="pagination-btn prev-btn" disabled><i class="fa-solid fa-chevron-left"></i></button>
-                                {% comment %} <span class="pagination-text">Page 1 of 10</span> {% endcomment %}
-                                <button class="pagination-btn next-btn"><i class="fa-solid fa-chevron-right"></i></button>
-                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -547,7 +542,7 @@
                   <p class="event-time"><i class="fa-solid fa-clock"></i> ${event.event_time}</p>
                   <p class="event-location"><i class="fa-solid fa-location-dot"></i> ${event.location}</p>
                   <p class="event-description">${event.description}</p>
-                  <p class="event-materials"><i class="fa-solid fa-list"></i> ${event.required_materials || 'No materials required'}</p>
+                  <p class="event-materials"><i class="fa-solid fa-list"></i> ${event.requred_materials || 'No materials required'}</p>
                   <div class="event-attendance">
                     ${ (isAtt || count < max)
                         ? `<button class="attend-btn ${isAtt ? 'attending' : ''}"
@@ -671,6 +666,8 @@
           description: document.getElementById('eventDescription').value,
           event_date: document.getElementById('eventDate').value,
           event_time: document.getElementById('eventTime').value,
+          max_attendees: document.getElementById('maxAttendees').value,
+          requred_materials: document.getElementById('requiredMaterials').value,
           location: document.getElementById('eventLocation').value
         };
         fetch(`/api/community/community/${communityId}/events/create/`, {

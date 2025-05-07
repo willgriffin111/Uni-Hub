@@ -45,18 +45,18 @@ def home_page(request):
             post.can_edit = (current_time - post.created_at).total_seconds() <= 30 * 60
 
     # Retrieve top 3 communities with most members.
-    top_communities = Community.objects.annotate(num_members=Count('members')).order_by('-num_members')[:3]
+    top_communities = Community.objects.annotate(num_members=Count('members')).order_by('-num_members')[:4]
     
     now_date = current_time.date()
     upcoming_events = CommunityEvent.objects.filter(event_date__gte=now_date).annotate(
         attendance_count=Count('attendances')
-    ).order_by('-attendance_count')[:3]
+    ).order_by('-attendance_count')[:4]
     
     current_user = request.user
     # Retrieve friend suggestions, excluding the current user current friends and root.
     suggestions = User.objects.exclude(id=current_user.id)\
                     .exclude(id__in=current_user.friends.values_list('id', flat=True))\
-                    .exclude(username="root")[:3]
+                    .exclude(username="root")[:4]
                     
     return render(request, 'pages/home_page.html', {
         'posts': posts,
@@ -260,12 +260,13 @@ def community_edit_view(request, community_name):
     # Check if the current user is a member of the community and their role
     is_member = request.user in members
     if is_member:
-        user_role = CommunityRole.objects.filter(community=community, user=request.user).first()
-        user_role_level = ROLE_HIERARCHY.get(user_role.role, 0)
-        if user_role_level < 3:
-            return redirect('community_page', community_name=community_name)
+        user_role = CommunityRole.objects.filter(community=community, user=request.user).first() 
+        if user_role:
+            user_role_level = ROLE_HIERARCHY.get(user_role.role, 0)
+            if user_role_level >= 3 :
+                return render(request, "pages/community_edit.html", {'community': community, "user": request.user})
     
-    return render(request, "pages/community_edit.html", {'community': community, "user": request.user})
+    return redirect('community_page', community_name=community_name)
 
 @verification_required
 @login_required
@@ -277,28 +278,37 @@ def community_manage_view(request, community_name):
     # Check if the current user is a member of the community and their role
     is_member = request.user in members
     if is_member:
+        
         user_role = CommunityRole.objects.filter(community=community, user=request.user).first()
         user_role_level = ROLE_HIERARCHY.get(user_role.role, 0)
-        if user_role_level < 3:
-            return redirect('community_page', community_name=community_name)
+        if user_role_level >= 3:
+            # return redirect('community_page', community_name=community_name)
         
-    for member in members:
-        role = CommunityRole.objects.filter(community=community, user=member).first()
-        member.role = role
-        member.role_level = ROLE_HIERARCHY.get(role.role, 0) if role else 0
-        member.is_blocked = community.is_user_blocked(member)
+            for member in members:
+                role = CommunityRole.objects.filter(community=community, user=member).first()
+                member.role = role
+                member.role_level = ROLE_HIERARCHY.get(role.role, 0) if role else 0
+                member.is_blocked = community.is_user_blocked(member)
+                
+            members = sorted(members, key=lambda m: m.role_level, reverse=True)
+                
+            is_creator = community.created_by == request.user
+            
+            return render(request, "pages/community_manage.html", {'community': community, "members": members, "user": request.user, "user_role_level": user_role_level, "is_creator": is_creator})
+    return redirect('community_page', community_name=community_name)
         
-    members = sorted(members, key=lambda m: m.role_level, reverse=True)
-        
-    is_creator = community.created_by == request.user
-    
-    return render(request, "pages/community_manage.html", {'community': community, "members": members, "user": request.user, "user_role_level": user_role_level, "is_creator": is_creator})
 
 @login_required
 @verification_required
 def event_edit_view(request, event_id):
     event = get_object_or_404(CommunityEvent, id=event_id)
-    return render(request, 'pages/event_edit.html', {'event': event})
+    community = event.community
+    user_role = CommunityRole.objects.filter(community=community, user=request.user).first()
+    
+    if user_role and user_role.role >= 2:
+        return render(request, 'pages/event_edit.html', {'event': event})
+    
+    return redirect('community_page', community_name=community.name)
 
 @login_required
 @verification_required
@@ -341,25 +351,9 @@ def user_profile_page(request, username):
     })
 
     
-# THESE ARE OLD VIEWS:
-
-@login_required
-@verification_required
-def post_view(request):
-    """Render the profile page (requires login)."""
-    return render(request, "pages/posts.html", {"user": request.user})
-
-
-
-@login_required
-@verification_required
-def dashboard_view(request):
-    """Render the dashboard page (requires login)."""
-    return render(request, "pages/dashboard.html", {"user": request.user})
-
-
 @login_required
 @verification_required
 def faq_view(request):
     """Render the FAQ page (requires login)."""
     return render(request, "pages/faq.html", {"user": request.user})
+

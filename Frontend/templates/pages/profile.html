@@ -83,7 +83,27 @@
                                 <span class="value"> Not set</span>
                                 {% endif %}
                             </div>
-                        </div>
+
+                            <div class="info-item">
+                                <span class="label">Interests:</span>
+                                {% if user.intrests %}
+                                    <span class="value">{{ user.intrests }}</span>
+                                {% else %}
+                                    <span class="value"> Not set</span>
+                                {% endif %}
+                            </div>
+                    
+                            <div class="info-item">
+                                <span class="label">Year:</span>
+                                {% if user.year_of_study %}
+                                <span class="value"> {{user.year_of_study}}</span>
+                                {% else %}
+                                <span class="value"> Not set</span>
+                                {% endif %}
+                            </div>
+                          </div>
+                 
+           
                     </div>
 
                <!-- Friends List Card -->
