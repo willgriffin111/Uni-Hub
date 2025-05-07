@@ -46,26 +46,13 @@
               <i class="fa-solid fa-search"></i>
               <span>Search</span>
             </a>
-            <a href="#" class="menu-item">
-              <i class="fa-solid fa-bell"></i>
-              <span>Notifications</span>
-              <span class="notification-badge">3</span>
-            </a>
-            <a href="#" class="menu-item">
-              <i class="fa-solid fa-envelope"></i>
-              <span>Messages</span>
-            </a>
             <a href="{% url 'profile_page' %}" class="menu-item">
               <i class="fa-solid fa-user"></i>
               <span>Profile</span>
             </a>
             <a href="{% url 'community_create' %}" class="menu-item">
               <i class="fa-solid fa-user-group"></i>
-              <span>Communities</span>
-            </a>
-            <a href="#" class="menu-item">
-              <i class="fa-solid fa-calendar-days"></i>
-              <span>Events</span>
+              <span>Create communities</span>
             </a>
           </div>
           <button class="post-btn btn btn-primary mt-3">Post</button>
@@ -282,7 +269,6 @@
             <a href="{% url 'community_page' community.name %}" class="community-link">
               <div class="community-item d-flex justify-content-between align-items-center mb-3">
                 <div class="community-info">
-                  <span class="community-category">Study Group</span>
                   <h4 class="community-title">{{ community.name }}</h4>
                   <span class="community-stats">{{ community.num_members }} members</span>
                 </div>
