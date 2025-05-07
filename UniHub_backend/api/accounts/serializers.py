@@ -28,7 +28,7 @@ class RegisterSerializer(serializers.ModelSerializer):
             'profile_picture',
             'bio',
             'gender',
-            'course', 'year_of_ study', 'intrests'
+            # 'course', 'year_of_ study', 'intrests'
         ]
 
     def create(self, validated_data):
