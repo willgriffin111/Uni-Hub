@@ -1,6 +1,7 @@
 **/__pycache__/
 .idea/
 
+UniHub_backend/media
 # Ignore all migration files except __init__.py
 **/migrations/*
 !**/migrations/__init__.py
