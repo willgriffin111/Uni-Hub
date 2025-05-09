@@ -133,13 +133,10 @@ def edit_post(request, post_id):
     post = get_object_or_404(Post, id=post_id)  # Ensure the post exists
     return render(request, 'pages/post_edit.html', {'post': post})
 
-@login_required
-@verification_required
+
 def password_reset_view(request):
     return render(request, "pages/password_reset.html")
 
-@verification_required
-@login_required
 def password_reset_confirm_view(request):
     return render(request, "pages/password_reset_confirm.html")
 
@@ -304,8 +301,9 @@ def event_edit_view(request, event_id):
     event = get_object_or_404(CommunityEvent, id=event_id)
     community = event.community
     user_role = CommunityRole.objects.filter(community=community, user=request.user).first()
+    user_role_level = ROLE_HIERARCHY.get(user_role.role, 0)
     
-    if user_role and user_role.role >= 2:
+    if user_role and user_role_level >= 2:
         return render(request, 'pages/event_edit.html', {'event': event})
     
     return redirect('community_page', community_name=community.name)

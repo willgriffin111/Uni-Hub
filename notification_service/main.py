@@ -19,7 +19,8 @@ class EventConfirmRequest(BaseModel):
     event_time: str
     event_location: str
 
-    
+   
+@app.post("/send-otp/") 
 @app.post("/send-otp")
 def send_otp(data: EmailOTPRequest):
     otp = generate_otp(data.email)
@@ -27,6 +28,7 @@ def send_otp(data: EmailOTPRequest):
         send_otp_email(data.email, otp)
         return {"message": "OTP sent", "otp": otp}
     except Exception as e:
+        print("BABALBALBALABALB")
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/send-reset-link")

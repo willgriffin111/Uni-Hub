@@ -127,7 +127,7 @@
               <!-- Header -->
               <div class="post-header">
                 <div class="post-user-info">
-                  <h4 class="post-author">{{ post.user.username }}</h4>
+                  <a class="post-author" href="{% url 'user-profile-page' post.user.username %}" style="text-decoration: None; color:black;">{{ post.user.username }}</a>
                   <span class="post-time">· {{ post.created_at|timesince }} ago</span>
                   {% if post.community.name %}
                     <h4 class="post-author">
@@ -308,7 +308,7 @@
             </a>
             {% empty %}
 
-              <p>No upcoming events.</p>
+              <p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; No upcoming events.</p>
 
             {% endfor %}
 
@@ -341,7 +341,7 @@
                 </div>
               {% endfor %}
             {% else %}
-              <p>No suggestions available.</p>
+              <p> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; No suggestions available.</p>
             {% endif %}
           </div>
         </div>

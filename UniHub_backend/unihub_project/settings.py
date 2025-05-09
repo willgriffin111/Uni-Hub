@@ -33,7 +33,7 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*", "10.241.185.129"]
+ALLOWED_HOSTS = ["*", "10.241.185.129", "10.241.9.211"]
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'  # or file or cached
 
